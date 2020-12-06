@@ -8,6 +8,19 @@ fi
 
 __REDIS_VERSION__=$1
 
+echo '>>>>> [Redis] 커널 파라미터(overcommit_memory, TCP backlog관련) 수정'
+sysctl -w vm.overcommit_memory=1
+echo "vm.overcommit_memory=1" >> /etc/sysctl.conf
+sysctl -w net.ipv4.tcp_max_syn_backlog=65536
+echo "net.ipv4.tcp_max_syn_backlog=65536" >> /etc/sysctl.conf
+sysctl -w net.core.somaxconn=65535
+echo "net.core.somaxconn=65535" >> /etc/sysctl.conf
+
+echo '>>>>> [Redis] THP 비활성화'
+echo never > /sys/kernel/mm/transparent_hugepage/enabled
+echo "echo never > /sys/kernel/mm/transparent_hugepage/enabled" >> /etc/rc.local
+
+
 echo '>>>>> [Redis] 필요 패키지(build-essential pkg-config gcc tcl) 설치'
 apt-get update -y
 apt-get install  build-essential pkg-config gcc tcl libsystemd-dev -y
@@ -52,6 +65,7 @@ After=network.target
 Type=notify
 User=sentinel
 Group=sentinel
+LimitNOFILE=65536
 ExecStart=/usr/local/bin/redis-sentinel /etc/sentinel/sentinel.conf
 ExecStop=/usr/local/bin/redis-cli -p 26379 shutdown
 Restart=always

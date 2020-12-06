@@ -11,8 +11,8 @@ __REDIS_VERSION__=$1
 echo '>>>>> [Redis] 커널 파라미터(overcommit_memory, TCP backlog관련) 수정'
 sysctl -w vm.overcommit_memory=1
 echo "vm.overcommit_memory=1" >> /etc/sysctl.conf
-sysctl -w net.ipv4.tcp_max_syn_backlog=10000
-echo "net.ipv4.tcp_max_syn_backlog=10000" >> /etc/sysctl.conf
+sysctl -w net.ipv4.tcp_max_syn_backlog=65536
+echo "net.ipv4.tcp_max_syn_backlog=65536" >> /etc/sysctl.conf
 sysctl -w net.core.somaxconn=65535
 echo "net.core.somaxconn=65535" >> /etc/sysctl.conf
 

@@ -45,13 +45,15 @@ mkdir /etc/redis
 mkdir /var/log/redis
 mkdir /var/lib/redis
 mkdir /var/run/redis
+
+echo '>>>>> [Redis] 설정파일 복사'
+cp ./conf/redis.conf /etc/redis/
+
 chown -R redis:redis /etc/redis/
 chown -R redis:redis /var/log/redis
 chown -R redis:redis /var/lib/redis
 chown -R redis:redis /var/run/redis
 
-echo '>>>>> [Redis] 설정파일 복사'
-cp ./conf/redis.conf /etc/redis/
 
 echo '>>>>> [Redis] redis.service 설정'
 cat >> /etc/systemd/system/redis.service <<EOF

@@ -2,6 +2,8 @@
 
 __USER__=$1
 
+apt install snap -y
+
 echo '>>>>> MicroK8s 설치 latest/stable 버전'
 snap install microk8s --classic
 

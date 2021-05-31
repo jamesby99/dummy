@@ -118,7 +118,6 @@ After=zookeeper.service
 [Service]
 Type=simple
 User=kafka
-Environment=KAFKA_HEAP_OPTS="$__KAFKA_JVM_MEMORY__"
 ExecStart=/bin/sh -c '/opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/server.properties'
 ExecStop=/opt/kafka/bin/kafka-server-stop.sh
 Restart=on-abnormal

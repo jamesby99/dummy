@@ -2,14 +2,14 @@
 
 #3대인 경우 __MYID__ = 1 | 2 | 3
 if [ -z "$1" ]; then
-	echo ">>>>> usage		: kafka-cluster.sh my-id"
+	echo ">>>>> usage	: kafka-cluster.sh my-id"
 	echo ">>>>> example	: kafka-cluster.sh 1"
 	exit
 fi
 
-__MYID__=$1         													# zookeeper myid 주입
+__MYID__=$1				# zookeeper myid 주입
 
-__KAFKA_VER__=2.5.1												# https://downloads.apache.org/kafka 에서 현재 제공 버전이 맞는지 확인 필요
+__KAFKA_VER__=2.5.1			#https://downloads.apache.org/kafka 에서 현재 제공 버전이 맞는지 확인 필요
 __SCOLA_VER__=2.13
 __KAFKA__=kafka_$__SCOLA_VER__-$__KAFKA_VER__
 __KAFKA_JVM_MEMORY__="-Xmx400m -Xms400m" 		#VM의 메모리에 따라 약 50% 정도 할당
@@ -37,7 +37,7 @@ mkdir -p /opt/kafka/storage/kafka-logs/
 ###############################################################################
 
 echo ">>>>> kafka/zookeeper 설치 ($__KAFKA__) "
-wget https://archive.apache.org/dist/kafka/$__KAFKA_VER__/$__KAFKA__.tgz
+wget -O ~/$__KAFKA__.tgz https://archive.apache.org/dist/kafka/$__KAFKA_VER__/$__KAFKA__.tgz
 tar -xf ~/$__KAFKA__.tgz -C /opt/kafka --strip-components=1
 
 ###############################################################################

@@ -12,7 +12,7 @@ __MYID__=$1				# zookeeper myid 주입
 __KAFKA_VER__=2.5.1			#https://downloads.apache.org/kafka 에서 현재 제공 버전이 맞는지 확인 필요
 __SCOLA_VER__=2.13
 __KAFKA__=kafka_$__SCOLA_VER__-$__KAFKA_VER__
-__KAFKA_JVM_MEMORY__="-Xmx400m -Xms400m" 		#VM의 메모리에 따라 약 50% 정도 할당
+__KAFKA_JVM_MEMORY__="-Xmx2G -Xms2G" 		#VM의 메모리에 따라 약 50% 정도 할당
 
 ###############################################################################
 echo '>>>>> /etc/hosts에 kafka cluster ip 반영'

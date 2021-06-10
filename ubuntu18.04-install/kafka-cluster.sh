@@ -118,6 +118,7 @@ After=zookeeper.service
 [Service]
 Type=simple
 User=kafka
+Environment=KAFKA_HEAP_OPTS="-Xmx2G -Xms2G"
 ExecStart=/bin/sh -c '/opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/server.properties'
 ExecStop=/opt/kafka/bin/kafka-server-stop.sh
 Restart=on-abnormal

@@ -16,7 +16,7 @@ echo 'alias kubectl=microk8s.kubectl' >> /etc/profile
 echo '>>>>>  dns, dashboard, ingress, metallb 애드온 활성화'
 microk8s enable dns
 microk8s enable dashboard
-microk8s enable ingress
+# microk8s enable ingress
 # microk8s enable metallb 는 별도 입력값(10.0.2.15-10.0.2.15)이 있기 때문에 수작업을 해야 한다.
 
 echo '>>>>> Docker 설치'

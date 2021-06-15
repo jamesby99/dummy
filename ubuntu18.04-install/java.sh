@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
-__JAVA_VER__=8
-#__JAVA_VER__=11
+
+if [ -z "$1" ]; then
+	echo ">>>>> usage	: java.sh <java version>"
+	echo ">>>>> example	: java.sh 11"
+	exit
+fi
+
+__JAVA_VER__=$1
 
 echo ">>>>> jdk $__JAVA_VER__ 설치 "
 apt-get -y install openjdk-$__JAVA_VER__-jdk > /dev/null

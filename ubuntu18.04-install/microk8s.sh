@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+if [ -z "$1" ]; then
+	echo ">>>>> usage	: microk8s.sh <권한부여 계정>"
+	echo ">>>>> example	: microk8s.sh unbuntu"
+	exit
+fi
+
 __USER__=$1
 
 apt install snapd -y
@@ -13,10 +19,12 @@ echo 'alias k=microk8s.kubectl' >> /etc/profile
 echo 'alias kubectl=microk8s.kubectl' >> /etc/profile
 
 # 필요한 애드온들 활성화
-echo '>>>>>  dns, dashboard, ingress, metallb 애드온 활성화'
+echo '>>>>>  dns, dashboard, helm3, storage, registry 애드온 활성화'
 microk8s enable dns
 microk8s enable dashboard
-# microk8s enable ingress
+microk8s enable helm3
+microk8s enable storage
+microk8s enable registry
 # microk8s enable metallb 는 별도 입력값(10.0.2.15-10.0.2.15)이 있기 때문에 수작업을 해야 한다.
 
 echo '>>>>> Docker 설치'

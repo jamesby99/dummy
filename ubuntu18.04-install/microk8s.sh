@@ -18,7 +18,7 @@ EOF
 
 # 공통 로그 설정
 mkdir -p /imdb-log/nack-logs
-chomd 777 /imdb-log
+chomd 777 -R /imdb-log
 
 apt install snapd -y
 

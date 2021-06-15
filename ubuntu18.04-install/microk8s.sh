@@ -8,6 +8,7 @@ fi
 
 __USER__=$1
 
+# 설치 환경에 맞게 IP주소 셋팅 필요합니다.
 echo '>>>>>  cluster hostname 등록'
 cat >> /etc/hosts <<EOF
 172.25.10.136 k8s-1

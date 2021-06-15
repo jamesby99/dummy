@@ -51,5 +51,6 @@ fi
 
 # register mirror 등록 및 containerd 재시작
 sed -i.bak -r 's/localhost:32000/k8s-1:32000/g' /var/snap/microk8s/current/args/containerd-template.toml
-microk8s stop
-microk8s start
+echo '>>>>>  microk8s restart가 수동으로 필요합니다.'
+echo 'microk8s stop'
+echo 'microk8s start'

@@ -16,6 +16,10 @@ cat >> /etc/hosts <<EOF
 172.25.10.56 k8s-3
 EOF
 
+# 공통 로그 설정
+mkdir -p /imdb-log/nack-logs
+chomd 777 /imdb-log
+
 apt install snapd -y
 
 echo '>>>>> MicroK8s 설치 latest/stable 버전'
@@ -52,5 +56,5 @@ fi
 # register mirror 등록 및 containerd 재시작
 sed -i.bak -r 's/localhost:32000/k8s-1:32000/g' /var/snap/microk8s/current/args/containerd-template.toml
 echo '>>>>>  microk8s restart가 수동으로 필요합니다.'
-echo 'microk8s stop'
-echo 'microk8s start'
+echo 'microk8s stop 하세요'
+echo 'microk8s start 하세요'

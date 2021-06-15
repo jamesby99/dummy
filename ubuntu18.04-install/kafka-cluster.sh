@@ -77,7 +77,7 @@ cat >> /opt/kafka/config/server.properties <<EOF
 auto.create.topics.enable=false
 
 listeners=PLAINTEXT://:9092
-advertised.listeners=PLAINTEXT://211.184.188.38:1909$__MYID__
+#advertised.listeners=PLAINTEXT://211.184.188.38:1909$__MYID__
 zookeeper.connect=kafka1:2181, kafka2:2181, kafka3:2181
 EOF
 sed -i.bak -r "s/broker.id=0/broker.id=$__MYID__/g" /opt/kafka/config/server.properties

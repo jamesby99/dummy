@@ -25,9 +25,10 @@ apt install snapd -y
 snap install microk8s --classic
 
 # CLI alias
-echo '>>>>>  alias k=microk8s.kubectl 설정'
+echo '>>>>>  alias 설정: kubectl, helm'
 echo 'alias k=microk8s.kubectl' >> /etc/profile
 echo 'alias kubectl=microk8s.kubectl' >> /etc/profile
+echo 'alias helm=microk8s.helm3' >> /etc/profile
 
 # 필요한 애드온들 활성화
 echo '>>>>>  dns, dashboard, helm3, storage, registry 애드온 활성화'

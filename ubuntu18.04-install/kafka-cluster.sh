@@ -14,6 +14,9 @@ __SCOLA_VER__=2.13
 __KAFKA__=kafka_$__SCOLA_VER__-$__KAFKA_VER__
 __KAFKA_JVM_MEMORY__="-Xmx2G -Xms2G" 		#VM의 메모리에 따라 약 50% 정도 할당
 
+# TIME-ZONE(Asia/Seoul) 설정
+timedatectl set-timezone Asia/Seoul
+
 ###############################################################################
 echo '>>>>> /etc/hosts에 kafka cluster ip 반영'
 cat >> /etc/hosts <<EOF

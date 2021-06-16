@@ -18,7 +18,7 @@ EOF
 
 # 공통 로그 설정
 mkdir -p /imdb-log/nack-logs
-chomd 777 -R /imdb-log
+chmod 777 -R /imdb-log
 
 # TIME-ZONE(Asia/Seoul) 설정
 timedatectl set-timezone Asia/Seoul

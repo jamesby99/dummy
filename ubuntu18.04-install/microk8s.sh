@@ -20,6 +20,9 @@ EOF
 mkdir -p /imdb-log/nack-logs
 chomd 777 -R /imdb-log
 
+# TIME-ZONE(Asia/Seoul) 설정
+timedatectl set-timezone Asia/Seoul
+
 echo '>>>>> MicroK8s 설치 latest/stable 버전'
 apt install snapd -y
 snap install microk8s --classic

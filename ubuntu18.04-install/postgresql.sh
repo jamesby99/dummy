@@ -13,8 +13,9 @@ echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" 
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 apt update -y
 
-# postgresql 12 버전 추가
+# postgresql 12 설치
 apt install postgresql-12 -y
 
 
+#listen_addresses = 'localhost'
 

@@ -35,8 +35,11 @@ echo 'DB 사용자 및 테이블 생성은 다음 절차를 따른다. : 참고 
 echo 'su - postgres'
 echo 'createuser __USER__'
 echo 'psql -c "select usename from pg_user;"'
-echo 'createdb db_test -O __USER__'
+echo 'createdb db_projection -O __USER__'
 echo 'createdb db_order -O __USER__'
+echo 'createdb db_configuration -O __USER__'
+echo 'createdb db_backupmgt -O __USER__'
+echo 'createdb db_servermgt -O __USER__'
 echo 'psql -l'
 echo 'psql -c "alter user jamesby with password 'dbwls01';"'
 

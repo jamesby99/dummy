@@ -38,5 +38,5 @@ echo 'psql -c "select usename from pg_user;"'
 echo 'createdb db_test -O __USER__'
 echo 'createdb db_order -O __USER__'
 echo 'psql -l'
-
+echo 'psql -c "alter user jamesby with password 'dbwls01';"'
 

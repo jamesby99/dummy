@@ -41,5 +41,5 @@ echo 'createdb db_configuration -O __USER__'
 echo 'createdb db_backupmgt -O __USER__'
 echo 'createdb db_servermgt -O __USER__'
 echo 'psql -l'
-echo 'psql -c "alter user jamesby with password 'dbwls01';"'
+echo 'psql -c "alter user __USER__ with password 'dbwls01';"'
 

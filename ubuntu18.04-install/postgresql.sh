@@ -32,7 +32,7 @@ useradd -s /bin/bash -d /home/replica -m replica
 
 systemctl stop postgresql
 # db 저장소 변경 - 사전 /postgresql에 disk가 마운트 되어 있어야 한다.
-cp -rf /var/lib/postgresql/12/main /postgresql
+cp -rf /var/lib/postgresql/12/main/* /postgresql
 chown -R postgres:postgres /postgresql
 sed -i.bak -r "s#data_directory = '/var/lib/postgresql/12/main'#data_directory = '/postgresql'#g" /etc/postgresql/12/main/postgresql.conf
 

@@ -53,5 +53,5 @@ echo 'createdb db_backupmgt -O __USER__'
 echo 'createdb db_servermgt -O __USER__'
 echo 'psql -l'
 
-echo 'psql -c "show data_directory;"' #변경 디렉토리 확인
+echo 'sudo -u postgres psql -c "show data_directory;"' #변경 디렉토리 확인
 

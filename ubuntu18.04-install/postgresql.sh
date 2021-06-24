@@ -35,24 +35,6 @@ sed -i.bak -r "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/
 echo "# 여기서부터는 커스텀마이징 설정입니다." >> /etc/postgresql/12/main/pg_hba.conf
 echo "host    all             all             0.0.0.0/0               md5" >> /etc/postgresql/12/main/pg_hba.conf
 
-# 스트리밍 replication 설정  ----------------------------------------------------------
-sed -i.bak -r "s/#wal_level = replica/wal_level = replica/g" /etc/postgresql/12/main/postgresql.conf
-sed -i.bak -r "s/#synchronous_commit = on/synchronous_commit = on/g" /etc/postgresql/12/main/postgresql.conf
-sed -i.bak -r "s/#max_wal_senders = 10/max_wal_senders = 2/g" /etc/postgresql/12/main/postgresql.conf
-sed -i.bak -r "s/#wal_keep_segments = 0/wal_keep_segments = 32/g" /etc/postgresql/12/main/postgresql.conf
-sed -i.bak -r "s/#synchronous_standby_names = ''/synchronous_standby_names = '*'/g" /etc/postgresql/12/main/postgresql.conf
-sed -i.bak -r "s/#max_replication_slots = 10/max_replication_slots = 2/g" /etc/postgresql/12/main/postgresql.conf
-
-#wal_level = replica
-#synchronous_commit = on
-#max_wal_senders = 2
-#wal_keep_segments = 32
-#synchronous_standby_names = '*'
-#max_replication_slots = 10
-
-# 상용에서는 replca 서버에 대한 소스 필터 제한을 해야 한다. - 
-echo "host    replication     replica         0.0.0.0/0               md5" >> /etc/postgresql/12/main/pg_hba.conf
-# -------------------------------------------------------------------------------------
 
 
 # 튜닝 --------------------------------------------------------------------------------
@@ -111,6 +93,25 @@ systemctl stop postgresql
 cp -rf /var/lib/postgresql/12/main /postgresql
 chown -R postgres:postgres /postgresql
 sed -i.bak -r "s#data_directory = '/var/lib/postgresql/12/main'#data_directory = '/postgresql/main'#g" /etc/postgresql/12/main/postgresql.conf
+
+# 스트리밍 replication 설정  ----------------------------------------------------------
+sed -i.bak -r "s/#wal_level = replica/wal_level = replica/g" /etc/postgresql/12/main/postgresql.conf
+sed -i.bak -r "s/#synchronous_commit = on/synchronous_commit = on/g" /etc/postgresql/12/main/postgresql.conf
+sed -i.bak -r "s/#max_wal_senders = 10/max_wal_senders = 2/g" /etc/postgresql/12/main/postgresql.conf
+sed -i.bak -r "s/#wal_keep_segments = 0/wal_keep_segments = 32/g" /etc/postgresql/12/main/postgresql.conf
+sed -i.bak -r "s/#synchronous_standby_names = ''/synchronous_standby_names = '*'/g" /etc/postgresql/12/main/postgresql.conf
+sed -i.bak -r "s/#max_replication_slots = 10/max_replication_slots = 2/g" /etc/postgresql/12/main/postgresql.conf
+
+#wal_level = replica
+#synchronous_commit = on
+#max_wal_senders = 2
+#wal_keep_segments = 32
+#synchronous_standby_names = '*'
+#max_replication_slots = 10
+
+# 상용에서는 replca 서버에 대한 소스 필터 제한을 해야 한다. - 
+echo "host    replication     replica         0.0.0.0/0               md5" >> /etc/postgresql/12/main/pg_hba.conf
+# -------------------------------------------------------------------------------------
 
 systemctl start postgresql
 

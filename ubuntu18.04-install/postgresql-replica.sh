@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 if [ -z "$1" ]; then
-	echo ">>>>> usage	: postgresql.sh <db 계정>"
-	echo ">>>>> example	: postgresql.sh unbuntu"
+	echo ">>>>> usage	: postgresql-replica.sh <db 계정>"
+	echo ">>>>> example	: postgresql-replica.sh unbuntu"
 	exit
 fi
 
@@ -31,23 +31,6 @@ sed -i.bak -r "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/
 
 echo "# 여기서부터는 커스텀마이징 설정입니다." >> /etc/postgresql/12/main/pg_hba.conf
 echo "host    all             all             0.0.0.0/0               md5" >> /etc/postgresql/12/main/pg_hba.conf
-
-# 스트리밍 replication 설정  ----------------------------------------------------------
-sed -i.bak -r "s/#wal_level = replica/wal_level = replica/g" /etc/postgresql/12/main/postgresql.conf
-sed -i.bak -r "s/#synchronous_commit = on/synchronous_commit = on/g" /etc/postgresql/12/main/postgresql.conf
-sed -i.bak -r "s/#max_wal_senders = 10/max_wal_senders = 10/g" /etc/postgresql/12/main/postgresql.conf
-sed -i.bak -r "s/#wal_keep_segments = 0/wal_keep_segments = 10/g" /etc/postgresql/12/main/postgresql.conf
-sed -i.bak -r "s/#synchronous_standby_names = ''/synchronous_standby_names = '*'/g" /etc/postgresql/12/main/postgresql.conf
-
-#wal_level = replica
-#synchronous_commit = on
-#max_wal_senders = 10
-#wal_keep_segments = 10
-#synchronous_standby_names = '*'
-
-# 상용에서는 replca 서버에 대한 소스 필터 제한을 해야 한다. - 
-echo "host    replication     replica         0.0.0.0/0               md5" >> /etc/postgresql/12/main/pg_hba.conf
-# -------------------------------------------------------------------------------------
 
 
 # 튜닝 --------------------------------------------------------------------------------
@@ -87,27 +70,22 @@ sed -i.bak -r "s/min_wal_size = 80MB/min_wal_size = 1GB/g" /etc/postgresql/12/ma
 sed -i.bak -r "s/max_wal_size = 1GB/max_wal_size = 4GB/g" /etc/postgresql/12/main/postgresql.conf
 #--------------------------------------------------------------------------------------
 
-# DB 사용자 및 테이블 생성은 다음 절차를 따른다. : 참고 OS와 DB사용자를 일치시켜라!!!'
-sudo -u postgres createuser replica --replication
-sudo -u postgres psql -c "alter user replica with password 'imdb21**'
-sudo -u postgres createuser $__USER__
-sudo -u postgres psql -c "alter user $__USER__ with password 'imdb21**';"
-sudo -u postgres createdb db_projection -O $__USER__
-sudo -u postgres createdb db_order -O $__USER__
-sudo -u postgres createdb db_configuration -O $__USER__
-sudo -u postgres createdb db_backupmgt -O $__USER__
-sudo -u postgres createdb db_servermgt -O $__USER__
 # db 저장소 변경 - 사전 /postgresql에 disk가 마운트 되어 있어야 한다. -----------------
 systemctl stop postgresql
 cp -rf /var/lib/postgresql/12/main /postgresql
 chown -R postgres:postgres /postgresql
-sed -i.bak -r "s#data_directory = '/var/lib/postgresql/12/main'#data_directory = '/postgresql/main'#g" /etc/postgresql/12/main/postgresql.conf
-
 systemctl start postgresql
+systemctl stop postgresql
 # -------------------------------------------------------------------------------------
 
-echo '생성결과는 다음의 명령어로 확인하세요'
+echo '아래 작업은 수작업으로 진행합니다.'
 echo 'su - postgres'
-echo 'psql -c "select * from pg_user;"'
-echo 'psql -l'
 echo 'psql -c "show data_directory;"' #변경 디렉토리 확인
+echo 'pg_basebackup -R -h <master-ip> -U replica -D /var/lib/postgresql/12/main -P'
+echo 'exit'
+echo 'vi /etc/postgresql/12/main/postgresql.conf'
+echo 'hot_standby = on'
+echo 'vi /var/lib/postgresql/12/main/postgresql.auto.conf'
+echo '# add [application_name] to auto generated auth file (any name you like, like hostname and so on)'
+echo "# primary_conninfo = 'user=rep_user password=password host=www.srv.world port=5432 sslmode=prefer sslcompression=0 gssencmode=prefer krbsrvname=postgres target_session_attrs=any application_name=node01'"
+echo 'systemctl start postgresql'

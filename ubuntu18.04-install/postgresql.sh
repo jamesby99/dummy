@@ -49,6 +49,43 @@ echo "host    replication     replica         0.0.0.0/0               md5" >> /e
 # -------------------------------------------------------------------------------------
 
 
+# 튜닝 --------------------------------------------------------------------------------
+# 메모리 2GB 기준 값으로 설정되어 있음
+
+# [shared_buffers] 총메모리의 25% 수준: 2GB는 512MB
+sed -i.bak -r "s/shared_buffers = 128MB/shared_buffers = 256MB/g" /etc/postgresql/12/main/postgresql.conf
+
+# [effective_cache_size] 총메모리의 50% 수준: 2GB는 1GB
+sed -i.bak -r "s/#effective_cache_size = 4GB/effective_cache_size = 768MB/g" /etc/postgresql/12/main/postgresql.conf
+
+# [maintenance_work_mem] 총메모리GB x 50MB = 2GB x 50MB = 100MB
+sed -i.bak -r "s/#maintenance_work_mem = 64MB/maintenance_work_mem = 64MB/g" /etc/postgresql/12/main/postgresql.conf
+
+# [checkpoint_completion_target]
+sed -i.bak -r "s/#checkpoint_completion_target = 0.5/checkpoint_completion_target = 0.9/g" /etc/postgresql/12/main/postgresql.conf
+
+# [wal_buffers] shared_buffers의 1/32 수준이나, -1로 설정하면 shared_buffers에 따라 자동 조정
+sed -i.bak -r "s/#wal_buffers = -1/wal_buffers = 7864kB/g" /etc/postgresql/12/main/postgresql.conf
+
+# [default_statistics_target]
+sed -i.bak -r "s/#default_statistics_target = 100/default_statistics_target = 100/g" /etc/postgresql/12/main/postgresql.conf
+
+# [random_page_cost] HDD or SSD에 따라 값이 달라짐
+sed -i.bak -r "s/#random_page_cost = 4.0/random_page_cost = 4.0/g" /etc/postgresql/12/main/postgresql.conf
+
+# [effective_io_concurrency] HDD or SSD에 따라 값이 달라짐
+sed -i.bak -r "s/#effective_io_concurrency = 1/effective_io_concurrency = 2/g" /etc/postgresql/12/main/postgresql.conf
+
+# [work_mem]
+sed -i.bak -r "s/#work_mem = 4MB/work_mem = 1310kB/g" /etc/postgresql/12/main/postgresql.conf
+
+# [min_wal_size]
+sed -i.bak -r "s/min_wal_size = 80MB/min_wal_size = 1GB/g" /etc/postgresql/12/main/postgresql.conf
+
+# [max_wal_size]
+sed -i.bak -r "s/max_wal_size = 1GB/max_wal_size = 4GB/g" /etc/postgresql/12/main/postgresql.conf
+#--------------------------------------------------------------------------------------
+
 # DB 사용자 및 테이블 생성은 다음 절차를 따른다. : 참고 OS와 DB사용자를 일치시켜라!!!'
 sudo -u postgres createuser replica --replication
 sudo -u postgres psql -c "alter user replica with password 'imdb21**'

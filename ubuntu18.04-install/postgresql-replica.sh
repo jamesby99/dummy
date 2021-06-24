@@ -87,3 +87,6 @@ echo 'vi /var/lib/postgresql/12/main/postgresql.auto.conf'
 echo '# add [application_name] to auto generated auth file (any name you like, like hostname and so on)'
 echo "primary_conninfo = 'user=replica password=imdb21** host=172.27.1.17 port=5432 sslmode=prefer sslcompression=0 gssencmode=prefer krbsrvname=postgres target_session_attrs=any application_name=master'"
 echo 'systemctl start postgresql'
+
+echo '마스터 노드에서 아래 명령어로 동기화 확인'
+echo 'psql -c "select usename, application_name, client_addr, state, sync_priority, sync_state from pg_stat_replication;"'

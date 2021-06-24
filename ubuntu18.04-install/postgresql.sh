@@ -37,6 +37,7 @@ sed -i.bak -r "s/#wal_level = replica/wal_level = replica/g" /etc/postgresql/12/
 sed -i.bak -r "s/#synchronous_commit = on/synchronous_commit = on/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#max_wal_senders = 10/max_wal_senders = 10/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#wal_keep_segments = 0/wal_keep_segments = 10/g" /etc/postgresql/12/main/postgresql.conf
+sed -i.bak -r "s/#synchronous_standby_names = ''/synchronous_standby_names = '*'/g" /etc/postgresql/12/main/postgresql.conf
 
 #wal_level = replica
 #synchronous_commit = on

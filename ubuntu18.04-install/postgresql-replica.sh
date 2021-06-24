@@ -74,6 +74,7 @@ sed -i.bak -r "s/max_wal_size = 1GB/max_wal_size = 4GB/g" /etc/postgresql/12/mai
 systemctl stop postgresql
 cp -rf /var/lib/postgresql/12/main /postgresql
 chown -R postgres:postgres /postgresql
+sed -i.bak -r "s#data_directory = '/var/lib/postgresql/12/main'#data_directory = '/postgresql/main'#g" /etc/postgresql/12/main/postgresql.conf
 systemctl start postgresql
 systemctl stop postgresql
 # -------------------------------------------------------------------------------------

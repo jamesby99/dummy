@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+echo -n 'DB 전용 DISK 마운트했는가? 했다면 엔터 안했다면 ctrl-c'
+read
+
 if [ -z "$1" ]; then
 	echo ">>>>> usage	: postgresql.sh <db 계정>"
 	echo ">>>>> example	: postgresql.sh unbuntu"
@@ -103,6 +106,7 @@ sudo -u postgres createdb db_servermgt -O $__USER__
 
 
 # db 저장소 변경 - 사전 /postgresql에 disk가 마운트 되어 있어야 한다. -----------------
+mkdir -p /postgresql
 systemctl stop postgresql
 cp -rf /var/lib/postgresql/12/main /postgresql
 chown -R postgres:postgres /postgresql

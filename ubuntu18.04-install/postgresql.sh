@@ -35,15 +35,17 @@ echo "host    all             all             0.0.0.0/0               md5" >> /e
 # 스트리밍 replication 설정  ----------------------------------------------------------
 sed -i.bak -r "s/#wal_level = replica/wal_level = replica/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#synchronous_commit = on/synchronous_commit = on/g" /etc/postgresql/12/main/postgresql.conf
-sed -i.bak -r "s/#max_wal_senders = 10/max_wal_senders = 10/g" /etc/postgresql/12/main/postgresql.conf
-sed -i.bak -r "s/#wal_keep_segments = 0/wal_keep_segments = 10/g" /etc/postgresql/12/main/postgresql.conf
+sed -i.bak -r "s/#max_wal_senders = 10/max_wal_senders = 2/g" /etc/postgresql/12/main/postgresql.conf
+sed -i.bak -r "s/#wal_keep_segments = 0/wal_keep_segments = 32/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#synchronous_standby_names = ''/synchronous_standby_names = '*'/g" /etc/postgresql/12/main/postgresql.conf
+sed -i.bak -r "s/#max_replication_slots = 10/max_replication_slots = 2/g" /etc/postgresql/12/main/postgresql.conf
 
 #wal_level = replica
 #synchronous_commit = on
-#max_wal_senders = 10
-#wal_keep_segments = 10
+#max_wal_senders = 2
+#wal_keep_segments = 32
 #synchronous_standby_names = '*'
+#max_replication_slots = 10
 
 # 상용에서는 replca 서버에 대한 소스 필터 제한을 해야 한다. - 
 echo "host    replication     replica         0.0.0.0/0               md5" >> /etc/postgresql/12/main/pg_hba.conf
@@ -107,6 +109,8 @@ chown -R postgres:postgres /postgresql
 sed -i.bak -r "s#data_directory = '/var/lib/postgresql/12/main'#data_directory = '/postgresql/main'#g" /etc/postgresql/12/main/postgresql.conf
 
 systemctl start postgresql
+
+sudo -u postgres psql -c "SELECT * FROM pg_create_physical_replication_slot('replication_slot');"
 # -------------------------------------------------------------------------------------
 
 echo '생성결과는 다음의 명령어로 확인하세요'

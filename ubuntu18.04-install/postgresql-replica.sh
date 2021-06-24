@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-echo 'DB 전용 DISK 마운트했는지 꼭 챙기삼'
+echo -n 'DB 전용 DISK 마운트했는가? 했다면 엔터 안했다면 ctrl-c'
+read
 
 if [ -z "$1" ]; then
 	echo ">>>>> usage	: postgresql-replica.sh <db 계정>"

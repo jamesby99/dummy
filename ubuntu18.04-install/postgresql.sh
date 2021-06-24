@@ -94,7 +94,7 @@ sed -i.bak -r "s/max_wal_size = 1GB/max_wal_size = 4GB/g" /etc/postgresql/12/mai
 
 # DB 사용자 및 테이블 생성은 다음 절차를 따른다. : 참고 OS와 DB사용자를 일치시켜라!!!'
 sudo -u postgres createuser replica --replication
-sudo -u postgres psql -c "alter user replica with password 'imdb21**'
+sudo -u postgres psql -c "alter user replica with password 'imdb21**';"
 
 sudo -u postgres createuser $__USER__
 sudo -u postgres psql -c "alter user $__USER__ with password 'imdb21**';"

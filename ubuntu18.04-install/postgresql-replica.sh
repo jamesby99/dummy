@@ -75,18 +75,15 @@ systemctl stop postgresql
 cp -rf /var/lib/postgresql/12/main /postgresql
 chown -R postgres:postgres /postgresql
 sed -i.bak -r "s#data_directory = '/var/lib/postgresql/12/main'#data_directory = '/postgresql/main'#g" /etc/postgresql/12/main/postgresql.conf
-systemctl start postgresql
-systemctl stop postgresql
 # -------------------------------------------------------------------------------------
 
 echo '아래 작업은 수작업으로 진행합니다.'
 echo 'su - postgres'
-echo 'psql -c "show data_directory;"' #변경 디렉토리 확인
-echo 'pg_basebackup -R -h <master-ip> -U replica -D /var/lib/postgresql/12/main -P'
+echo 'pg_basebackup -R -h 172.27.1.17 -U replica -D /postgresql/main -P'
 echo 'exit'
 echo 'vi /etc/postgresql/12/main/postgresql.conf'
 echo 'hot_standby = on'
 echo 'vi /var/lib/postgresql/12/main/postgresql.auto.conf'
 echo '# add [application_name] to auto generated auth file (any name you like, like hostname and so on)'
-echo "# primary_conninfo = 'user=rep_user password=password host=www.srv.world port=5432 sslmode=prefer sslcompression=0 gssencmode=prefer krbsrvname=postgres target_session_attrs=any application_name=node01'"
+echo "primary_conninfo = 'user=replica password=imdb21** host=172.27.1.17 port=5432 sslmode=prefer sslcompression=0 gssencmode=prefer krbsrvname=postgres target_session_attrs=any application_name=master'"
 echo 'systemctl start postgresql'

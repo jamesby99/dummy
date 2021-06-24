@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo 'DB 전용 DISK 마운트했는지 꼭 챙기삼'
+
 if [ -z "$1" ]; then
 	echo ">>>>> usage	: postgresql-replica.sh <db 계정>"
 	echo ">>>>> example	: postgresql-replica.sh unbuntu"
@@ -71,6 +73,7 @@ sed -i.bak -r "s/max_wal_size = 1GB/max_wal_size = 4GB/g" /etc/postgresql/12/mai
 #--------------------------------------------------------------------------------------
 
 # db 저장소 변경 - 사전 /postgresql에 disk가 마운트 되어 있어야 한다. -----------------
+mkdir -p /postgresql
 systemctl stop postgresql
 cp -rf /var/lib/postgresql/12/main /postgresql
 chown -R postgres:postgres /postgresql
@@ -82,6 +85,7 @@ sed -i.bak -r "s#data_directory = '/var/lib/postgresql/12/main'#data_directory =
 sed -i.bak -r "s/#hot_standby = on/hot_standby = on/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#max_replication_slots = 10/max_replication_slots = 2/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#hot_standby_feedback = off/hot_standby_feedback = on/g" /etc/postgresql/12/main/postgresql.conf
+sed -i.bak -r "s/#primary_slot_name = ''/primary_slot_name = 'replication_slot'/g" /etc/postgresql/12/main/postgresql.conf
 # -------------------------------------------------------------------------------------
 
 echo '아래 작업은 수작업으로 진행합니다.'

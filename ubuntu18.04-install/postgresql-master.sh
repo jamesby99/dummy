@@ -29,9 +29,29 @@ wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-
 apt update -y
 apt install postgresql-12 -y
 
+sleep 5
+
+#------------------------------------------------------------------------------
+# OS 사용자 생성 - ms app계정, replica (복제전용계정)
+#------------------------------------------------------------------------------
+useradd -s /bin/bash -d /home/$__USER__ -m $__USER__
+useradd -s /bin/bash -d /home/replica -m replica
+
+#------------------------------------------------------------------------------
+# DB 사용자 및 테이블 생성은 다음 절차를 따른다. : 참고 OS와 DB사용자를 일치시켜라!!!'
+#------------------------------------------------------------------------------
+sudo -u postgres createuser replica --replication
+sudo -u postgres psql -c "alter user replica with password 'imdb21**';"
+
+sudo -u postgres createuser $__USER__
+sudo -u postgres psql -c "alter user $__USER__ with password 'imdb21**';"
+sudo -u postgres createdb db_projection -O $__USER__
+sudo -u postgres createdb db_order -O $__USER__
+sudo -u postgres createdb db_configuration -O $__USER__
+sudo -u postgres createdb db_backupmgt -O $__USER__
+sudo -u postgres createdb db_servermgt -O $__USER__
 
 # 서버 중지
-sleep 5
 systemctl stop postgresql
 
 #------------------------------------------------------------------------------
@@ -124,25 +144,6 @@ echo "host    all             all             0.0.0.0/0               trust" >> 
 # 서버 재시작
 systemctl start postgresql
 
-#------------------------------------------------------------------------------
-# OS 사용자 생성 - ms app계정, replica (복제전용계정)
-#------------------------------------------------------------------------------
-useradd -s /bin/bash -d /home/$__USER__ -m $__USER__
-useradd -s /bin/bash -d /home/replica -m replica
-
-#------------------------------------------------------------------------------
-# DB 사용자 및 테이블 생성은 다음 절차를 따른다. : 참고 OS와 DB사용자를 일치시켜라!!!'
-#------------------------------------------------------------------------------
-sudo -u postgres createuser replica --replication
-sudo -u postgres psql -c "alter user replica with password 'imdb21**';"
-
-sudo -u postgres createuser $__USER__
-sudo -u postgres psql -c "alter user $__USER__ with password 'imdb21**';"
-sudo -u postgres createdb db_projection -O $__USER__
-sudo -u postgres createdb db_order -O $__USER__
-sudo -u postgres createdb db_configuration -O $__USER__
-sudo -u postgres createdb db_backupmgt -O $__USER__
-sudo -u postgres createdb db_servermgt -O $__USER__
 
 #------------------------------------------------------------------------------
 # replication_slot 생성

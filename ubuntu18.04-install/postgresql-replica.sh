@@ -86,6 +86,7 @@ sed -i.bak -r "s/#hot_standby = on/hot_standby = on/g" /etc/postgresql/12/main/p
 sed -i.bak -r "s/#max_replication_slots = 10/max_replication_slots = 2/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#hot_standby_feedback = off/hot_standby_feedback = on/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#primary_slot_name = ''/primary_slot_name = 'replication_slot'/g" /etc/postgresql/12/main/postgresql.conf
+sed -i.bak -r "s/#recovery_target_timeline = 'latest'/recovery_target_timeline = 'latest'/g" /etc/postgresql/12/main/postgresql.conf
 # -------------------------------------------------------------------------------------
 
 echo '아래 작업은 수작업으로 진행합니다.'

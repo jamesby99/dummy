@@ -88,7 +88,7 @@ sudo -u postgres createdb db_servermgt -O $__USER__
 
 
 # db 저장소 변경 - 사전 /postgresql에 disk가 마운트 되어 있어야 한다. -----------------
-mkdir -p /postgresql
+mkdir -p /postgresql/archive
 systemctl stop postgresql
 cp -rf /var/lib/postgresql/12/main /postgresql
 chown -R postgres:postgres /postgresql
@@ -96,13 +96,21 @@ sed -i.bak -r "s#data_directory = '/var/lib/postgresql/12/main'#data_directory =
 
 # 스트리밍 replication 설정  ----------------------------------------------------------
 sed -i.bak -r "s/#wal_level = replica/wal_level = replica/g" /etc/postgresql/12/main/postgresql.conf
-sed -i.bak -r "s/#synchronous_commit = on/synchronous_commit = on/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#max_wal_senders = 10/max_wal_senders = 2/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#wal_keep_segments = 0/wal_keep_segments = 32/g" /etc/postgresql/12/main/postgresql.conf
+
+sed -i.bak -r "s/#archive_mode = off/archive_mode = on/g" /etc/postgresql/12/main/postgresql.conf
+sed -i.bak -r "s/#archive_command = ''/archive_command = 'cp %p /postgresql/archive/arch_%f.arc'/g" /etc/postgresql/12/main/postgresql.conf
+echo 'archive_timeout = 120' >> /etc/postgresql/12/main/postgresql.conf
+
+sed -i.bak -r "s/#synchronous_commit = on/synchronous_commit = on/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#synchronous_standby_names = ''/synchronous_standby_names = '*'/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#max_replication_slots = 10/max_replication_slots = 2/g" /etc/postgresql/12/main/postgresql.conf
 
 #wal_level = replica
+#archive_mode = on
+#archive_command = 'cp %p /postgresql/archive/arch_%f.arc'
+#archive_timeout = 120
 #synchronous_commit = on
 #max_wal_senders = 2
 #wal_keep_segments = 32

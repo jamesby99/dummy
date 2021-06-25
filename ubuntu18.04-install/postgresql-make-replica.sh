@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
-# db 저장소 변경 - 사전 /postgresql에 disk가 마운트 되어 있어야 한다. -----------------
+# postgresql 중지
 systemctl stop postgresql
+
+
+# db 저장소 변경 - 사전 /postgresql에 disk가 마운트 되어 있어야 한다. -----------------
 rm -rf /postgresql/archive/*
 rm -rf /postgresql/main/*
 chown -R postgres:postgres /postgresql

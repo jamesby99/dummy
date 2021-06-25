@@ -100,8 +100,8 @@ sed -i.bak -r "s/#max_wal_senders = 10/max_wal_senders = 2/g" /etc/postgresql/12
 sed -i.bak -r "s/#wal_keep_segments = 0/wal_keep_segments = 32/g" /etc/postgresql/12/main/postgresql.conf
 
 sed -i.bak -r "s/#archive_mode = off/archive_mode = on/g" /etc/postgresql/12/main/postgresql.conf
-sed -i.bak -r "s/#archive_command = ''/archive_command = 'cp %p /postgresql/archive/arch_%f.arc'/g" /etc/postgresql/12/main/postgresql.conf
-echo 'archive_timeout = 120' >> /etc/postgresql/12/main/postgresql.conf
+sed -i.bak -r "s/#archive_timeout = 0/archive_timeout = 120/g" /etc/postgresql/12/main/postgresql.conf
+echo "archive_command = 'cp %p /postgresql/archive/arch_%f.arc'" >> /etc/postgresql/12/main/postgresql.conf
 
 sed -i.bak -r "s/#synchronous_commit = on/synchronous_commit = on/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#synchronous_standby_names = ''/synchronous_standby_names = '*'/g" /etc/postgresql/12/main/postgresql.conf

@@ -29,8 +29,10 @@ wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-
 apt update -y
 apt install postgresql-12 -y
 
-systemctl stop postgresql
 
+# 서버 중지
+sleep 5
+systemctl stop postgresql
 
 #------------------------------------------------------------------------------
 # db 저장소 변경 - 사전 /postgresql에 disk가 마운트 되어 있어야 한다.
@@ -39,17 +41,6 @@ mkdir -p /postgresql/archive
 mv /var/lib/postgresql/12/main /postgresql
 chown -R postgres:postgres /postgresql
 sed -i.bak -r "s#data_directory = '/var/lib/postgresql/12/main'#data_directory = '/postgresql/main'#g" /etc/postgresql/12/main/postgresql.conf
-
-
-#------------------------------------------------------------------------------
-# 외부접속 IP 설정 - 접근제한 없이 설정, 상용에서는 접근 제한 필요
-# 대상: replica, pgpool, base-station, micro-service
-#------------------------------------------------------------------------------
-sed -i.bak -r "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/postgresql/12/main/postgresql.conf
-# [변경전] 127.0.0.1:5432          0.0.0.0:*               LISTEN      24517/postgres
-# [변경후] 0.0.0.0:5432            0.0.0.0:*               LISTEN      26412/postgres
-echo "# 여기서부터는 커스텀마이징 설정입니다." >> /etc/postgresql/12/main/pg_hba.conf
-echo "host    all             all             0.0.0.0/0               trust" >> /etc/postgresql/12/main/pg_hba.conf
 
 
 #------------------------------------------------------------------------------
@@ -88,29 +79,6 @@ sed -i.bak -r "s/min_wal_size = 80MB/min_wal_size = 1GB/g" /etc/postgresql/12/ma
 # [max_wal_size]
 sed -i.bak -r "s/max_wal_size = 1GB/max_wal_size = 4GB/g" /etc/postgresql/12/main/postgresql.conf
 
-
-#------------------------------------------------------------------------------
-# OS 사용자 생성 - ms app계정, replica (복제전용계정)
-#------------------------------------------------------------------------------
-useradd -s /bin/bash -d /home/$__USER__ -m $__USER__
-useradd -s /bin/bash -d /home/replica -m replica
-
-
-#------------------------------------------------------------------------------
-# DB 사용자 및 테이블 생성은 다음 절차를 따른다. : 참고 OS와 DB사용자를 일치시켜라!!!'
-#------------------------------------------------------------------------------
-sudo -u postgres createuser replica --replication
-sudo -u postgres psql -c "alter user replica with password 'imdb21**';"
-
-sudo -u postgres createuser $__USER__
-sudo -u postgres psql -c "alter user $__USER__ with password 'imdb21**';"
-sudo -u postgres createdb db_projection -O $__USER__
-sudo -u postgres createdb db_order -O $__USER__
-sudo -u postgres createdb db_configuration -O $__USER__
-sudo -u postgres createdb db_backupmgt -O $__USER__
-sudo -u postgres createdb db_servermgt -O $__USER__
-
-
 #------------------------------------------------------------------------------
 # 스트리밍 replication 설정
 #------------------------------------------------------------------------------
@@ -136,14 +104,51 @@ sed -i.bak -r "s/#max_replication_slots = 10/max_replication_slots = 2/g" /etc/p
 #synchronous_standby_names = '*'
 #max_replication_slots = 10
 
-# 상용에서는 replca 서버에 대한 소스 필터 제한을 해야 한다. - 
-echo "host    replication     replica         0.0.0.0/0               md5" >> /etc/postgresql/12/main/pg_hba.conf
 # -------------------------------------------------------------------------------------
 
+#------------------------------------------------------------------------------
+# 외부접속 IP 설정 - 접근제한 없이 설정, 상용에서는 접근 제한 필요
+# 대상: replica, pgpool, base-station, micro-service
+#------------------------------------------------------------------------------
+sed -i.bak -r "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/postgresql/12/main/postgresql.conf
+# [변경전] 127.0.0.1:5432          0.0.0.0:*               LISTEN      24517/postgres
+# [변경후] 0.0.0.0:5432            0.0.0.0:*               LISTEN      26412/postgres
+echo "# 여기서부터는 커스텀마이징 설정입니다." >> /etc/postgresql/12/main/pg_hba.conf
+# 일단 모두 연다.
+echo "host    all             all             0.0.0.0/0               trust" >> /etc/postgresql/12/main/pg_hba.conf
+# 상용에서는 replca 서버에 대한 소스 필터 제한을 해야 한다. - 
+# echo "host    replication     replica         0.0.0.0/0               md5" >> /etc/postgresql/12/main/pg_hba.conf
+
+
+
+# 서버 재시작
 systemctl start postgresql
 
+#------------------------------------------------------------------------------
+# OS 사용자 생성 - ms app계정, replica (복제전용계정)
+#------------------------------------------------------------------------------
+useradd -s /bin/bash -d /home/$__USER__ -m $__USER__
+useradd -s /bin/bash -d /home/replica -m replica
+
+#------------------------------------------------------------------------------
+# DB 사용자 및 테이블 생성은 다음 절차를 따른다. : 참고 OS와 DB사용자를 일치시켜라!!!'
+#------------------------------------------------------------------------------
+sudo -u postgres createuser replica --replication
+sudo -u postgres psql -c "alter user replica with password 'imdb21**';"
+
+sudo -u postgres createuser $__USER__
+sudo -u postgres psql -c "alter user $__USER__ with password 'imdb21**';"
+sudo -u postgres createdb db_projection -O $__USER__
+sudo -u postgres createdb db_order -O $__USER__
+sudo -u postgres createdb db_configuration -O $__USER__
+sudo -u postgres createdb db_backupmgt -O $__USER__
+sudo -u postgres createdb db_servermgt -O $__USER__
+
+#------------------------------------------------------------------------------
+# replication_slot 생성
+#------------------------------------------------------------------------------
 sudo -u postgres psql -c "SELECT * FROM pg_create_physical_replication_slot('replication_slot');"
-# -------------------------------------------------------------------------------------
+
 
 echo '생성결과는 다음의 명령어로 확인하세요'
 echo 'su - postgres'

@@ -75,7 +75,7 @@ sed -i.bak -r "s/max_wal_size = 1GB/max_wal_size = 4GB/g" /etc/postgresql/12/mai
 
 # db 저장소 변경 - 사전 /postgresql에 disk가 마운트 되어 있어야 한다. -----------------
 systemctl stop postgresql
-mkdir -p /postgresql
+mkdir -p /postgresql/archive
 chown -R postgres:postgres /postgresql
 sed -i.bak -r "s#data_directory = '/var/lib/postgresql/12/main'#data_directory = '/postgresql/main'#g" /etc/postgresql/12/main/postgresql.conf
 # -------------------------------------------------------------------------------------

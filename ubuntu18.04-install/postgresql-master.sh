@@ -1,45 +1,48 @@
 #!/usr/bin/env bash
 
-echo -n 'DB 전용 DISK 마운트했는가? 했다면 엔터 안했다면 ctrl-c'
-read
+# TOD
+# 1. 성능튜닝 vCore, Mem에 따라 재설정 필요
+# 2. 접근제한 할 것
+# 3. Replica 연결 없는 경우 WRITE 중지 해결 방법은?
 
+#------------------------------------------------------------------------------
+# postgresql master 설정.
+# 설정후, replica 로 stream replication이 동작되지 않으면 read only로만 동작합니다.
+#------------------------------------------------------------------------------
 if [ -z "$1" ]; then
-	echo ">>>>> usage	: postgresql.sh <db 계정>"
+	echo ">>>>> usage	: postgresql.sh <MS app 계정>"
 	echo ">>>>> example	: postgresql.sh unbuntu"
 	exit
 fi
 
+echo -n 'postgresql master 설정입니다.'
+echo -n 'DB 전용 DISK 마운트는 했나요? 했다면 엔터. 안했다면 ctrl-c.'
+read
+
 __USER__=$1
 
-# OS 사용자 생성 - app계정, replica
-useradd -s /bin/bash -d /home/$__USER__ -m $__USER__
-echo "$__USER__ ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$__USER__
-useradd -s /bin/bash -d /home/replica -m replica
-
-
-# postgresql 리포지토리 및 사이닝키 추가 ------------------------------------------------
+#------------------------------------------------------------------------------
+# postgresql-12 리포지토리 및 사이닝키 추가후 설치
+#------------------------------------------------------------------------------
 echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 apt update -y
-
-
-# postgresql 12 설치  -----------------------------------------------------------------
 apt install postgresql-12 -y
 
-
-# 외부접속 IP 설정 - 접근제한 없이 설정 ------------------------------------------------
+#------------------------------------------------------------------------------
+# 외부접속 IP 설정 - 접근제한 없이 설정, 상용에서는 접근 제한 필요
+# 대상: replica, pgpool, base-station, micro-service
+#------------------------------------------------------------------------------
 sed -i.bak -r "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/postgresql/12/main/postgresql.conf
 # [변경전] 127.0.0.1:5432          0.0.0.0:*               LISTEN      24517/postgres
 # [변경후] 0.0.0.0:5432            0.0.0.0:*               LISTEN      26412/postgres
-
 echo "# 여기서부터는 커스텀마이징 설정입니다." >> /etc/postgresql/12/main/pg_hba.conf
 echo "host    all             all             0.0.0.0/0               md5" >> /etc/postgresql/12/main/pg_hba.conf
 
 
-
-# 튜닝 --------------------------------------------------------------------------------
-# 메모리 2GB 기준 값으로 설정되어 있음
-
+#------------------------------------------------------------------------------
+# 성능 튜닝
+#------------------------------------------------------------------------------
 # [shared_buffers] 총메모리의 25% 수준: 2GB는 512MB
 sed -i.bak -r "s/shared_buffers = 128MB/shared_buffers = 256MB/g" /etc/postgresql/12/main/postgresql.conf
 
@@ -72,9 +75,17 @@ sed -i.bak -r "s/min_wal_size = 80MB/min_wal_size = 1GB/g" /etc/postgresql/12/ma
 
 # [max_wal_size]
 sed -i.bak -r "s/max_wal_size = 1GB/max_wal_size = 4GB/g" /etc/postgresql/12/main/postgresql.conf
-#--------------------------------------------------------------------------------------
 
+
+#------------------------------------------------------------------------------
+# OS 사용자 생성 - ms app계정, replica (복제전용계정)
+#------------------------------------------------------------------------------
+useradd -s /bin/bash -d /home/$__USER__ -m $__USER__
+useradd -s /bin/bash -d /home/replica -m replica
+
+#------------------------------------------------------------------------------
 # DB 사용자 및 테이블 생성은 다음 절차를 따른다. : 참고 OS와 DB사용자를 일치시켜라!!!'
+#------------------------------------------------------------------------------
 sudo -u postgres createuser replica --replication
 sudo -u postgres psql -c "alter user replica with password 'imdb21**';"
 
@@ -87,14 +98,18 @@ sudo -u postgres createdb db_backupmgt -O $__USER__
 sudo -u postgres createdb db_servermgt -O $__USER__
 
 
-# db 저장소 변경 - 사전 /postgresql에 disk가 마운트 되어 있어야 한다. -----------------
+#------------------------------------------------------------------------------
+# db 저장소 변경 - 사전 /postgresql에 disk가 마운트 되어 있어야 한다.
+#------------------------------------------------------------------------------
 mkdir -p /postgresql/archive
 systemctl stop postgresql
 cp -rf /var/lib/postgresql/12/main /postgresql
 chown -R postgres:postgres /postgresql
 sed -i.bak -r "s#data_directory = '/var/lib/postgresql/12/main'#data_directory = '/postgresql/main'#g" /etc/postgresql/12/main/postgresql.conf
 
-# 스트리밍 replication 설정  ----------------------------------------------------------
+#------------------------------------------------------------------------------
+# 스트리밍 replication 설정
+#------------------------------------------------------------------------------
 sed -i.bak -r "s/#wal_level = replica/wal_level = replica/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#max_wal_senders = 10/max_wal_senders = 2/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#wal_keep_segments = 0/wal_keep_segments = 32/g" /etc/postgresql/12/main/postgresql.conf

@@ -9,18 +9,29 @@
 # postgresql master 설정.
 # 설정후, replica 로 stream replication이 동작되지 않으면 read only로만 동작합니다.
 #------------------------------------------------------------------------------
-if [ -z "$1" ]; || [ -z "$2" ]; then
+if [ -z "$1" ] || [ -z "$2" ] ; then
 	echo ">>>>> usage	: postgresql.sh <MS app 계정> <node 번호>"
 	echo ">>>>> example	: postgresql.sh projection 1"
 	exit
 fi
 
+__USER__=$1
+__NODE_NO__=$2
+
 echo -n 'postgresql master 설정입니다.'
 echo -n 'DB 전용 DISK 마운트는 했나요? 했다면 엔터. 안했다면 ctrl-c.'
 read
 
-__USER__=$1
-__NODE_NO__=$2
+#------------------------------------------------------------------------------
+# /etc/hosts 설정
+#-----------------------------------------------------------------------------
+cat >> /etc/hosts << EOF
+# Postgresql DB cluster
+172.27.0.10       imdb-db-$__USER__-1
+172.27.0.20       imdb-db-$__USER__-2
+172.27.0.30       imdb-db-$__USER__-3
+EOF
+
 
 #------------------------------------------------------------------------------
 # postgresql-12 리포지토리 및 사이닝키 추가후 설치
@@ -47,12 +58,12 @@ echo "postgres ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/postgres
 # .pgpass for postgres : PG 명령어들을 interactive 없이 바로 실행할 수 있도록...
 #------------------------------------------------------------------------------
 cat > /var/lib/postgresql/.pgpass << EOF
-server1:5432:replication:replica:imdb21**
-server2:5432:replication:replica:imdb21**
-server3:5432:replication:replica:imdb21**
-server1:5432:postgres:postgres:imdb21**
-server2:5432:postgres:postgres:imdb21**
-server3:5432:postgres:postgres:imdb21**
+imdb-db-$__USER__-1:5432:replication:replica:imdb21**
+imdb-db-$__USER__-2:5432:replication:replica:imdb21**
+imdb-db-$__USER__-3:5432:replication:replica:imdb21**
+imdb-db-$__USER__-1:5432:postgres:postgres:imdb21**
+imdb-db-$__USER__-2:5432:postgres:postgres:imdb21**
+imdb-db-$__USER__-3:5432:postgres:postgres:imdb21**
 EOF
 
 chmod 600 /var/lib/postgresql/.pgpass

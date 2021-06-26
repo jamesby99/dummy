@@ -125,10 +125,10 @@ sudo -u postgres createdb db_backupmgt -O $__USER__
 sudo -u postgres createdb db_servermgt -O $__USER__
 
 
-
 #------------------------------------------------------------------------------
 # 서버 중지
 #------------------------------------------------------------------------------
+systemctl stop pgpool2
 systemctl stop postgresql
 
 
@@ -227,18 +227,26 @@ sed -i.bak -r "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/
 # [변경후] 0.0.0.0:5432            0.0.0.0:*               LISTEN      26412/postgres
 
 
+#------------------------------------------------------------------------------
+# pgpool 설정
+#------------------------------------------------------------------------------
+wget --quiet -O pgpool.conf 주소
+wget --quiet -O failover.sh 주소
+chmod 755 /etc/pgpool2/failover.sh
 
+#------------------------------------------------------------------------------
 # 서버 재시작
+#------------------------------------------------------------------------------
 systemctl start postgresql
-
+systemctl start pgpool2
 
 #------------------------------------------------------------------------------
 # replication_slot 생성
 #------------------------------------------------------------------------------
-sudo -u postgres psql -c "SELECT * FROM pg_create_physical_replication_slot('replication_slot');"
-
+echo -e "\n" | sudo -u postgres psql -c "SELECT * FROM pg_create_physical_replication_slot('replication_slot');"
 
 chmod 700 /root
+
 echo '생성결과는 다음의 명령어로 확인하세요'
 echo 'su - postgres'
 echo 'psql -c "select * from pg_user;"'

@@ -121,7 +121,6 @@ sudo -u postgres createdb db_configuration -O $__USER__
 sudo -u postgres createdb db_backupmgt -O $__USER__
 sudo -u postgres createdb db_servermgt -O $__USER__
 
-chmod 700 /root
 
 
 #------------------------------------------------------------------------------
@@ -181,9 +180,10 @@ sed -i.bak -r "s/max_wal_size = 1GB/max_wal_size = 4GB/g" /etc/postgresql/12/mai
 # 스트리밍 replication 설정
 #------------------------------------------------------------------------------
 sed -i.bak -r "s/#wal_level = replica/wal_level = replica/g" /etc/postgresql/12/main/postgresql.conf
-sed -i.bak -r "s/#max_wal_senders = 10/max_wal_senders = 5/g" /etc/postgresql/12/main/postgresql.conf
+sed -i.bak -r "s/#max_wal_senders = 10/max_wal_senders = 10/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#wal_keep_segments = 0/wal_keep_segments = 32/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#wal_log_hints = off/wal_log_hints = on/g" /etc/postgresql/12/main/postgresql.conf
+sed -i.bak -r "s/#max_replication_slots = 10/max_replication_slots = 10/g" /etc/postgresql/12/main/postgresql.conf
 
 sed -i.bak -r "s/#archive_mode = off/archive_mode = on/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#archive_timeout = 0/archive_timeout = 120/g" /etc/postgresql/12/main/postgresql.conf
@@ -196,23 +196,12 @@ sed -i.bak -r "s/#hot_standby = on/hot_standby = on/g" /etc/postgresql/12/main/p
 #sed -i.bak -r "s/#synchronous_commit = on/synchronous_commit = on/g" /etc/postgresql/12/main/postgresql.conf
 #sed -i.bak -r "s/#synchronous_standby_names = ''/synchronous_standby_names = '*'/g" /etc/postgresql/12/main/postgresql.conf
 
-#wal_level = replica
-#archive_mode = on
-#archive_command = 'cp %p /postgresql/archive/arch_%f.arc'
-#archive_timeout = 120
-#synchronous_commit = on
-#max_wal_senders = 2
-#wal_keep_segments = 32
-#synchronous_standby_names = '*'
-#max_replication_slots = 10
 
-# -------------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
 # pg_hba.conf 설정
 #------------------------------------------------------------------------------
 cat > /etc/postgresql/12/main/postgresql.conf << EOF
-
 # "local" is for Unix domain socket connections only
 local   all             all                                     trust
 # IPv4 local connections:
@@ -227,7 +216,6 @@ host    replication     all             ::1/128                 trust
 # same subnet
 host    replication     all             172.27.0.0/23           trust
 host    all             all             172.27.0.0/23           trust
-
 EOF
 
 
@@ -243,11 +231,11 @@ systemctl start postgresql
 
 #------------------------------------------------------------------------------
 # replication_slot 생성
-# 일단 안되니...
 #------------------------------------------------------------------------------
-# sudo -u postgres psql -c "SELECT * FROM pg_create_physical_replication_slot('replication_slot');"
+sudo -u postgres psql -c "SELECT * FROM pg_create_physical_replication_slot('replication_slot');"
 
 
+chmod 700 /root
 echo '생성결과는 다음의 명령어로 확인하세요'
 echo 'su - postgres'
 echo 'psql -c "select * from pg_user;"'

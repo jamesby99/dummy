@@ -158,7 +158,7 @@ sed -i.bak -r "s/#hot_standby = on/hot_standby = on/g" /etc/postgresql/12/main/p
 #------------------------------------------------------------------------------
 # pg_hba.conf 설정
 #------------------------------------------------------------------------------
-cat >> /etc/postgresql/12/main/postgresql.conf << EOF
+cat > /etc/postgresql/12/main/postgresql.conf << EOF
 
 # "local" is for Unix domain socket connections only
 local   all             all                                     trust

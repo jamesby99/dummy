@@ -18,7 +18,7 @@ fi
 __USER__=$1
 __NODE_NO__=$2
 
-echo -n 'postgresql master 설정입니다.'
+echo -n 'postgresql node 설정입니다.'
 echo -n 'DB 전용 DISK 마운트는 했나요? 했다면 엔터. 안했다면 ctrl-c.'
 read
 
@@ -29,7 +29,7 @@ read
 echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 apt update -y
-apt install postgresql-12 -y
+apt install postgresql-12 pgpool2 postgresql-12-pgpool2 -y
 
 sleep 5
 

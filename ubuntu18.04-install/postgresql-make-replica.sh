@@ -37,7 +37,7 @@ rm -rf /postgresql/main/*
 chown -R postgres:postgres /postgresql
 
 #------------------------------------------------------------------------------
-# DB 저장소 Clear
+# DB 저장소 복제 동기화
 #------------------------------------------------------------------------------
 sudo -u postgres pg_basebackup -R -h $__MASTER_IP__ -U replica -D /postgresql/main
 

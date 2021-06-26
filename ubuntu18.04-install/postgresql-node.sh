@@ -232,7 +232,8 @@ sed -i.bak -r "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/
 #------------------------------------------------------------------------------
 wget --quiet -O pgpool.conf 주소
 wget --quiet -O failover.sh 주소
-chmod 755 /etc/pgpool2/failover.sh
+wget --quiet -O follow_master.sh 주소
+chmod 755 /etc/pgpool2/*.sh
 
 #------------------------------------------------------------------------------
 # 서버 재시작

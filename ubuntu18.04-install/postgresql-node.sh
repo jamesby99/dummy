@@ -9,9 +9,9 @@
 # postgresql master 설정.
 # 설정후, replica 로 stream replication이 동작되지 않으면 read only로만 동작합니다.
 #------------------------------------------------------------------------------
-if [ -z "$1" ]; then
-	echo ">>>>> usage	: postgresql.sh <MS app 계정>"
-	echo ">>>>> example	: postgresql.sh unbuntu"
+if [ -z "$1" ]; || [ -z "$2" ]; then
+	echo ">>>>> usage	: postgresql.sh <MS app 계정> <node 번호>"
+	echo ">>>>> example	: postgresql.sh projection 1"
 	exit
 fi
 
@@ -20,6 +20,7 @@ echo -n 'DB 전용 DISK 마운트는 했나요? 했다면 엔터. 안했다면 c
 read
 
 __USER__=$1
+__NODE_NO__=$2
 
 #------------------------------------------------------------------------------
 # postgresql-12 리포지토리 및 사이닝키 추가후 설치

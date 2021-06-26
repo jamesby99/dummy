@@ -37,6 +37,7 @@ sleep 5
 #------------------------------------------------------------------------------
 useradd -s /bin/bash -d /home/$__USER__ -m $__USER__
 useradd -s /bin/bash -d /home/replica -m replica
+useradd -s /bin/bash -d /home/pgpool -m pgpool
 echo "postgres ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/postgres
 
 #------------------------------------------------------------------------------
@@ -45,15 +46,23 @@ echo "postgres ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/postgres
 sudo -u postgres createuser replica --replication
 sudo -u postgres psql -c "alter user replica with password 'imdb21**';"
 
+sudo -u postgres createuser pgpool --login
+sudo -u postgres psql -c "alter user pgpool with password 'imdb21**';"
+
 sudo -u postgres createuser $__USER__
 sudo -u postgres psql -c "alter user $__USER__ with password 'imdb21**';"
+
+sudo -u postgres psql -c "alter postgres with password 'imdb21**';"
+
 sudo -u postgres createdb db_projection -O $__USER__
 sudo -u postgres createdb db_order -O $__USER__
 sudo -u postgres createdb db_configuration -O $__USER__
 sudo -u postgres createdb db_backupmgt -O $__USER__
 sudo -u postgres createdb db_servermgt -O $__USER__
 
+#------------------------------------------------------------------------------
 # 서버 중지
+#------------------------------------------------------------------------------
 systemctl stop postgresql
 
 #------------------------------------------------------------------------------

@@ -111,9 +111,9 @@ sed -i.bak -r "s/#archive_mode = off/archive_mode = on/g" /etc/postgresql/12/mai
 sed -i.bak -r "s/#archive_timeout = 0/archive_timeout = 120/g" /etc/postgresql/12/main/postgresql.conf
 echo "archive_command = 'cp %p /postgresql/archive/arch_%f.arc'" >> /etc/postgresql/12/main/postgresql.conf
 
-sed -i.bak -r "s/#synchronous_commit = on/synchronous_commit = on/g" /etc/postgresql/12/main/postgresql.conf
-sed -i.bak -r "s/#synchronous_standby_names = ''/synchronous_standby_names = '*'/g" /etc/postgresql/12/main/postgresql.conf
-# sed -i.bak -r "s/#max_replication_slots = 10/max_replication_slots = 2/g" /etc/postgresql/12/main/postgresql.conf
+# 동기화 방식을 쓸 경우 아래 활성화. default 비동기 방식임
+#sed -i.bak -r "s/#synchronous_commit = on/synchronous_commit = on/g" /etc/postgresql/12/main/postgresql.conf
+#sed -i.bak -r "s/#synchronous_standby_names = ''/synchronous_standby_names = '*'/g" /etc/postgresql/12/main/postgresql.conf
 
 #wal_level = replica
 #archive_mode = on

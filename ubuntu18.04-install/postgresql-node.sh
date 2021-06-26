@@ -156,18 +156,31 @@ sed -i.bak -r "s/#hot_standby = on/hot_standby = on/g" /etc/postgresql/12/main/p
 # -------------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
-# 외부접속 IP 설정 - 접근제한 없이 설정, 상용에서는 접근 제한 필요
-# 대상: replica, pgpool, base-station, micro-service
+# pg_hba.conf 설정
 #------------------------------------------------------------------------------
+cat >> /etc/postgresql/12/main/postgresql.conf << EOF
+
+# "local" is for Unix domain socket connections only
+local   all             all                                     trust
+# IPv4 local connections:
+host    all             all             127.0.0.1/32            trust
+# IPv6 local connections:
+host    all             all             ::1/128                 trust
+# Allow replication connections from localhost, by a user with the
+# replication privilege.
+local   replication     all                                     trust
+host    replication     all             127.0.0.1/32            trust
+host    replication     all             ::1/128                 trust
+# same subnet
+host    replication     all             172.27.0.0/23           trust
+host    all             all             172.27.0.0/23           trust
+
+EOF
+
+
 sed -i.bak -r "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/postgresql/12/main/postgresql.conf
 # [변경전] 127.0.0.1:5432          0.0.0.0:*               LISTEN      24517/postgres
 # [변경후] 0.0.0.0:5432            0.0.0.0:*               LISTEN      26412/postgres
-echo "# 여기서부터는 커스텀마이징 설정입니다." >> /etc/postgresql/12/main/pg_hba.conf
-# 일단 모두 연다.
-echo "host    replication     replica         0.0.0.0/0               trust" >> /etc/postgresql/12/main/pg_hba.conf
-echo "host    all             all             0.0.0.0/0               trust" >> /etc/postgresql/12/main/pg_hba.conf
-# 상용에서는 replca 서버에 대한 소스 필터 제한을 해야 한다. - 
-# echo "host    replication     replica         0.0.0.0/0               md5" >> /etc/postgresql/12/main/pg_hba.conf
 
 
 

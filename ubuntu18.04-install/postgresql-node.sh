@@ -107,11 +107,15 @@ sed -i.bak -r "s/max_wal_size = 1GB/max_wal_size = 4GB/g" /etc/postgresql/12/mai
 sed -i.bak -r "s/#wal_level = replica/wal_level = replica/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#max_wal_senders = 10/max_wal_senders = 5/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#wal_keep_segments = 0/wal_keep_segments = 32/g" /etc/postgresql/12/main/postgresql.conf
+sed -i.bak -r "s/#wal_log_hints = off/wal_log_hints = on/g" /etc/postgresql/12/main/postgresql.conf
 
 sed -i.bak -r "s/#archive_mode = off/archive_mode = on/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#archive_timeout = 0/archive_timeout = 120/g" /etc/postgresql/12/main/postgresql.conf
 echo "archive_command = 'cp %p /postgresql/archive/arch_%f.arc'" >> /etc/postgresql/12/main/postgresql.conf
 
+# pgpool 온라인 복구 모드로 시작할 수 있도록
+sed -i.bak -r "s/#hot_standby = on/hot_standby = on/g" /etc/postgresql/12/main/postgresql.conf
+     
 # 동기화 방식을 쓸 경우 아래 활성화. default 비동기 방식임
 #sed -i.bak -r "s/#synchronous_commit = on/synchronous_commit = on/g" /etc/postgresql/12/main/postgresql.conf
 #sed -i.bak -r "s/#synchronous_standby_names = ''/synchronous_standby_names = '*'/g" /etc/postgresql/12/main/postgresql.conf

@@ -32,6 +32,8 @@ apt install postgresql-12 -y
 
 sleep 5
 
+
+
 #------------------------------------------------------------------------------
 # OS 사용자 생성 - ms app계정, replica (복제전용계정), postgres sudoer
 #------------------------------------------------------------------------------
@@ -40,14 +42,19 @@ useradd -s /bin/bash -d /home/replica -m replica
 useradd -s /bin/bash -d /home/pgpool -m pgpool
 echo "postgres ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/postgres
 
+
+
 #------------------------------------------------------------------------------
 # DB 사용자 및 테이블 생성은 다음 절차를 따른다. : 참고 OS와 DB사용자를 일치시켜라!!!'
 #------------------------------------------------------------------------------
+chmod 755 /root # WARN제거: could not change directory to "/root": Permission denied
+
 sudo -u postgres createuser replica --replication
 sudo -u postgres psql -c "alter user replica with password 'imdb21**';"
 
 sudo -u postgres createuser pgpool --login
 sudo -u postgres psql -c "alter user pgpool with password 'imdb21**';"
+sudo -u postgres psql -c "grant pg_monitor to pgpool;"
 
 sudo -u postgres createuser $__USER__
 sudo -u postgres psql -c "alter user $__USER__ with password 'imdb21**';"
@@ -60,10 +67,16 @@ sudo -u postgres createdb db_configuration -O $__USER__
 sudo -u postgres createdb db_backupmgt -O $__USER__
 sudo -u postgres createdb db_servermgt -O $__USER__
 
+chmod 700 /root
+
+
+
 #------------------------------------------------------------------------------
 # 서버 중지
 #------------------------------------------------------------------------------
 systemctl stop postgresql
+
+
 
 #------------------------------------------------------------------------------
 # db 저장소 변경 - 사전 /postgresql에 disk가 마운트 되어 있어야 한다.
@@ -72,6 +85,7 @@ mkdir -p /postgresql/archive
 mv /var/lib/postgresql/12/main /postgresql
 chown -R postgres:postgres /postgresql
 sed -i.bak -r "s#data_directory = '/var/lib/postgresql/12/main'#data_directory = '/postgresql/main'#g" /etc/postgresql/12/main/postgresql.conf
+
 
 
 #------------------------------------------------------------------------------

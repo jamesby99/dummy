@@ -1,6 +1,12 @@
 #!/bin/bash
 # This script is run by failover_command.
 
+#------------------------------------------------------------------------------
+# 환경에 맞추어 수정해야 할 내용들
+#------------------------------------------------------------------------------
+SSH_KEY=ssh_private_key
+
+
 set -o xtrace
 exec > >(logger -i -p local1.info) 2>&1
 
@@ -32,7 +38,7 @@ NEW_MASTER_NODE_PGDATA="${10}"
 OLD_PRIMARY_NODE_HOST="${11}"
 OLD_PRIMARY_NODE_PORT="${12}"
 
-PGHOME=/usr/pgsql-11
+PGHOME=/usr/lib/postgresql/12
 REPL_SLOT_NAME=${FAILED_NODE_HOST//[-.]/_}
 
 logger -i -p local1.info failover.sh: start: failed_node_id=$FAILED_NODE_ID old_primary_node_id=$OLD_PRIMARY_NODE_ID failed_host=$FAILED_NODE_HOST new_master_host=$NEW_MASTER_NODE_HOST
@@ -44,7 +50,7 @@ if [ $NEW_MASTER_NODE_ID -lt 0 ]; then
 fi
 
 ## Test passwrodless SSH
-ssh -T -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null postgres@${NEW_MASTER_NODE_HOST} -i ~/.ssh/id_rsa_pgpool ls /tmp > /dev/null
+ssh -T -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null postgres@${NEW_MASTER_NODE_HOST} -i ~/.ssh/${SSH_KEY} ls /tmp > /dev/null
 
 if [ $? -ne 0 ]; then
     logger -i -p local1.info failover.sh: passwrodless SSH to postgres@${NEW_MASTER_NODE_HOST} failed. Please setup passwrodless SSH.
@@ -55,7 +61,7 @@ fi
 if [ $FAILED_NODE_ID -ne $OLD_PRIMARY_NODE_ID ]; then
     logger -i -p local1.info failover.sh: Standby node is down. Skipping failover.
 
-    ssh -T -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null postgres@$OLD_PRIMARY_NODE_HOST -i ~/.ssh/id_rsa_pgpool "
+    ssh -T -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null postgres@$OLD_PRIMARY_NODE_HOST -i ~/.ssh/${SSH_KEY} "
         ${PGHOME}/bin/psql -p $OLD_PRIMARY_NODE_PORT -c \"SELECT pg_drop_replication_slot('${REPL_SLOT_NAME}')\"
     "
 
@@ -71,7 +77,7 @@ fi
 logger -i -p local1.info failover.sh: Primary node is down, promote standby node ${NEW_MASTER_NODE_HOST}.
 
 ssh -T -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
-    postgres@${NEW_MASTER_NODE_HOST} -i ~/.ssh/id_rsa_pgpool ${PGHOME}/bin/pg_ctl -D ${NEW_MASTER_NODE_PGDATA} -w promote
+    postgres@${NEW_MASTER_NODE_HOST} -i ~/.ssh/${SSH_KEY} ${PGHOME}/bin/pg_ctl -D ${NEW_MASTER_NODE_PGDATA} -w promote
 
 if [ $? -ne 0 ]; then
     logger -i -p local1.error failover.sh: new_master_host=$NEW_MASTER_NODE_HOST promote failed

@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
-# TOD
-# 1. 성능튜닝 vCore, Mem에 따라 재설정 필요
-# 2. 접근제한 할 것
-# 3. Replica 연결 없는 경우 WRITE 중지 해결 방법은?
+#------------------------------------------------------------------------------
+# [ TODO ]
+# 1. DB 전용 Volume을 추가 작업을 사전에 해서 /postgresql/main 에 마운트
+# 2. /etc/hosts 스크립트 수정
+# 3. ssh public key값 수정
+# 4. vCore, Memory, Disk Type에 따른 성능 튜닝 values 수정
+#------------------------------------------------------------------------------
 
-#------------------------------------------------------------------------------
-# postgresql master 설정.
-# 설정후, replica 로 stream replication이 동작되지 않으면 read only로만 동작합니다.
-#------------------------------------------------------------------------------
+
 if [ -z "$1" ] || [ -z "$2" ] ; then
 	echo ">>>>> usage	: postgresql.sh <MS app 계정> <node 번호>"
 	echo ">>>>> example	: postgresql.sh projection 1"
@@ -21,7 +21,7 @@ __NODE_NO__=$2
 echo -n 'postgresql node 설정입니다.'
 echo -n 'DB 전용 DISK 마운트는 했나요? 했다면 엔터. 안했다면 ctrl-c.'
 read
-
+cd ~
 
 #------------------------------------------------------------------------------
 # postgresql-12 리포지토리 및 사이닝키 추가후 설치
@@ -49,9 +49,37 @@ EOF
 # OS 사용자 생성 - ms app계정, replica (복제전용계정), postgres sudoer
 #------------------------------------------------------------------------------
 useradd -s /bin/bash -d /home/$__USER__ -m $__USER__
-useradd -s /bin/bash -d /home/replica -m replica
-useradd -s /bin/bash -d /home/pgpool -m pgpool
+useradd -s /bin/bash -d /home/replica -m replica # 삭제해도 되지 않을까?
+useradd -s /bin/bash -d /home/pgpool -m pgpool	 # 삭제해도 되지 않을까?
 echo "postgres ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/postgres
+
+#------------------------------------------------------------------------------
+# ssh 키 sharing : root -> postgres, postgres <-> postgres
+#------------------------------------------------------------------------------
+cp -R .ssh /var/lib/postgresql
+
+cat > g1 << EOF
+-----BEGIN RSA PRIVATE KEY-----
+MIICXQIBAAKBgQCq5PYmI5OgpvZRmST1NPCZbBhHMJ9ZC0AyDMs4tt8+ue+tKyAs
+9O2Iwm+TmmrYT0Zl8MFd8T5xOf/0F0xWLbPc3RXqq32XwU0ubZ+cyOYwa4zOIHB0
+Q6AEvjnBqoOeYiBnN0+5QL+uNVg5hw2vnwrfownkzY3ggjTtg5+5lWu96QIDAQAB
+AoGAc3rxEuirk73/aThxjvlNNH+lEEY9B7DgmnGmyhZZWUvQOFaSEY8ZDHdHapjI
+Zo97ZNuB73db2Kt22Hz96qZLiXJjt5Jbnpuv65T4lbNCO2qhIM1YPjdVaRkbbW2s
+JXCncwhWdKFH8tXM7U9fq+iLG6K0KLr2CMbUZRL1OiGj82ECQQDkK+FkXoJ1DWPZ
+dxm97l9ryePvN09P7388AKvYpEG5FHXxD7WFh9OceNffaLuAt39/TfniUKKzt2m1
+LCjEt0qVAkEAv7y9V+PNokXsST2YfWPIXpJfX8BGPTWfkI5Mw4/rHO5e5irxxz0O
+RvlsJpSw7GYC3WKfQX43jAeXTWo6v6DlBQJAQ66AfTVLnU0LgUZC7IP46hBI/Hx7
+mkqAg1vvnaObmzrmgUsXnTRdINz3q911QQktWKXYqbkhig2t3X/r1+5GwQJBAJhC
+Pi3sNeC2HCQxKMXyFiybmedEncJ/sb2ucuEdiXxJAs1Orv8jyhGsgijFDRY9D+tU
+JNlybJPjd1A/mnWQRC0CQQCH0O9rmND4OvYH+8oQM8x5d6iisvWvG84sCrmAigYV
+2T8LvGrygH22YAHK+fgJJDO71UYz17DmwGWaajfaE4do
+-----END RSA PRIVATE KEY-----
+EOF
+
+chown -R postgresql:postgresql /var/lib/postgresql/.ssh
+chmod 600 /var/lib/postgresql/.ssh/*
+chmod 700 /var/lib/postgresql/.ssh
+
 
 
 #------------------------------------------------------------------------------
@@ -96,12 +124,10 @@ sudo -u postgres createdb db_servermgt -O $__USER__
 chmod 700 /root
 
 
-
 #------------------------------------------------------------------------------
 # 서버 중지
 #------------------------------------------------------------------------------
 systemctl stop postgresql
-
 
 
 #------------------------------------------------------------------------------
@@ -111,6 +137,7 @@ mkdir -p /postgresql/archive
 mv /var/lib/postgresql/12/main /postgresql
 chown -R postgres:postgres /postgresql
 sed -i.bak -r "s#data_directory = '/var/lib/postgresql/12/main'#data_directory = '/postgresql/main'#g" /etc/postgresql/12/main/postgresql.conf
+
 
 
 

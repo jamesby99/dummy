@@ -104,7 +104,7 @@ sed -i.bak -r "s/max_wal_size = 1GB/max_wal_size = 4GB/g" /etc/postgresql/12/mai
 # 스트리밍 replication 설정
 #------------------------------------------------------------------------------
 sed -i.bak -r "s/#wal_level = replica/wal_level = replica/g" /etc/postgresql/12/main/postgresql.conf
-sed -i.bak -r "s/#max_wal_senders = 10/max_wal_senders = 2/g" /etc/postgresql/12/main/postgresql.conf
+sed -i.bak -r "s/#max_wal_senders = 10/max_wal_senders = 5/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#wal_keep_segments = 0/wal_keep_segments = 32/g" /etc/postgresql/12/main/postgresql.conf
 
 sed -i.bak -r "s/#archive_mode = off/archive_mode = on/g" /etc/postgresql/12/main/postgresql.conf
@@ -113,7 +113,7 @@ echo "archive_command = 'cp %p /postgresql/archive/arch_%f.arc'" >> /etc/postgre
 
 sed -i.bak -r "s/#synchronous_commit = on/synchronous_commit = on/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#synchronous_standby_names = ''/synchronous_standby_names = '*'/g" /etc/postgresql/12/main/postgresql.conf
-sed -i.bak -r "s/#max_replication_slots = 10/max_replication_slots = 2/g" /etc/postgresql/12/main/postgresql.conf
+# sed -i.bak -r "s/#max_replication_slots = 10/max_replication_slots = 2/g" /etc/postgresql/12/main/postgresql.conf
 
 #wal_level = replica
 #archive_mode = on
@@ -148,8 +148,9 @@ systemctl start postgresql
 
 #------------------------------------------------------------------------------
 # replication_slot 생성
+# 일단 안되니...
 #------------------------------------------------------------------------------
-sudo -u postgres psql -c "SELECT * FROM pg_create_physical_replication_slot('replication_slot');"
+# sudo -u postgres psql -c "SELECT * FROM pg_create_physical_replication_slot('replication_slot');"
 
 
 echo '생성결과는 다음의 명령어로 확인하세요'

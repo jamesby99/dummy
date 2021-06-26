@@ -136,6 +136,7 @@ sed -i.bak -r "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/
 # [변경후] 0.0.0.0:5432            0.0.0.0:*               LISTEN      26412/postgres
 echo "# 여기서부터는 커스텀마이징 설정입니다." >> /etc/postgresql/12/main/pg_hba.conf
 # 일단 모두 연다.
+echo "host    replication     replica         0.0.0.0/0               trust" >> /etc/postgresql/12/main/pg_hba.conf
 echo "host    all             all             0.0.0.0/0               trust" >> /etc/postgresql/12/main/pg_hba.conf
 # 상용에서는 replca 서버에 대한 소스 필터 제한을 해야 한다. - 
 # echo "host    replication     replica         0.0.0.0/0               md5" >> /etc/postgresql/12/main/pg_hba.conf

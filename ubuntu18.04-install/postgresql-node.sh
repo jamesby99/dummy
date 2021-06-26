@@ -43,6 +43,21 @@ useradd -s /bin/bash -d /home/pgpool -m pgpool
 echo "postgres ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/postgres
 
 
+#------------------------------------------------------------------------------
+# .pgpass for postgres : PG 명령어들을 interactive 없이 바로 실행할 수 있도록...
+#------------------------------------------------------------------------------
+cat > /var/lib/postgresql/.pgpass << EOF
+server1:5432:replication:replica:imdb21**
+server2:5432:replication:replica:imdb21**
+server3:5432:replication:replica:imdb21**
+server1:5432:postgres:postgres:imdb21**
+server2:5432:postgres:postgres:imdb21**
+server3:5432:postgres:postgres:imdb21**
+EOF
+
+chmod 600 /var/lib/postgresql/.pgpass
+chown postgresql:postgresql /var/lib/postgresql/.pgpass
+
 
 #------------------------------------------------------------------------------
 # DB 사용자 및 테이블 생성은 다음 절차를 따른다. : 참고 OS와 DB사용자를 일치시켜라!!!'

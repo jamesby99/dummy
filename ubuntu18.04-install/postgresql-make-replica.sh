@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-if [ -z "$1" ]; then
-	echo ">>>>> usage	: ./postgresql-make-replica.sh <MASTER IP>"
-	echo ">>>>> example	: ./postgresql-make-replica.sh 172.27.0.10"
+if [ -z "$1" ]; || [ -z "$2" ]; then
+	echo ">>>>> usage	: ./postgresql-make-replica.sh <MASTER IP> <node number>"
+	echo ">>>>> example	: ./postgresql-make-replica.sh 172.27.0.10 2"
 	exit
 fi
 
@@ -11,6 +11,7 @@ echo -n 'DB 전용 DISK 마운트는 했나요? 했다면 엔터. 안했다면 c
 read
 
 __MASTER_IP__=$1
+__NODE_NO__=$2
 
 #------------------------------------------------------------------------------
 # postgresql 중지
@@ -22,7 +23,7 @@ systemctl stop postgresql
 # replication 설정
 #------------------------------------------------------------------------------
 sed -i.bak -r "s/#hot_standby = on/hot_standby = on/g" /etc/postgresql/12/main/postgresql.conf
-sed -i.bak -r "s/#primary_conninfo = ''/primary_conninfo = 'host=$__MASTER_IP__ port=5432 user=replica'/g" /etc/postgresql/12/main/postgresql.conf
+sed -i.bak -r "s/#primary_conninfo = ''/primary_conninfo = 'host=$__MASTER_IP__ port=5432 user=replica application_name=pg-node-$__NODE_NO__'/g" /etc/postgresql/12/main/postgresql.conf
 sed -i.bak -r "s/#recovery_target_timeline = 'latest'/recovery_target_timeline = 'latest'/g" /etc/postgresql/12/main/postgresql.conf
 
 #sed -i.bak -r "s/#max_replication_slots = 10/max_replication_slots = 2/g" /etc/postgresql/12/main/postgresql.conf

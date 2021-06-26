@@ -32,10 +32,11 @@ apt install postgresql-12 -y
 sleep 5
 
 #------------------------------------------------------------------------------
-# OS 사용자 생성 - ms app계정, replica (복제전용계정)
+# OS 사용자 생성 - ms app계정, replica (복제전용계정), postgres sudoer
 #------------------------------------------------------------------------------
 useradd -s /bin/bash -d /home/$__USER__ -m $__USER__
 useradd -s /bin/bash -d /home/replica -m replica
+echo "postgres ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/postgres
 
 #------------------------------------------------------------------------------
 # DB 사용자 및 테이블 생성은 다음 절차를 따른다. : 참고 OS와 DB사용자를 일치시켜라!!!'

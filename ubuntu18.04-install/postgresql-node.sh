@@ -1,14 +1,5 @@
 #!/usr/bin/env bash
 
-#------------------------------------------------------------------------------
-# [ TODO ]
-# 1. DB 전용 Volume을 추가 작업을 사전에 해서 /postgresql/main 에 마운트
-# 2. /etc/hosts 스크립트 수정
-# 3. ssh public key값 수정
-# 4. vCore, Memory, Disk Type에 따른 성능 튜닝 values 수정
-#------------------------------------------------------------------------------
-
-
 if [ -z "$1" ] || [ -z "$2" ] ; then
 	echo ">>>>> usage	: postgresql.sh <MS app 계정> <node 번호>"
 	echo ">>>>> example	: postgresql.sh projection 1"
@@ -17,6 +8,32 @@ fi
 
 __USER__=$1
 __NODE_NO__=$2
+
+#------------------------------------------------------------------------------
+# [ TODO ]
+# 1. DB 전용 Volume을 추가 작업을 사전에 해서 /postgresql/main 에 마운트
+# 2. /etc/hosts 스크립트 수정
+# 3. ssh public key값 수정
+# 4. vCore, Memory, Disk Type에 따른 성능 튜닝 values 수정
+#------------------------------------------------------------------------------
+
+__SSH_PRIVATE_KEY__ = 
+"-----BEGIN RSA PRIVATE KEY-----
+MIICXQIBAAKBgQCq5PYmI5OgpvZRmST1NPCZbBhHMJ9ZC0AyDMs4tt8+ue+tKyAs
+9O2Iwm+TmmrYT0Zl8MFd8T5xOf/0F0xWLbPc3RXqq32XwU0ubZ+cyOYwa4zOIHB0
+Q6AEvjnBqoOeYiBnN0+5QL+uNVg5hw2vnwrfownkzY3ggjTtg5+5lWu96QIDAQAB
+AoGAc3rxEuirk73/aThxjvlNNH+lEEY9B7DgmnGmyhZZWUvQOFaSEY8ZDHdHapjI
+Zo97ZNuB73db2Kt22Hz96qZLiXJjt5Jbnpuv65T4lbNCO2qhIM1YPjdVaRkbbW2s
+JXCncwhWdKFH8tXM7U9fq+iLG6K0KLr2CMbUZRL1OiGj82ECQQDkK+FkXoJ1DWPZ
+dxm97l9ryePvN09P7388AKvYpEG5FHXxD7WFh9OceNffaLuAt39/TfniUKKzt2m1
+LCjEt0qVAkEAv7y9V+PNokXsST2YfWPIXpJfX8BGPTWfkI5Mw4/rHO5e5irxxz0O
+RvlsJpSw7GYC3WKfQX43jAeXTWo6v6DlBQJAQ66AfTVLnU0LgUZC7IP46hBI/Hx7
+mkqAg1vvnaObmzrmgUsXnTRdINz3q911QQktWKXYqbkhig2t3X/r1+5GwQJBAJhC
+Pi3sNeC2HCQxKMXyFiybmedEncJ/sb2ucuEdiXxJAs1Orv8jyhGsgijFDRY9D+tU
+JNlybJPjd1A/mnWQRC0CQQCH0O9rmND4OvYH+8oQM8x5d6iisvWvG84sCrmAigYV
+2T8LvGrygH22YAHK+fgJJDO71UYz17DmwGWaajfaE4do
+-----END RSA PRIVATE KEY-----"
+
 
 echo -n 'postgresql node 설정입니다.'
 echo -n 'DB 전용 DISK 마운트는 했나요? 했다면 엔터. 안했다면 ctrl-c.'
@@ -58,22 +75,8 @@ echo "postgres ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/postgres
 #------------------------------------------------------------------------------
 cp -R .ssh /var/lib/postgresql
 
-cat > g1 << EOF
------BEGIN RSA PRIVATE KEY-----
-MIICXQIBAAKBgQCq5PYmI5OgpvZRmST1NPCZbBhHMJ9ZC0AyDMs4tt8+ue+tKyAs
-9O2Iwm+TmmrYT0Zl8MFd8T5xOf/0F0xWLbPc3RXqq32XwU0ubZ+cyOYwa4zOIHB0
-Q6AEvjnBqoOeYiBnN0+5QL+uNVg5hw2vnwrfownkzY3ggjTtg5+5lWu96QIDAQAB
-AoGAc3rxEuirk73/aThxjvlNNH+lEEY9B7DgmnGmyhZZWUvQOFaSEY8ZDHdHapjI
-Zo97ZNuB73db2Kt22Hz96qZLiXJjt5Jbnpuv65T4lbNCO2qhIM1YPjdVaRkbbW2s
-JXCncwhWdKFH8tXM7U9fq+iLG6K0KLr2CMbUZRL1OiGj82ECQQDkK+FkXoJ1DWPZ
-dxm97l9ryePvN09P7388AKvYpEG5FHXxD7WFh9OceNffaLuAt39/TfniUKKzt2m1
-LCjEt0qVAkEAv7y9V+PNokXsST2YfWPIXpJfX8BGPTWfkI5Mw4/rHO5e5irxxz0O
-RvlsJpSw7GYC3WKfQX43jAeXTWo6v6DlBQJAQ66AfTVLnU0LgUZC7IP46hBI/Hx7
-mkqAg1vvnaObmzrmgUsXnTRdINz3q911QQktWKXYqbkhig2t3X/r1+5GwQJBAJhC
-Pi3sNeC2HCQxKMXyFiybmedEncJ/sb2ucuEdiXxJAs1Orv8jyhGsgijFDRY9D+tU
-JNlybJPjd1A/mnWQRC0CQQCH0O9rmND4OvYH+8oQM8x5d6iisvWvG84sCrmAigYV
-2T8LvGrygH22YAHK+fgJJDO71UYz17DmwGWaajfaE4do
------END RSA PRIVATE KEY-----
+cat > ssh_private_key << EOF
+${__SSH_PRIVATE_KEY__}
 EOF
 
 chown -R postgresql:postgresql /var/lib/postgresql/.ssh

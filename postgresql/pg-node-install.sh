@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+#------------------------------------------------------------------------------
+# [ 실행전 TODO, 꼭 확인할 것 ]
+# 1. DB 전용 Volume을 추가 작업을 사전에 해서 /postgresql/main 에 마운트
+# 2. /etc/hosts에 적용할 IP주소 수정
+# 3. ssh public key값 수정
+# 4. vCore, Memory, Disk Type에 따른 성능 튜닝 values 수정
+# 5. virtual IP(__VIP__) 값 수정
+#------------------------------------------------------------------------------
+
 if [ -z "$1" ] || [ -z "$2" ] ; then
 	echo ">>>>> usage	: postgresql.sh <MS app 계정> <node 번호>"
 	echo ">>>>> example	: postgresql.sh projection 1"
@@ -8,15 +17,7 @@ fi
 
 __USER__=$1
 __NODE_NO__=$2
-__VIP__=""
-
-#------------------------------------------------------------------------------
-# [ TODO ]
-# 1. DB 전용 Volume을 추가 작업을 사전에 해서 /postgresql/main 에 마운트
-# 2. /etc/hosts 스크립트 수정
-# 3. ssh public key값 수정
-# 4. vCore, Memory, Disk Type에 따른 성능 튜닝 values 수정
-#------------------------------------------------------------------------------
+__VIP__="172.27.0.12"
 
 __SSH_PRIVATE_KEY__ = 
 "-----BEGIN RSA PRIVATE KEY-----

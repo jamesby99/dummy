@@ -252,7 +252,7 @@ chown postgres:postgres /postgresql/main/pgpool_remote_start
 # pgpool.conf 설정
 #------------------------------------------------------------------------------
 sed -i.bak -r "s/delegate_IP = 'delegate_IP'/delegate_IP = '$__VIP__'/g" /etc/pgpool2/pgpool.conf
-sed -i.bak -r "s/wd_hostname = 'wd_hostname'/delegate_IP = 'pg-node-$__NODE_NO__'/g" /etc/pgpool2/pgpool.conf
+sed -i.bak -r "s/wd_hostname = 'wd_hostname'/wd_hostname = 'pg-node-$__NODE_NO__'/g" /etc/pgpool2/pgpool.conf
 if [ $__NODE_NO__ == '1' ]; then
 	sed -i.bak -r "s/heartbeat_destination0 = 'pg-node-?'/heartbeat_destination0 = 'pg-node-2'/g" /etc/pgpool2/pgpool.conf
 	sed -i.bak -r "s/heartbeat_destination1 = 'pg-node-?'/heartbeat_destination1 = 'pg-node-3'/g" /etc/pgpool2/pgpool.conf

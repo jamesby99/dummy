@@ -75,12 +75,12 @@ echo "postgres ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/postgres
 #------------------------------------------------------------------------------
 # ssh 키 sharing : root -> postgres, postgres <-> postgres
 #------------------------------------------------------------------------------
-cp -R .ssh /var/lib/postgresql
-
-cat > ssh_private_key << EOF
+cat > .ssh/ssh_private_key << EOF
 ${__SSH_PRIVATE_KEY__}
 EOF
+chmod 600 /var/lib/postgresql/.ssh/*
 
+cp -R .ssh /var/lib/postgresql
 chown -R postgres:postgres /var/lib/postgresql/.ssh
 chmod 600 /var/lib/postgresql/.ssh/*
 chmod 700 /var/lib/postgresql/.ssh

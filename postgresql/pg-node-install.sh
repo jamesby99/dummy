@@ -228,7 +228,7 @@ sed -i.bak -r "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/
 
 
 #------------------------------------------------------------------------------
-# pgpool 설정
+# pgpool 설정 파일 다운로드
 #------------------------------------------------------------------------------
 wget --quiet -O /etc/pgpool2/pgpool.conf 주소
 wget --quiet -O /etc/pgpool2/failover.sh 주소
@@ -245,9 +245,29 @@ cp pgpool_remote_start /postgresql/main
 chown postgres:postgres /postgresql/main/recovery_1st_stage
 chown postgres:postgres /postgresql/main/pgpool_remote_start
 
+
+
+#------------------------------------------------------------------------------
+# pgpool.conf 설정
+#------------------------------------------------------------------------------
 sed -i.bak -r "s/delegate_IP = 'delegate_IP'/delegate_IP = '$__VIP__'/g" /etc/pgpool2/pgpool.conf
 sed -i.bak -r "s/wd_hostname = 'wd_hostname'/delegate_IP = 'pg-node-$__NODE_NO__'/g" /etc/pgpool2/pgpool.conf
-
+if [ $__NODE_NO__ == '1' ]; then
+	sed -i.bak -r "s/heartbeat_destination0 = 'pg-node-?'/heartbeat_destination0 = 'pg-node-2'/g" /etc/pgpool2/pgpool.conf
+	sed -i.bak -r "s/heartbeat_destination1 = 'pg-node-?'/heartbeat_destination1 = 'pg-node-3'/g" /etc/pgpool2/pgpool.conf
+	sed -i.bak -r "s/other_pgpool_hostname0 = 'pg-node-?'/other_pgpool_hostname0 = 'pg-node-2'/g" /etc/pgpool2/pgpool.conf
+	sed -i.bak -r "s/other_pgpool_hostname1 = 'pg-node-?'/other_pgpool_hostname1 = 'pg-node-3'/g" /etc/pgpool2/pgpool.conf	
+elif [$__NODE_NO__ == '2' ]; then
+	sed -i.bak -r "s/heartbeat_destination0 = 'pg-node-?'/heartbeat_destination0 = 'pg-node-1'/g" /etc/pgpool2/pgpool.conf
+	sed -i.bak -r "s/heartbeat_destination1 = 'pg-node-?'/heartbeat_destination1 = 'pg-node-3'/g" /etc/pgpool2/pgpool.conf
+	sed -i.bak -r "s/other_pgpool_hostname0 = 'pg-node-?'/other_pgpool_hostname0 = 'pg-node-1'/g" /etc/pgpool2/pgpool.conf
+	sed -i.bak -r "s/other_pgpool_hostname1 = 'pg-node-?'/other_pgpool_hostname1 = 'pg-node-3'/g" /etc/pgpool2/pgpool.conf	
+elif [$__NODE_NO__ == '3' ]; then
+	sed -i.bak -r "s/heartbeat_destination0 = 'pg-node-?'/heartbeat_destination0 = 'pg-node-1'/g" /etc/pgpool2/pgpool.conf
+	sed -i.bak -r "s/heartbeat_destination1 = 'pg-node-?'/heartbeat_destination1 = 'pg-node-2'/g" /etc/pgpool2/pgpool.conf
+	sed -i.bak -r "s/other_pgpool_hostname0 = 'pg-node-?'/other_pgpool_hostname0 = 'pg-node-1'/g" /etc/pgpool2/pgpool.conf
+	sed -i.bak -r "s/other_pgpool_hostname1 = 'pg-node-?'/other_pgpool_hostname1 = 'pg-node-2'/g" /etc/pgpool2/pgpool.conf	
+fi
 
 
 #------------------------------------------------------------------------------

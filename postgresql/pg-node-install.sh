@@ -133,7 +133,7 @@ sudo -u postgres createdb db_servermgt -O $__USER__
 #------------------------------------------------------------------------------
 # 서버 중지
 #------------------------------------------------------------------------------
-# systemctl stop pgpool2
+systemctl stop pgpool2
 systemctl stop postgresql
 
 

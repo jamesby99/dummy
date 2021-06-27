@@ -12,7 +12,7 @@ SSH_KEY=ssh_private_key
 DEST_NODE_HOST="$1"
 DEST_NODE_PGDATA="$2"
 
-PGHOME=/usr/lib/postgresql/12
+PGHOME=/usr/lib/postgresql/11
 
 logger -i -p local1.info pgpool_remote_start: start: remote start Standby node $DEST_NODE_HOST
 

@@ -17,7 +17,7 @@ DEST_NODE_ID="$5"
 DEST_NODE_PORT="$6"
 
 PRIMARY_NODE_HOST=$(hostname)
-PGHOME=/usr/lib/postgresql/12
+PGHOME=/usr/lib/postgresql/11
 ARCHIVEDIR=/postgresql/archive
 REPLUSER=replica
 REPL_SLOT_NAME=${DEST_NODE_HOST//[-.]/_}

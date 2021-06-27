@@ -38,7 +38,7 @@ NEW_MASTER_NODE_PGDATA="${10}"
 OLD_PRIMARY_NODE_HOST="${11}"
 OLD_PRIMARY_NODE_PORT="${12}"
 
-PGHOME=/usr/lib/postgresql/12
+PGHOME=/usr/lib/postgresql/11
 REPL_SLOT_NAME=${FAILED_NODE_HOST//[-.]/_}
 
 logger -i -p local1.info failover.sh: start: failed_node_id=$FAILED_NODE_ID old_primary_node_id=$OLD_PRIMARY_NODE_ID failed_host=$FAILED_NODE_HOST new_master_host=$NEW_MASTER_NODE_HOST

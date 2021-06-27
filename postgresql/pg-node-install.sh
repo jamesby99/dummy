@@ -49,7 +49,7 @@ cd ~
 echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 apt update -y
-apt install postgresql-12 pgpool2 postgresql-12-pgpool2 iputils-arping -y
+apt install postgresql-12 pgpool2 postgresql-12-pgpool2 iputils-arping -y --quiet
 
 sleep 5
 
@@ -232,18 +232,18 @@ sed -i.bak -r "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/
 #------------------------------------------------------------------------------
 # pgpool 설정 파일 다운로드
 #------------------------------------------------------------------------------
-wget --quiet -O /etc/pgpool2/pgpool.conf 주소
-wget --quiet -O /etc/pgpool2/failover.sh 주소
-wget --quiet -O /etc/pgpool2/follow_master.sh 주소
-wget --quiet -O /etc/pgpool2/recovery_1st_stage 주소
-wget --quiet -O /etc/pgpool2/pgpool_remote_start 주소
+wget --quiet -O /etc/pgpool2/pgpool.conf https://github.com/jamesby99/dummy/raw/master/postgresql/pgpool.conf
+wget --quiet -O /etc/pgpool2/failover.sh https://github.com/jamesby99/dummy/raw/master/postgresql/failover.sh
+wget --quiet -O /etc/pgpool2/follow_master.sh https://github.com/jamesby99/dummy/raw/master/postgresql/follow_master.sh
+wget --quiet -O /etc/pgpool2/recovery_1st_stage https://github.com/jamesby99/dummy/raw/master/postgresql/recovery_1st_stage.sh
+wget --quiet -O /etc/pgpool2/pgpool_remote_start https://github.com/jamesby99/dummy/raw/master/postgresql/pgpool_remote_start.sh
 
 chmod 755 /etc/pgpool2/*.sh
 chmod 755 /etc/pgpool2/recovery_1st_stage
 chmod 755 /etc/pgpool2/pgpool_remote_start
 
-cp recovery_1st_stage /postgresql/main
-cp pgpool_remote_start /postgresql/main
+cp /etc/pgpool2/recovery_1st_stage /postgresql/main
+cp /etc/pgpool2/pgpool_remote_start /postgresql/main
 chown postgres:postgres /postgresql/main/recovery_1st_stage
 chown postgres:postgres /postgresql/main/pgpool_remote_start
 

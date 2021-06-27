@@ -233,44 +233,44 @@ sed -i.bak -r "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/
 #------------------------------------------------------------------------------
 # pgpool 설정 파일 다운로드
 #------------------------------------------------------------------------------
-wget --quiet -O /etc/pgpool2/pgpool.conf https://github.com/jamesby99/dummy/raw/master/postgresql/pgpool.conf
-wget --quiet -O /etc/pgpool2/failover.sh https://github.com/jamesby99/dummy/raw/master/postgresql/failover.sh
-wget --quiet -O /etc/pgpool2/follow_master.sh https://github.com/jamesby99/dummy/raw/master/postgresql/follow_master.sh
-wget --quiet -O /etc/pgpool2/recovery_1st_stage https://github.com/jamesby99/dummy/raw/master/postgresql/recovery_1st_stage.sh
-wget --quiet -O /etc/pgpool2/pgpool_remote_start https://github.com/jamesby99/dummy/raw/master/postgresql/pgpool_remote_start.sh
+# wget --quiet -O /etc/pgpool2/pgpool.conf https://github.com/jamesby99/dummy/raw/master/postgresql/pgpool.conf
+# wget --quiet -O /etc/pgpool2/failover.sh https://github.com/jamesby99/dummy/raw/master/postgresql/failover.sh
+# wget --quiet -O /etc/pgpool2/follow_master.sh https://github.com/jamesby99/dummy/raw/master/postgresql/follow_master.sh
+# wget --quiet -O /etc/pgpool2/recovery_1st_stage https://github.com/jamesby99/dummy/raw/master/postgresql/recovery_1st_stage.sh
+# wget --quiet -O /etc/pgpool2/pgpool_remote_start https://github.com/jamesby99/dummy/raw/master/postgresql/pgpool_remote_start.sh
 
-chmod 755 /etc/pgpool2/*.sh
-chmod 755 /etc/pgpool2/recovery_1st_stage
-chmod 755 /etc/pgpool2/pgpool_remote_start
+# chmod 755 /etc/pgpool2/*.sh
+# chmod 755 /etc/pgpool2/recovery_1st_stage
+# chmod 755 /etc/pgpool2/pgpool_remote_start
 
-cp /etc/pgpool2/recovery_1st_stage /postgresql/main
-cp /etc/pgpool2/pgpool_remote_start /postgresql/main
-chown postgres:postgres /postgresql/main/recovery_1st_stage
-chown postgres:postgres /postgresql/main/pgpool_remote_start
+# cp /etc/pgpool2/recovery_1st_stage /postgresql/main
+# cp /etc/pgpool2/pgpool_remote_start /postgresql/main
+# chown postgres:postgres /postgresql/main/recovery_1st_stage
+# chown postgres:postgres /postgresql/main/pgpool_remote_start
 
 
 
 #------------------------------------------------------------------------------
 # pgpool.conf 설정
 #------------------------------------------------------------------------------
-sed -i.bak -r "s/delegate_IP = 'delegate_IP'/delegate_IP = '$__VIP__'/g" /etc/pgpool2/pgpool.conf
-sed -i.bak -r "s/wd_hostname = 'wd_hostname'/wd_hostname = 'pg-node-$__NODE_NO__'/g" /etc/pgpool2/pgpool.conf
-if [ $__NODE_NO__ == '1' ]; then
-	sed -i.bak -r "s/heartbeat_destination0 = 'pg-node-x'/heartbeat_destination0 = 'pg-node-2'/g" /etc/pgpool2/pgpool.conf
-	sed -i.bak -r "s/heartbeat_destination1 = 'pg-node-x'/heartbeat_destination1 = 'pg-node-3'/g" /etc/pgpool2/pgpool.conf
-	sed -i.bak -r "s/other_pgpool_hostname0 = 'pg-node-x'/other_pgpool_hostname0 = 'pg-node-2'/g" /etc/pgpool2/pgpool.conf
-	sed -i.bak -r "s/other_pgpool_hostname1 = 'pg-node-x'/other_pgpool_hostname1 = 'pg-node-3'/g" /etc/pgpool2/pgpool.conf	
-elif [ $__NODE_NO__ == '2' ]; then
-	sed -i.bak -r "s/heartbeat_destination0 = 'pg-node-x'/heartbeat_destination0 = 'pg-node-1'/g" /etc/pgpool2/pgpool.conf
-	sed -i.bak -r "s/heartbeat_destination1 = 'pg-node-x'/heartbeat_destination1 = 'pg-node-3'/g" /etc/pgpool2/pgpool.conf
-	sed -i.bak -r "s/other_pgpool_hostname0 = 'pg-node-x'/other_pgpool_hostname0 = 'pg-node-1'/g" /etc/pgpool2/pgpool.conf
-	sed -i.bak -r "s/other_pgpool_hostname1 = 'pg-node-x'/other_pgpool_hostname1 = 'pg-node-3'/g" /etc/pgpool2/pgpool.conf	
-elif [ $__NODE_NO__ == '3' ]; then
-	sed -i.bak -r "s/heartbeat_destination0 = 'pg-node-x'/heartbeat_destination0 = 'pg-node-1'/g" /etc/pgpool2/pgpool.conf
-	sed -i.bak -r "s/heartbeat_destination1 = 'pg-node-x'/heartbeat_destination1 = 'pg-node-2'/g" /etc/pgpool2/pgpool.conf
-	sed -i.bak -r "s/other_pgpool_hostname0 = 'pg-node-x'/other_pgpool_hostname0 = 'pg-node-1'/g" /etc/pgpool2/pgpool.conf
-	sed -i.bak -r "s/other_pgpool_hostname1 = 'pg-node-x'/other_pgpool_hostname1 = 'pg-node-2'/g" /etc/pgpool2/pgpool.conf	
-fi
+# sed -i.bak -r "s/delegate_IP = 'delegate_IP'/delegate_IP = '$__VIP__'/g" /etc/pgpool2/pgpool.conf
+# sed -i.bak -r "s/wd_hostname = 'wd_hostname'/wd_hostname = 'pg-node-$__NODE_NO__'/g" /etc/pgpool2/pgpool.conf
+# if [ $__NODE_NO__ == '1' ]; then
+# 	sed -i.bak -r "s/heartbeat_destination0 = 'pg-node-x'/heartbeat_destination0 = 'pg-node-2'/g" /etc/pgpool2/pgpool.conf
+# 	sed -i.bak -r "s/heartbeat_destination1 = 'pg-node-x'/heartbeat_destination1 = 'pg-node-3'/g" /etc/pgpool2/pgpool.conf
+# 	sed -i.bak -r "s/other_pgpool_hostname0 = 'pg-node-x'/other_pgpool_hostname0 = 'pg-node-2'/g" /etc/pgpool2/pgpool.conf
+# 	sed -i.bak -r "s/other_pgpool_hostname1 = 'pg-node-x'/other_pgpool_hostname1 = 'pg-node-3'/g" /etc/pgpool2/pgpool.conf	
+# elif [ $__NODE_NO__ == '2' ]; then
+# 	sed -i.bak -r "s/heartbeat_destination0 = 'pg-node-x'/heartbeat_destination0 = 'pg-node-1'/g" /etc/pgpool2/pgpool.conf
+# 	sed -i.bak -r "s/heartbeat_destination1 = 'pg-node-x'/heartbeat_destination1 = 'pg-node-3'/g" /etc/pgpool2/pgpool.conf
+# 	sed -i.bak -r "s/other_pgpool_hostname0 = 'pg-node-x'/other_pgpool_hostname0 = 'pg-node-1'/g" /etc/pgpool2/pgpool.conf
+# 	sed -i.bak -r "s/other_pgpool_hostname1 = 'pg-node-x'/other_pgpool_hostname1 = 'pg-node-3'/g" /etc/pgpool2/pgpool.conf	
+# elif [ $__NODE_NO__ == '3' ]; then
+# 	sed -i.bak -r "s/heartbeat_destination0 = 'pg-node-x'/heartbeat_destination0 = 'pg-node-1'/g" /etc/pgpool2/pgpool.conf
+# 	sed -i.bak -r "s/heartbeat_destination1 = 'pg-node-x'/heartbeat_destination1 = 'pg-node-2'/g" /etc/pgpool2/pgpool.conf
+# 	sed -i.bak -r "s/other_pgpool_hostname0 = 'pg-node-x'/other_pgpool_hostname0 = 'pg-node-1'/g" /etc/pgpool2/pgpool.conf
+# 	sed -i.bak -r "s/other_pgpool_hostname1 = 'pg-node-x'/other_pgpool_hostname1 = 'pg-node-2'/g" /etc/pgpool2/pgpool.conf	
+# fi
 
 
 

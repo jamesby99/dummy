@@ -142,7 +142,6 @@ sed -i.bak -r "s#data_directory = '/var/lib/postgresql/12/main'#data_directory =
 
 
 
-
 #------------------------------------------------------------------------------
 # 성능 튜닝
 #------------------------------------------------------------------------------
@@ -246,18 +245,27 @@ chown postgres:postgres /postgresql/main/recovery_1st_stage
 chown postgres:postgres /postgresql/main/pgpool_remote_start
 
 
+
 #------------------------------------------------------------------------------
-# 서버 재시작
+# postgresql 재시작
 #------------------------------------------------------------------------------
 systemctl start postgresql
+
+
+
+#------------------------------------------------------------------------------
+# postgresql 재시작후 해야할 작업들
+#------------------------------------------------------------------------------
+echo -e "\n" | sudo -u postgres psql -c "SELECT * FROM pg_create_physical_replication_slot('replication_slot');"	# replication_slot 생성
+sudo -u postgres psql template1 -c "CREATE EXTENSION pgpool_recovery;"							# ?
+chmod 700 /root													 	# sudo -u postgres가 더이상 없음으로 원복
+
+
+#------------------------------------------------------------------------------
+# pgpool 재시작
+#------------------------------------------------------------------------------
 systemctl start pgpool2
 
-#------------------------------------------------------------------------------
-# replication_slot 생성
-#------------------------------------------------------------------------------
-echo -e "\n" | sudo -u postgres psql -c "SELECT * FROM pg_create_physical_replication_slot('replication_slot');"
-
-chmod 700 /root
 
 echo '생성결과는 다음의 명령어로 확인하세요'
 echo 'su - postgres'

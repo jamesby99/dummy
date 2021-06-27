@@ -49,8 +49,8 @@ echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" 
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 apt update -y
 apt install postgresql-12 -y
-apt pgpool2 -y
-apt iputils-arping -y 
+apt install pgpool2 -y
+apt install iputils-arping -y 
 
 sleep 5
 

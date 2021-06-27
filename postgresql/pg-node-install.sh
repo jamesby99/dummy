@@ -81,7 +81,7 @@ cat > ssh_private_key << EOF
 ${__SSH_PRIVATE_KEY__}
 EOF
 
-chown -R postgresql:postgresql /var/lib/postgresql/.ssh
+chown -R postgres:postgres /var/lib/postgresql/.ssh
 chmod 600 /var/lib/postgresql/.ssh/*
 chmod 700 /var/lib/postgresql/.ssh
 
@@ -100,7 +100,7 @@ pg-node-3:5432:postgres:postgres:imdb21**
 EOF
 
 chmod 600 /var/lib/postgresql/.pgpass
-chown postgresql:postgresql /var/lib/postgresql/.pgpass
+chown postgres:postgres /var/lib/postgresql/.pgpass
 
 
 #------------------------------------------------------------------------------
@@ -118,7 +118,7 @@ sudo -u postgres psql -c "grant pg_monitor to pgpool;"
 sudo -u postgres createuser $__USER__
 sudo -u postgres psql -c "alter user $__USER__ with password 'imdb21**';"
 
-sudo -u postgres psql -c "alter postgres with password 'imdb21**';"
+sudo -u postgres psql -c "alter user postgres with password 'imdb21**';"
 
 sudo -u postgres createdb db_projection -O $__USER__
 sudo -u postgres createdb db_order -O $__USER__
@@ -205,7 +205,7 @@ sed -i.bak -r "s/#hot_standby = on/hot_standby = on/g" /etc/postgresql/12/main/p
 #------------------------------------------------------------------------------
 # pg_hba.conf 설정
 #------------------------------------------------------------------------------
-cat > /etc/postgresql/12/main/postgresql.conf << EOF
+cat > /etc/postgresql/12/main/pg_hba.conf << EOF
 # "local" is for Unix domain socket connections only
 local   all             all                                     trust
 # IPv4 local connections:
@@ -275,7 +275,7 @@ fi
 #------------------------------------------------------------------------------
 # pcp.conf
 #------------------------------------------------------------------------------
-echo 'pgpool:62843c0232f945e8b2261d720f2c2670' >> /etc/pgpool-II/pcp.conf	# id:md5 password
+echo 'pgpool:62843c0232f945e8b2261d720f2c2670' >> /etc/pgpool2/pcp.conf		# id:md5 password
 echo 'localhost:9898:pgpool:imdb21**' > ~/.pcppass
 chmod 600 ~/.pcppass
 

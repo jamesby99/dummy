@@ -106,7 +106,7 @@ chown postgresql:postgresql /var/lib/postgresql/.pgpass
 #------------------------------------------------------------------------------
 chmod 755 /root # WARN제거: could not change directory to "/root": Permission denied
 
-sudo -u postgres createuser replica --replication
+sudo -u postgres createuser replica --replication --login
 sudo -u postgres psql -c "alter user replica with password 'imdb21**';"
 
 sudo -u postgres createuser pgpool --login

@@ -111,7 +111,7 @@ chown postgres:postgres /var/lib/postgresql/.pgpass
 #------------------------------------------------------------------------------
 chmod 755 /root # WARN제거: could not change directory to "/root": Permission denied
 
-sudo -u postgres createuser replica --replication
+sudo -u postgres createuser replica --replication  --login
 sudo -u postgres psql -c "alter user replica with password 'imdb21**';"
 
 sudo -u postgres createuser pgpool --login
@@ -221,8 +221,8 @@ local   replication     all                                     trust
 host    replication     all             127.0.0.1/32            trust
 host    replication     all             ::1/128                 trust
 # same subnet
-host    replication     all             172.27.0.0/23           trust
-host    all             all             172.27.0.0/23           trust
+host    replication     all             172.27.0.0/16           trust
+host    all             all             172.27.0.0/16           trust
 EOF
 
 
@@ -256,6 +256,11 @@ chown postgres:postgres /postgresql/main/pgpool_remote_start
 #------------------------------------------------------------------------------
 sed -i.bak -r "s/delegate_IP = 'delegate_IP'/delegate_IP = '$__VIP__'/g" /etc/pgpool2/pgpool.conf
 sed -i.bak -r "s/wd_hostname = 'wd_hostname'/wd_hostname = 'pg-node-$__NODE_NO__'/g" /etc/pgpool2/pgpool.conf
+
+if [ $__USER__  != 'orders' ]; then
+	sed -i.bak -r "s/sr_check_database = 'db_order'/sr_check_database = 'db_$__USER__'/g" /etc/pgpool2/pgpool.conf
+fi
+
 if [ $__NODE_NO__ == '1' ]; then
 	sed -i.bak -r "s/heartbeat_destination0 = 'pg-node-x'/heartbeat_destination0 = 'pg-node-2'/g" /etc/pgpool2/pgpool.conf
 	sed -i.bak -r "s/heartbeat_destination1 = 'pg-node-x'/heartbeat_destination1 = 'pg-node-3'/g" /etc/pgpool2/pgpool.conf

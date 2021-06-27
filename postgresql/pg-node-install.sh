@@ -78,7 +78,7 @@ echo "postgres ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/postgres
 cat > .ssh/ssh_private_key << EOF
 ${__SSH_PRIVATE_KEY__}
 EOF
-chmod 600 /var/lib/postgresql/.ssh/*
+chmod 600 .ssh/*
 
 cp -R .ssh /var/lib/postgresql
 chown -R postgres:postgres /var/lib/postgresql/.ssh

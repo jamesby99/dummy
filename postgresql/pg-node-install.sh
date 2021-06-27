@@ -245,6 +245,9 @@ cp pgpool_remote_start /postgresql/main
 chown postgres:postgres /postgresql/main/recovery_1st_stage
 chown postgres:postgres /postgresql/main/pgpool_remote_start
 
+sed -i.bak -r "s/delegate_IP = 'delegate_IP'/delegate_IP = '$__VIP__'/g" /etc/pgpool2/pgpool.conf
+sed -i.bak -r "s/wd_hostname = 'wd_hostname'/delegate_IP = 'pg-node-$__NODE_NO__'/g" /etc/pgpool2/pgpool.conf
+
 
 
 #------------------------------------------------------------------------------

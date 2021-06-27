@@ -48,7 +48,7 @@ cd ~
 echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 apt update -y
-apt install postgresql-12 pgpool2 postgresql-12-pgpool2 iputils-arping -y > /dev/null
+apt install postgresql-12 pgpool2 postgresql-12-pgpool2 iputils-arping -y 
 
 sleep 5
 
@@ -258,12 +258,12 @@ if [ $__NODE_NO__ == '1' ]; then
 	sed -i.bak -r "s/heartbeat_destination1 = 'pg-node-?'/heartbeat_destination1 = 'pg-node-3'/g" /etc/pgpool2/pgpool.conf
 	sed -i.bak -r "s/other_pgpool_hostname0 = 'pg-node-?'/other_pgpool_hostname0 = 'pg-node-2'/g" /etc/pgpool2/pgpool.conf
 	sed -i.bak -r "s/other_pgpool_hostname1 = 'pg-node-?'/other_pgpool_hostname1 = 'pg-node-3'/g" /etc/pgpool2/pgpool.conf	
-elif [$__NODE_NO__ == '2' ]; then
+elif [ $__NODE_NO__ == '2' ]; then
 	sed -i.bak -r "s/heartbeat_destination0 = 'pg-node-?'/heartbeat_destination0 = 'pg-node-1'/g" /etc/pgpool2/pgpool.conf
 	sed -i.bak -r "s/heartbeat_destination1 = 'pg-node-?'/heartbeat_destination1 = 'pg-node-3'/g" /etc/pgpool2/pgpool.conf
 	sed -i.bak -r "s/other_pgpool_hostname0 = 'pg-node-?'/other_pgpool_hostname0 = 'pg-node-1'/g" /etc/pgpool2/pgpool.conf
 	sed -i.bak -r "s/other_pgpool_hostname1 = 'pg-node-?'/other_pgpool_hostname1 = 'pg-node-3'/g" /etc/pgpool2/pgpool.conf	
-elif [$__NODE_NO__ == '3' ]; then
+elif [ $__NODE_NO__ == '3' ]; then
 	sed -i.bak -r "s/heartbeat_destination0 = 'pg-node-?'/heartbeat_destination0 = 'pg-node-1'/g" /etc/pgpool2/pgpool.conf
 	sed -i.bak -r "s/heartbeat_destination1 = 'pg-node-?'/heartbeat_destination1 = 'pg-node-2'/g" /etc/pgpool2/pgpool.conf
 	sed -i.bak -r "s/other_pgpool_hostname0 = 'pg-node-?'/other_pgpool_hostname0 = 'pg-node-1'/g" /etc/pgpool2/pgpool.conf

@@ -92,12 +92,12 @@ chmod 700 /var/lib/postgresql/.ssh
 # .pgpass for postgres : PG 명령어들을 interactive 없이 바로 실행할 수 있도록...
 #------------------------------------------------------------------------------
 cat > /var/lib/postgresql/.pgpass << EOF
-imdb-db-$__USER__-1:5432:replication:replica:imdb21**
-imdb-db-$__USER__-2:5432:replication:replica:imdb21**
-imdb-db-$__USER__-3:5432:replication:replica:imdb21**
-imdb-db-$__USER__-1:5432:postgres:postgres:imdb21**
-imdb-db-$__USER__-2:5432:postgres:postgres:imdb21**
-imdb-db-$__USER__-3:5432:postgres:postgres:imdb21**
+pg-node-1:5432:replication:replica:imdb21**
+pg-node-2:5432:replication:replica:imdb21**
+pg-node-3:5432:replication:replica:imdb21**
+pg-node-1:5432:postgres:postgres:imdb21**
+pg-node-2:5432:postgres:postgres:imdb21**
+pg-node-3:5432:postgres:postgres:imdb21**
 EOF
 
 chmod 600 /var/lib/postgresql/.pgpass

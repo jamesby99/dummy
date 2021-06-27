@@ -233,10 +233,17 @@ sed -i.bak -r "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/
 wget --quiet -O /etc/pgpool2/pgpool.conf 주소
 wget --quiet -O /etc/pgpool2/failover.sh 주소
 wget --quiet -O /etc/pgpool2/follow_master.sh 주소
-wget --quiet -O /etc/pgpool2/recovery_1st_stage.sh 주소
+wget --quiet -O /etc/pgpool2/recovery_1st_stage 주소
+wget --quiet -O /etc/pgpool2/pgpool_remote_start 주소
 
 chmod 755 /etc/pgpool2/*.sh
-chown postgres:postgres /etc/pgpool2/*.sh
+chmod 755 /etc/pgpool2/recovery_1st_stage
+chmod 755 /etc/pgpool2/pgpool_remote_start
+
+cp recovery_1st_stage /postgresql/main
+cp pgpool_remote_start /postgresql/main
+chown postgres:postgres /postgresql/main/recovery_1st_stage
+chown postgres:postgres /postgresql/main/pgpool_remote_start
 
 
 #------------------------------------------------------------------------------

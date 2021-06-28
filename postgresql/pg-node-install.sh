@@ -88,15 +88,15 @@ echo "postgres ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/postgres
 #------------------------------------------------------------------------------
 systemctl disable postgresql
 
-cat > $__PG_CONF__/start-pg.sh << EOF
+cat > $__PG_HOME__/start-pg.sh << EOF
 $__PG_BIN__/pg_ctl start -D $__PG_CONF__ -l __PG_LOG__
 EOF
 
-cat > $__PG_CONF__/stop-pg.sh << EOF
+cat > $__PG_HOME__/stop-pg.sh << EOF
 $__PG_BIN__/pg_ctl stop -D $__PG_CONF__ -m smart
 EOF
-chmod 700 $__PG_CONF__/*.sh
-chown postgres:postgres $__PG_CONF__/*.sh
+chmod 700 $__PG_HOME__/*.sh
+chown postgres:postgres $__PG_HOME__/*.sh
 
 
 
@@ -108,17 +108,17 @@ ${__SSH_PRIVATE_KEY__}
 EOF
 chmod 600 .ssh/*
 
-cp -R .ssh $__PG_CONF__
-chown -R postgres:postgres $__PG_CONF__/.ssh
-chmod 600 $__PG_CONF__/.ssh/*
-chmod 700 $__PG_CONF__/.ssh
+cp -R .ssh $__PG_HOME__
+chown -R postgres:postgres $__PG_HOME__/.ssh
+chmod 600 $__PG_HOME__/.ssh/*
+chmod 700 $__PG_HOME__/.ssh
 
 
 
 #------------------------------------------------------------------------------
 # .pgpass for postgres : PG 명령어들을 interactive 없이 바로 실행할 수 있도록...
 #------------------------------------------------------------------------------
-cat > $__PG_CONF__/.pgpass << EOF
+cat > $__PG_HOME__/.pgpass << EOF
 pg-1:5432:replication:replica:imdb21**
 pg-2:5432:replication:replica:imdb21**
 pg-3:5432:replication:replica:imdb21**
@@ -127,8 +127,8 @@ pg-2:5432:postgres:postgres:imdb21**
 pg-3:5432:postgres:postgres:imdb21**
 EOF
 
-chmod 600 $__PG_CONF__/.pgpass
-chown postgres:postgres $__PG_CONF__/.pgpass
+chmod 600 $__PG_HOME__/.pgpass
+chown postgres:postgres $__PG_HOME__/.pgpass
 
 
 #------------------------------------------------------------------------------

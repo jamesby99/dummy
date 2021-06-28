@@ -88,15 +88,15 @@ echo "postgres ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/postgres
 #------------------------------------------------------------------------------
 systemctl disable postgresql
 
-cat > $___PG_HOME__/start-pg.sh << EOF
-$___PG_BIN__/pg_ctl start -D $___PG_CONF__ -l __PG_LOG__
+cat > $__PG_CONF__/start-pg.sh << EOF
+$__PG_BIN__/pg_ctl start -D $__PG_CONF__ -l __PG_LOG__
 EOF
 
-cat > $___PG_HOME__/stop-pg.sh << EOF
-$___PG_BIN__/pg_ctl stop -D $___PG_CONF__ -m smart
+cat > $__PG_CONF__/stop-pg.sh << EOF
+$__PG_BIN__/pg_ctl stop -D $__PG_CONF__ -m smart
 EOF
-chmod 700 $___PG_HOME__/*.sh
-chown postgres:postgres $___PG_HOME__/*.sh
+chmod 700 $__PG_CONF__/*.sh
+chown postgres:postgres $__PG_CONF__/*.sh
 
 
 
@@ -108,17 +108,17 @@ ${__SSH_PRIVATE_KEY__}
 EOF
 chmod 600 .ssh/*
 
-cp -R .ssh $___PG_HOME__
-chown -R postgres:postgres $___PG_HOME__/.ssh
-chmod 600 $___PG_HOME__/.ssh/*
-chmod 700 $___PG_HOME__/.ssh
+cp -R .ssh $__PG_CONF__
+chown -R postgres:postgres $__PG_CONF__/.ssh
+chmod 600 $__PG_CONF__/.ssh/*
+chmod 700 $__PG_CONF__/.ssh
 
 
 
 #------------------------------------------------------------------------------
 # .pgpass for postgres : PG 명령어들을 interactive 없이 바로 실행할 수 있도록...
 #------------------------------------------------------------------------------
-cat > $___PG_HOME__/.pgpass << EOF
+cat > $__PG_CONF__/.pgpass << EOF
 pg-1:5432:replication:replica:imdb21**
 pg-2:5432:replication:replica:imdb21**
 pg-3:5432:replication:replica:imdb21**
@@ -127,8 +127,8 @@ pg-2:5432:postgres:postgres:imdb21**
 pg-3:5432:postgres:postgres:imdb21**
 EOF
 
-chmod 600 $___PG_HOME__/.pgpass
-chown postgres:postgres $___PG_HOME__/.pgpass
+chmod 600 $__PG_CONF__/.pgpass
+chown postgres:postgres $__PG_CONF__/.pgpass
 
 
 #------------------------------------------------------------------------------
@@ -168,7 +168,7 @@ systemctl stop postgresql
 mkdir -p /postgresql/archive
 mv /var/lib/postgresql/11/main /postgresql
 chown -R postgres:postgres /postgresql
-sed -i.bak -r "s#data_directory = '/var/lib/postgresql/11/main'#data_directory = '/postgresql/main'#g" $___PG_CONF__/postgresql.conf
+sed -i.bak -r "s#data_directory = '/var/lib/postgresql/11/main'#data_directory = '/postgresql/main'#g" $__PG_CONF__/postgresql.conf
 
 
 
@@ -176,64 +176,64 @@ sed -i.bak -r "s#data_directory = '/var/lib/postgresql/11/main'#data_directory =
 # 성능 튜닝
 #------------------------------------------------------------------------------
 # [shared_buffers] 총메모리의 25% 수준: 2GB는 512MB
-sed -i.bak -r "s/shared_buffers = 128MB/shared_buffers = 256MB/g" $___PG_CONF__/postgresql.conf
+sed -i.bak -r "s/shared_buffers = 128MB/shared_buffers = 256MB/g" $__PG_CONF__/postgresql.conf
 
 # [effective_cache_size] 총메모리의 50% 수준: 2GB는 1GB
-sed -i.bak -r "s/#effective_cache_size = 4GB/effective_cache_size = 768MB/g" $___PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#effective_cache_size = 4GB/effective_cache_size = 768MB/g" $__PG_CONF__/postgresql.conf
 
 # [maintenance_work_mem] 총메모리GB x 50MB = 2GB x 50MB = 100MB
-sed -i.bak -r "s/#maintenance_work_mem = 64MB/maintenance_work_mem = 64MB/g" $___PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#maintenance_work_mem = 64MB/maintenance_work_mem = 64MB/g" $__PG_CONF__/postgresql.conf
 
 # [checkpoint_completion_target]
-sed -i.bak -r "s/#checkpoint_completion_target = 0.5/checkpoint_completion_target = 0.9/g" $___PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#checkpoint_completion_target = 0.5/checkpoint_completion_target = 0.9/g" $__PG_CONF__/postgresql.conf
 
 # [wal_buffers] shared_buffers의 1/32 수준이나, -1로 설정하면 shared_buffers에 따라 자동 조정
-sed -i.bak -r "s/#wal_buffers = -1/wal_buffers = 7864kB/g" $___PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#wal_buffers = -1/wal_buffers = 7864kB/g" $__PG_CONF__/postgresql.conf
 
 # [default_statistics_target]
-sed -i.bak -r "s/#default_statistics_target = 100/default_statistics_target = 100/g" $___PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#default_statistics_target = 100/default_statistics_target = 100/g" $__PG_CONF__/postgresql.conf
 
 # [random_page_cost] HDD or SSD에 따라 값이 달라짐
-sed -i.bak -r "s/#random_page_cost = 4.0/random_page_cost = 4.0/g" $___PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#random_page_cost = 4.0/random_page_cost = 4.0/g" $__PG_CONF__/postgresql.conf
 
 # [effective_io_concurrency] HDD or SSD에 따라 값이 달라짐
-sed -i.bak -r "s/#effective_io_concurrency = 1/effective_io_concurrency = 2/g" $___PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#effective_io_concurrency = 1/effective_io_concurrency = 2/g" $__PG_CONF__/postgresql.conf
 
 # [work_mem]
-sed -i.bak -r "s/#work_mem = 4MB/work_mem = 1310kB/g" $___PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#work_mem = 4MB/work_mem = 1310kB/g" $__PG_CONF__/postgresql.conf
 
 # [min_wal_size]
-sed -i.bak -r "s/min_wal_size = 80MB/min_wal_size = 1GB/g" $___PG_CONF__/postgresql.conf
+sed -i.bak -r "s/min_wal_size = 80MB/min_wal_size = 1GB/g" $__PG_CONF__/postgresql.conf
 
 # [max_wal_size]
-sed -i.bak -r "s/max_wal_size = 1GB/max_wal_size = 4GB/g" $___PG_CONF__/postgresql.conf
+sed -i.bak -r "s/max_wal_size = 1GB/max_wal_size = 4GB/g" $__PG_CONF__/postgresql.conf
 
 #------------------------------------------------------------------------------
 # 스트리밍 replication 설정
 #------------------------------------------------------------------------------
-sed -i.bak -r "s/#wal_level = replica/wal_level = replica/g" $___PG_CONF__/postgresql.conf
-sed -i.bak -r "s/#max_wal_senders = 10/max_wal_senders = 10/g" $___PG_CONF__/postgresql.conf
-sed -i.bak -r "s/#wal_keep_segments = 0/wal_keep_segments = 32/g" $___PG_CONF__/postgresql.conf
-sed -i.bak -r "s/#wal_log_hints = off/wal_log_hints = on/g" $___PG_CONF__/postgresql.conf
-sed -i.bak -r "s/#max_replication_slots = 10/max_replication_slots = 10/g" $___PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#wal_level = replica/wal_level = replica/g" $__PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#max_wal_senders = 10/max_wal_senders = 10/g" $__PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#wal_keep_segments = 0/wal_keep_segments = 32/g" $__PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#wal_log_hints = off/wal_log_hints = on/g" $__PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#max_replication_slots = 10/max_replication_slots = 10/g" $__PG_CONF__/postgresql.conf
 
-sed -i.bak -r "s/#archive_mode = off/archive_mode = on/g" $___PG_CONF__/postgresql.conf
-sed -i.bak -r "s/#archive_timeout = 0/archive_timeout = 120/g" $___PG_CONF__/postgresql.conf
-echo "archive_command = 'cp %p /postgresql/archive/arch_%f.arc'" >> $___PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#archive_mode = off/archive_mode = on/g" $__PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#archive_timeout = 0/archive_timeout = 120/g" $__PG_CONF__/postgresql.conf
+echo "archive_command = 'cp %p /postgresql/archive/arch_%f.arc'" >> $__PG_CONF__/postgresql.conf
 
 # pgpool 온라인 복구 모드로 시작할 수 있도록
-sed -i.bak -r "s/#hot_standby = on/hot_standby = on/g" $___PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#hot_standby = on/hot_standby = on/g" $__PG_CONF__/postgresql.conf
      
 # 동기화 방식을 쓸 경우 아래 활성화. default 비동기 방식임
-#sed -i.bak -r "s/#synchronous_commit = on/synchronous_commit = on/g" $___PG_CONF__/postgresql.conf
-#sed -i.bak -r "s/#synchronous_standby_names = ''/synchronous_standby_names = '*'/g" $___PG_CONF__/postgresql.conf
+#sed -i.bak -r "s/#synchronous_commit = on/synchronous_commit = on/g" $__PG_CONF__/postgresql.conf
+#sed -i.bak -r "s/#synchronous_standby_names = ''/synchronous_standby_names = '*'/g" $__PG_CONF__/postgresql.conf
 
 
 
 #------------------------------------------------------------------------------
 # pg_hba.conf 설정
 #------------------------------------------------------------------------------
-cat > $___PG_CONF__/pg_hba.conf << EOF
+cat > $__PG_CONF__/pg_hba.conf << EOF
 # "local" is for Unix domain socket connections only
 local   all             all                                     trust
 # IPv4 local connections:
@@ -251,7 +251,7 @@ host    all             all             172.27.0.0/16           trust
 EOF
 
 
-sed -i.bak -r "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" $___PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" $__PG_CONF__/postgresql.conf
 # [변경전] 127.0.0.1:5432          0.0.0.0:*               LISTEN      24517/postgres
 # [변경후] 0.0.0.0:5432            0.0.0.0:*               LISTEN      26412/postgres
 

@@ -9,6 +9,7 @@ exec > >(logger -i -p local1.info) 2>&1
 #------------------------------------------------------------------------------
 SSH_KEY=ssh_private_key
 PG_CONF=/etc/postgresql/11/main
+__PG_LOG__="/var/log/postgresql/postgresql-11-main.log"
 
 
 DEST_NODE_HOST="$1"
@@ -28,7 +29,7 @@ fi
 
 ## Start Standby node
 ssh -T -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null postgres@$DEST_NODE_HOST -i ~/.ssh/${SSH_KEY} "
-    $PGHOME/bin/pg_ctl -l /dev/null -w -D $PG_CONF start
+    $PGHOME/bin/pg_ctl -l ${__PG_LOG__} -w -D $PG_CONF start
 "
 
 if [ $? -ne 0 ]; then

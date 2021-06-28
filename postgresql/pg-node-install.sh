@@ -37,6 +37,11 @@ JNlybJPjd1A/mnWQRC0CQQCH0O9rmND4OvYH+8oQM8x5d6iisvWvG84sCrmAigYV
 -----END RSA PRIVATE KEY-----"
 
 
+__PG_HOME__="/var/lib/postgresql"
+__PG_BIN__="/usr/lib/postgresql/11/bin"
+__PG_CONF__="/etc/postgresql/11/main"
+__PG_LOG__="/var/log/postgresql/postgresql-11-main.log"
+
 echo -n 'postgresql node 설정입니다.'
 echo -n 'DB 전용 DISK 마운트는 했나요? 했다면 엔터. 안했다면 ctrl-c.'
 read
@@ -76,6 +81,25 @@ useradd -s /bin/bash -d /home/replica -m replica # 삭제해도 되지 않을까
 useradd -s /bin/bash -d /home/pgpool -m pgpool	 # 삭제해도 되지 않을까?
 echo "postgres ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/postgres
 
+
+
+#------------------------------------------------------------------------------
+# postgresql 부팅시 자동 실행 제거 및 start, stop 전용 스크립트 제공
+#------------------------------------------------------------------------------
+systemctl disable postgresql
+
+cat > $___PG_HOME__/start-pg.sh << EOF
+$___PG_BIN__/pg_ctl start -D $___PG_CONF__ -l __PG_LOG__
+EOF
+
+cat > $___PG_HOME__/stop-pg.sh << EOF
+$___PG_BIN__/pg_ctl stop -D $___PG_CONF__ -m smart
+EOF
+chmod 700 $___PG_HOME__/*.sh
+chown postgres:postgres $___PG_HOME__/*.sh
+
+
+
 #------------------------------------------------------------------------------
 # ssh 키 sharing : root -> postgres, postgres <-> postgres
 #------------------------------------------------------------------------------
@@ -84,17 +108,17 @@ ${__SSH_PRIVATE_KEY__}
 EOF
 chmod 600 .ssh/*
 
-cp -R .ssh /var/lib/postgresql
-chown -R postgres:postgres /var/lib/postgresql/.ssh
-chmod 600 /var/lib/postgresql/.ssh/*
-chmod 700 /var/lib/postgresql/.ssh
+cp -R .ssh $___PG_HOME__
+chown -R postgres:postgres $___PG_HOME__/.ssh
+chmod 600 $___PG_HOME__/.ssh/*
+chmod 700 $___PG_HOME__/.ssh
 
 
 
 #------------------------------------------------------------------------------
 # .pgpass for postgres : PG 명령어들을 interactive 없이 바로 실행할 수 있도록...
 #------------------------------------------------------------------------------
-cat > /var/lib/postgresql/.pgpass << EOF
+cat > $___PG_HOME__/.pgpass << EOF
 pg-1:5432:replication:replica:imdb21**
 pg-2:5432:replication:replica:imdb21**
 pg-3:5432:replication:replica:imdb21**
@@ -103,8 +127,8 @@ pg-2:5432:postgres:postgres:imdb21**
 pg-3:5432:postgres:postgres:imdb21**
 EOF
 
-chmod 600 /var/lib/postgresql/.pgpass
-chown postgres:postgres /var/lib/postgresql/.pgpass
+chmod 600 $___PG_HOME__/.pgpass
+chown postgres:postgres $___PG_HOME__/.pgpass
 
 
 #------------------------------------------------------------------------------
@@ -144,7 +168,7 @@ systemctl stop postgresql
 mkdir -p /postgresql/archive
 mv /var/lib/postgresql/11/main /postgresql
 chown -R postgres:postgres /postgresql
-sed -i.bak -r "s#data_directory = '/var/lib/postgresql/11/main'#data_directory = '/postgresql/main'#g" /etc/postgresql/11/main/postgresql.conf
+sed -i.bak -r "s#data_directory = '/var/lib/postgresql/11/main'#data_directory = '/postgresql/main'#g" $___PG_CONF__/postgresql.conf
 
 
 
@@ -152,64 +176,64 @@ sed -i.bak -r "s#data_directory = '/var/lib/postgresql/11/main'#data_directory =
 # 성능 튜닝
 #------------------------------------------------------------------------------
 # [shared_buffers] 총메모리의 25% 수준: 2GB는 512MB
-sed -i.bak -r "s/shared_buffers = 128MB/shared_buffers = 256MB/g" /etc/postgresql/11/main/postgresql.conf
+sed -i.bak -r "s/shared_buffers = 128MB/shared_buffers = 256MB/g" $___PG_CONF__/postgresql.conf
 
 # [effective_cache_size] 총메모리의 50% 수준: 2GB는 1GB
-sed -i.bak -r "s/#effective_cache_size = 4GB/effective_cache_size = 768MB/g" /etc/postgresql/11/main/postgresql.conf
+sed -i.bak -r "s/#effective_cache_size = 4GB/effective_cache_size = 768MB/g" $___PG_CONF__/postgresql.conf
 
 # [maintenance_work_mem] 총메모리GB x 50MB = 2GB x 50MB = 100MB
-sed -i.bak -r "s/#maintenance_work_mem = 64MB/maintenance_work_mem = 64MB/g" /etc/postgresql/11/main/postgresql.conf
+sed -i.bak -r "s/#maintenance_work_mem = 64MB/maintenance_work_mem = 64MB/g" $___PG_CONF__/postgresql.conf
 
 # [checkpoint_completion_target]
-sed -i.bak -r "s/#checkpoint_completion_target = 0.5/checkpoint_completion_target = 0.9/g" /etc/postgresql/11/main/postgresql.conf
+sed -i.bak -r "s/#checkpoint_completion_target = 0.5/checkpoint_completion_target = 0.9/g" $___PG_CONF__/postgresql.conf
 
 # [wal_buffers] shared_buffers의 1/32 수준이나, -1로 설정하면 shared_buffers에 따라 자동 조정
-sed -i.bak -r "s/#wal_buffers = -1/wal_buffers = 7864kB/g" /etc/postgresql/11/main/postgresql.conf
+sed -i.bak -r "s/#wal_buffers = -1/wal_buffers = 7864kB/g" $___PG_CONF__/postgresql.conf
 
 # [default_statistics_target]
-sed -i.bak -r "s/#default_statistics_target = 100/default_statistics_target = 100/g" /etc/postgresql/11/main/postgresql.conf
+sed -i.bak -r "s/#default_statistics_target = 100/default_statistics_target = 100/g" $___PG_CONF__/postgresql.conf
 
 # [random_page_cost] HDD or SSD에 따라 값이 달라짐
-sed -i.bak -r "s/#random_page_cost = 4.0/random_page_cost = 4.0/g" /etc/postgresql/11/main/postgresql.conf
+sed -i.bak -r "s/#random_page_cost = 4.0/random_page_cost = 4.0/g" $___PG_CONF__/postgresql.conf
 
 # [effective_io_concurrency] HDD or SSD에 따라 값이 달라짐
-sed -i.bak -r "s/#effective_io_concurrency = 1/effective_io_concurrency = 2/g" /etc/postgresql/11/main/postgresql.conf
+sed -i.bak -r "s/#effective_io_concurrency = 1/effective_io_concurrency = 2/g" $___PG_CONF__/postgresql.conf
 
 # [work_mem]
-sed -i.bak -r "s/#work_mem = 4MB/work_mem = 1310kB/g" /etc/postgresql/11/main/postgresql.conf
+sed -i.bak -r "s/#work_mem = 4MB/work_mem = 1310kB/g" $___PG_CONF__/postgresql.conf
 
 # [min_wal_size]
-sed -i.bak -r "s/min_wal_size = 80MB/min_wal_size = 1GB/g" /etc/postgresql/11/main/postgresql.conf
+sed -i.bak -r "s/min_wal_size = 80MB/min_wal_size = 1GB/g" $___PG_CONF__/postgresql.conf
 
 # [max_wal_size]
-sed -i.bak -r "s/max_wal_size = 1GB/max_wal_size = 4GB/g" /etc/postgresql/11/main/postgresql.conf
+sed -i.bak -r "s/max_wal_size = 1GB/max_wal_size = 4GB/g" $___PG_CONF__/postgresql.conf
 
 #------------------------------------------------------------------------------
 # 스트리밍 replication 설정
 #------------------------------------------------------------------------------
-sed -i.bak -r "s/#wal_level = replica/wal_level = replica/g" /etc/postgresql/11/main/postgresql.conf
-sed -i.bak -r "s/#max_wal_senders = 10/max_wal_senders = 10/g" /etc/postgresql/11/main/postgresql.conf
-sed -i.bak -r "s/#wal_keep_segments = 0/wal_keep_segments = 32/g" /etc/postgresql/11/main/postgresql.conf
-sed -i.bak -r "s/#wal_log_hints = off/wal_log_hints = on/g" /etc/postgresql/11/main/postgresql.conf
-sed -i.bak -r "s/#max_replication_slots = 10/max_replication_slots = 10/g" /etc/postgresql/11/main/postgresql.conf
+sed -i.bak -r "s/#wal_level = replica/wal_level = replica/g" $___PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#max_wal_senders = 10/max_wal_senders = 10/g" $___PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#wal_keep_segments = 0/wal_keep_segments = 32/g" $___PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#wal_log_hints = off/wal_log_hints = on/g" $___PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#max_replication_slots = 10/max_replication_slots = 10/g" $___PG_CONF__/postgresql.conf
 
-sed -i.bak -r "s/#archive_mode = off/archive_mode = on/g" /etc/postgresql/11/main/postgresql.conf
-sed -i.bak -r "s/#archive_timeout = 0/archive_timeout = 120/g" /etc/postgresql/11/main/postgresql.conf
-echo "archive_command = 'cp %p /postgresql/archive/arch_%f.arc'" >> /etc/postgresql/11/main/postgresql.conf
+sed -i.bak -r "s/#archive_mode = off/archive_mode = on/g" $___PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#archive_timeout = 0/archive_timeout = 120/g" $___PG_CONF__/postgresql.conf
+echo "archive_command = 'cp %p /postgresql/archive/arch_%f.arc'" >> $___PG_CONF__/postgresql.conf
 
 # pgpool 온라인 복구 모드로 시작할 수 있도록
-sed -i.bak -r "s/#hot_standby = on/hot_standby = on/g" /etc/postgresql/11/main/postgresql.conf
+sed -i.bak -r "s/#hot_standby = on/hot_standby = on/g" $___PG_CONF__/postgresql.conf
      
 # 동기화 방식을 쓸 경우 아래 활성화. default 비동기 방식임
-#sed -i.bak -r "s/#synchronous_commit = on/synchronous_commit = on/g" /etc/postgresql/11/main/postgresql.conf
-#sed -i.bak -r "s/#synchronous_standby_names = ''/synchronous_standby_names = '*'/g" /etc/postgresql/11/main/postgresql.conf
+#sed -i.bak -r "s/#synchronous_commit = on/synchronous_commit = on/g" $___PG_CONF__/postgresql.conf
+#sed -i.bak -r "s/#synchronous_standby_names = ''/synchronous_standby_names = '*'/g" $___PG_CONF__/postgresql.conf
 
 
 
 #------------------------------------------------------------------------------
 # pg_hba.conf 설정
 #------------------------------------------------------------------------------
-cat > /etc/postgresql/11/main/pg_hba.conf << EOF
+cat > $___PG_CONF__/pg_hba.conf << EOF
 # "local" is for Unix domain socket connections only
 local   all             all                                     trust
 # IPv4 local connections:
@@ -227,7 +251,7 @@ host    all             all             172.27.0.0/16           trust
 EOF
 
 
-sed -i.bak -r "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/postgresql/11/main/postgresql.conf
+sed -i.bak -r "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" $___PG_CONF__/postgresql.conf
 # [변경전] 127.0.0.1:5432          0.0.0.0:*               LISTEN      24517/postgres
 # [변경후] 0.0.0.0:5432            0.0.0.0:*               LISTEN      26412/postgres
 
@@ -295,7 +319,6 @@ chmod 600 ~/.pcppass
 systemctl start postgresql
 
 
-
 #------------------------------------------------------------------------------
 # postgresql 재시작후 해야할 작업들
 #------------------------------------------------------------------------------
@@ -305,9 +328,9 @@ chmod 700 /root													 	# sudo -u postgres가 더이상 없음으로 원�
 
 
 #------------------------------------------------------------------------------
-# pgpool 재시작
+# postgresql 종료
 #------------------------------------------------------------------------------
-systemctl start pgpool2
+systemctl stop postgresql
 
 
 echo '생성결과는 다음의 명령어로 확인하세요'

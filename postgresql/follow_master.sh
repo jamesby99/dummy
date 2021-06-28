@@ -10,6 +10,8 @@ exec > >(logger -i -p local1.info) 2>&1
 #------------------------------------------------------------------------------
 SSH_KEY=ssh_private_key
 PG_CONF=/etc/postgresql/11/main
+__PG_LOG__="/var/log/postgresql/postgresql-11-main.log"
+
 
 # Special values:
 # 1)  %d = node id
@@ -108,7 +110,7 @@ EOT
             echo \"standby_mode = 'on'\" >> ${RECOVERYCONF}
         fi
 
-        ${PGHOME}/bin/pg_ctl -l /dev/null -w -D ${PG_CONF} start
+        ${PGHOME}/bin/pg_ctl -l ${__PG_LOG__} -w -D ${PG_CONF} start
 
     "
 
@@ -152,7 +154,7 @@ EOT
 
         # start Standby node on ${NODE_HOST}
         ssh -T -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
-                postgres@${NODE_HOST} -i ~/.ssh/${SSH_KEY} $PGHOME/bin/pg_ctl -l /dev/null -w -D ${PG_CONF} start
+                postgres@${NODE_HOST} -i ~/.ssh/${SSH_KEY} $PGHOME/bin/pg_ctl -l ${__PG_LOG__} -w -D ${PG_CONF} start
 
     fi
 

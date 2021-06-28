@@ -6,6 +6,7 @@
 #------------------------------------------------------------------------------
 SSH_KEY=ssh_private_key
 PG_CONF=/etc/postgresql/11/main
+__PG_LOG__="/var/log/postgresql/postgresql-11-main.log"
 
 set -o xtrace
 exec > >(logger -i -p local1.info) 2>&1

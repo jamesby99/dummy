@@ -89,11 +89,11 @@ echo "postgres ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/postgres
 systemctl disable postgresql
 
 cat > $__PG_HOME__/start-pg.sh << EOF
-$__PG_BIN__/pg_ctl start -D $__PG_CONF__ -l __PG_LOG__
+$__PG_BIN__/pg_ctl start -D $__PG_CONF__ -l $__PG_LOG__
 EOF
 
 cat > $__PG_HOME__/stop-pg.sh << EOF
-$__PG_BIN__/pg_ctl stop -D $__PG_CONF__ -m smart
+$__PG_BIN__/pg_ctl stop -D $__PG_CONF__ -m fast
 EOF
 chmod 700 $__PG_HOME__/*.sh
 chown postgres:postgres $__PG_HOME__/*.sh

@@ -8,6 +8,7 @@ exec > >(logger -i -p local1.info) 2>&1
 # 환경에 맞추어 수정해야 할 내용들
 #------------------------------------------------------------------------------
 SSH_KEY=ssh_private_key
+PG_CONF=/etc/postgresql/11/main
 
 PRIMARY_NODE_PGDATA="$1"
 DEST_NODE_HOST="$2"
@@ -64,14 +65,14 @@ EOT
 
     if [ ${PGVERSION} -ge 12 ]; then
         sed -i -e \"\\\$ainclude_if_exists = '$(echo ${RECOVERYCONF} | sed -e 's/\//\\\//g')'\" \
-               -e \"/^include_if_exists = '$(echo ${RECOVERYCONF} | sed -e 's/\//\\\//g')'/d\" ${DEST_NODE_PGDATA}/postgresql.conf
+               -e \"/^include_if_exists = '$(echo ${RECOVERYCONF} | sed -e 's/\//\\\//g')'/d\" ${PG_CONF}/postgresql.conf
         touch ${DEST_NODE_PGDATA}/standby.signal
     else
         echo \"standby_mode = 'on'\" >> ${RECOVERYCONF}
     fi
 
 #모든 node의 포트가 동일하므로 불필요함, 또한 postgres 위치도 틀림.
-#    sed -i \"s/#*port = .*/port = ${DEST_NODE_PORT}/\" ${DEST_NODE_PGDATA}/postgresql.conf
+#    sed -i \"s/#*port = .*/port = ${DEST_NODE_PORT}/\" ${PG_CONF}/postgresql.conf
 "
 
 if [ $? -ne 0 ]; then

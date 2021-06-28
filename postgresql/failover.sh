@@ -5,7 +5,7 @@
 # 환경에 맞추어 수정해야 할 내용들
 #------------------------------------------------------------------------------
 SSH_KEY=ssh_private_key
-
+PG_CONF=/etc/postgresql/11/main
 
 set -o xtrace
 exec > >(logger -i -p local1.info) 2>&1
@@ -77,7 +77,7 @@ fi
 logger -i -p local1.info failover.sh: Primary node is down, promote standby node ${NEW_MASTER_NODE_HOST}.
 
 ssh -T -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
-    postgres@${NEW_MASTER_NODE_HOST} -i ~/.ssh/${SSH_KEY} ${PGHOME}/bin/pg_ctl -D ${NEW_MASTER_NODE_PGDATA} -w promote
+    postgres@${NEW_MASTER_NODE_HOST} -i ~/.ssh/${SSH_KEY} ${PGHOME}/bin/pg_ctl -D ${PG_CONF} -w promote
 
 if [ $? -ne 0 ]; then
     logger -i -p local1.error failover.sh: new_master_host=$NEW_MASTER_NODE_HOST promote failed

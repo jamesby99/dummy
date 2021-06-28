@@ -8,6 +8,8 @@ exec > >(logger -i -p local1.info) 2>&1
 # 환경에 맞추어 수정해야 할 내용들
 #------------------------------------------------------------------------------
 SSH_KEY=ssh_private_key
+PG_CONF=/etc/postgresql/11/main
+
 
 DEST_NODE_HOST="$1"
 DEST_NODE_PGDATA="$2"
@@ -26,7 +28,7 @@ fi
 
 ## Start Standby node
 ssh -T -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null postgres@$DEST_NODE_HOST -i ~/.ssh/${SSH_KEY} "
-    $PGHOME/bin/pg_ctl -l /dev/null -w -D $DEST_NODE_PGDATA start
+    $PGHOME/bin/pg_ctl -l /dev/null -w -D $PG_CONF start
 "
 
 if [ $? -ne 0 ]; then

@@ -9,7 +9,7 @@ exec > >(logger -i -p local1.info) 2>&1
 # 환경에 맞추어 수정해야 할 내용들
 #------------------------------------------------------------------------------
 SSH_KEY=ssh_private_key
-
+PG_CONF=/etc/postgresql/11/main
 
 # Special values:
 # 1)  %d = node id
@@ -36,6 +36,7 @@ OLD_MASTER_NODE_ID="$7"
 OLD_PRIMARY_NODE_ID="$8"
 NEW_MASTER_NODE_PORT="$9"
 NEW_MASTER_NODE_PGDATA="${10}"
+
 
 PGHOME=/usr/lib/postgresql/11
 ARCHIVEDIR=/postgresql/archive
@@ -66,7 +67,7 @@ fi
 
 ## Check the status of Standby
 ssh -T -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
-postgres@${NODE_HOST} -i ~/.ssh/${SSH_KEY} ${PGHOME}/bin/pg_ctl -w -D ${NODE_PGDATA} status
+postgres@${NODE_HOST} -i ~/.ssh/${SSH_KEY} ${PGHOME}/bin/pg_ctl -w -D ${PG_CONF} status
 
 
 ## If Standby is running, synchronize it with the new Primary.
@@ -86,7 +87,7 @@ if [ $? -eq 0 ]; then
 
         set -o errexit
 
-        ${PGHOME}/bin/pg_ctl -w -m f -D ${NODE_PGDATA} stop
+        ${PGHOME}/bin/pg_ctl -w -m f -D ${PG_CONF} stop
 
         ${PGHOME}/bin/pg_rewind -D ${NODE_PGDATA} --source-server=\"user=postgres host=${NEW_MASTER_NODE_HOST} port=${NEW_MASTER_NODE_PORT}\"
 
@@ -101,13 +102,13 @@ EOT
 
         if [ ${PGVERSION} -ge 12 ]; then
             sed -i -e \"\\\$ainclude_if_exists = '$(echo ${RECOVERYCONF} | sed -e 's/\//\\\//g')'\" \
-                   -e \"/^include_if_exists = '$(echo ${RECOVERYCONF} | sed -e 's/\//\\\//g')'/d\" ${NODE_PGDATA}/postgresql.conf
+                   -e \"/^include_if_exists = '$(echo ${RECOVERYCONF} | sed -e 's/\//\\\//g')'/d\" ${PG_CONF}/postgresql.conf
             touch ${NODE_PGDATA}/standby.signal
         else
             echo \"standby_mode = 'on'\" >> ${RECOVERYCONF}
         fi
 
-        ${PGHOME}/bin/pg_ctl -l /dev/null -w -D ${NODE_PGDATA} start
+        ${PGHOME}/bin/pg_ctl -l /dev/null -w -D ${PG_CONF} start
 
     "
 
@@ -132,7 +133,7 @@ EOT
 
             if [ ${PGVERSION} -ge 12 ]; then
                 sed -i -e \"\\\$ainclude_if_exists = '$(echo ${RECOVERYCONF} | sed -e 's/\//\\\//g')'\" \
-                       -e \"/^include_if_exists = '$(echo ${RECOVERYCONF} | sed -e 's/\//\\\//g')'/d\" ${NODE_PGDATA}/postgresql.conf
+                       -e \"/^include_if_exists = '$(echo ${RECOVERYCONF} | sed -e 's/\//\\\//g')'/d\" ${PG_CONF}/postgresql.conf
                 touch ${NODE_PGDATA}/standby.signal
             else
                 echo \"standby_mode = 'on'\" >> ${RECOVERYCONF}
@@ -151,7 +152,7 @@ EOT
 
         # start Standby node on ${NODE_HOST}
         ssh -T -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
-                postgres@${NODE_HOST} -i ~/.ssh/${SSH_KEY} $PGHOME/bin/pg_ctl -l /dev/null -w -D ${NODE_PGDATA} start
+                postgres@${NODE_HOST} -i ~/.ssh/${SSH_KEY} $PGHOME/bin/pg_ctl -l /dev/null -w -D ${PG_CONF} start
 
     fi
 

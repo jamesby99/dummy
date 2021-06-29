@@ -88,6 +88,7 @@ echo "postgres ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/postgres
 #------------------------------------------------------------------------------
 systemctl disable postgresql
 systemctl disable pgpool2
+systemctl daemon-reload
 
 cat > $__PG_HOME__/start-pg.sh << EOF
 $__PG_BIN__/pg_ctl start -D $__PG_CONF__ -l $__PG_LOG__

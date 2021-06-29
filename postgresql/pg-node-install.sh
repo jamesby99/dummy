@@ -77,8 +77,8 @@ EOF
 # OS 사용자 생성 - ms app계정, replica (복제전용계정), postgres sudoer
 #------------------------------------------------------------------------------
 useradd -s /bin/bash -d /home/$__USER__ -m $__USER__
-useradd -s /bin/bash -d /home/replica -m replica # 삭제해도 되지 않을까?
-useradd -s /bin/bash -d /home/pgpool -m pgpool	 # 삭제해도 되지 않을까?
+#useradd -s /bin/bash -d /home/replica -m replica # 삭제해도 되지 않을까?
+#useradd -s /bin/bash -d /home/pgpool -m pgpool	 # 삭제해도 되지 않을까?
 echo "postgres ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/postgres
 
 
@@ -326,7 +326,7 @@ systemctl start postgresql
 #------------------------------------------------------------------------------
 # postgresql 재시작후 해야할 작업들
 #------------------------------------------------------------------------------
-echo -e "\n" | sudo -u postgres psql -c "SELECT * FROM pg_create_physical_replication_slot('replication_slot');"	# replication_slot 생성
+#echo -e "\n" | sudo -u postgres psql -c "SELECT * FROM pg_create_physical_replication_slot('replication_slot');"	# replication_slot 생성
 sudo -u postgres psql template1 -c "CREATE EXTENSION pgpool_recovery;"							# ?
 chmod 700 /root													 	# sudo -u postgres가 더이상 없음으로 원복
 

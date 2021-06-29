@@ -87,6 +87,7 @@ echo "postgres ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/postgres
 # postgresql 부팅시 자동 실행 제거 및 start, stop 전용 스크립트 제공
 #------------------------------------------------------------------------------
 systemctl disable postgresql
+systemctl disable pgpool2
 
 cat > $__PG_HOME__/start-pg.sh << EOF
 $__PG_BIN__/pg_ctl start -D $__PG_CONF__ -l $__PG_LOG__
@@ -207,6 +208,8 @@ sed -i.bak -r "s/min_wal_size = 80MB/min_wal_size = 1GB/g" $__PG_CONF__/postgres
 
 # [max_wal_size]
 sed -i.bak -r "s/max_wal_size = 1GB/max_wal_size = 4GB/g" $__PG_CONF__/postgresql.conf
+
+
 
 #------------------------------------------------------------------------------
 # 스트리밍 replication 설정

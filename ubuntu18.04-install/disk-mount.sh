@@ -1,15 +1,24 @@
 #!/usr/bin/env bash
 
-mkdir -p /redis-rdb
+if [ -z "$1" ] || [ -z "$2" ] ; then
+	echo ">>>>> usage	: disk-mount.sh mount-path owner"
+	echo ">>>>> example	: disk-mount.sh /redis-rdb redis"
+	exit
+fi
 
-REDIS_DISK=$(lsblk -f | tail -n 1)
+MOUNT_PATH=$1
+OWNER=$2
+
+mkdir -p ${MOUNT_PATH}
+
+MOUNT_DISK=$(lsblk -f | tail -n 1)
 
 #interactive menu에서 stdin 처리
-echo -e "n\n\n\n\n\ng\nw\n" | fdisk /dev/${REDIS_DISK}
-echo -e "y\n" | mkfs.ext4 /dev/${REDIS_DISK}
+echo -e "n\n\n\n\n\ng\nw\n" | fdisk /dev/${MOUNT_DISK}
+echo -e "y\n" | mkfs.ext4 /dev/${MOUNT_DISK}
 
-UUID=$(blkid -o value /dev/${REDIS_DISK} | head -n 1)
-echo "UUID=${UUID} /redis-rdb ext4 defaults 0 0" >> /etc/fstab
+UUID=$(blkid -o value /dev/${MOUNT_DISK} | head -n 1)
+echo "UUID=${UUID} ${MOUNT_PATH} ext4 defaults 0 0" >> /etc/fstab
 
-chown -R redis:redis /redis-rdb
+chown -R OWNER:OWNER ${MOUNT_PATH}
 mount -a

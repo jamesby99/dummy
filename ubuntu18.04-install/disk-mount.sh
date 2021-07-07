@@ -20,5 +20,6 @@ echo -e "y\n" | mkfs.ext4 /dev/${MOUNT_DISK}
 UUID=$(blkid -o value /dev/${MOUNT_DISK} | head -n 1)
 echo "UUID=${UUID} ${MOUNT_PATH} ext4 defaults 0 0" >> /etc/fstab
 
-chown -R OWNER:OWNER ${MOUNT_PATH}
 mount -a
+chown -R ${OWNER}:${OWNER} ${MOUNT_PATH}
+

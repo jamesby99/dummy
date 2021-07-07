@@ -11,8 +11,8 @@
 #------------------------------------------------------------------------------
 
 if [ -z "$1" ] || [ -z "$2" ] ; then
-	echo ">>>>> usage	: postgresql.sh <MS app 계정> <node 번호>"
-	echo ">>>>> example	: postgresql.sh projection 1"
+	echo ">>>>> usage	: pg-node-install.sh <MS app 계정> <node 번호>"
+	echo ">>>>> example	: pg-node-install.sh projection 1"
 	exit
 fi
 

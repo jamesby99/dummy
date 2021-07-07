@@ -8,6 +8,7 @@ if [ -z "$1" ] || [ -z "$2" ] ; then
 fi
 
 __MYID__=$1				# zookeeper myid 주입
+__MYIP__=$2
 
 __KAFKA_VER__=2.5.1			#https://downloads.apache.org/kafka 에서 현재 제공 버전이 맞는지 확인 필요
 __SCOLA_VER__=2.13

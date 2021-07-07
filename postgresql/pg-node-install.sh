@@ -7,6 +7,7 @@
 # 3. ssh private key값 수정
 # 4. vCore, Memory, Disk Type에 따른 성능 튜닝 values 수정
 # 5. virtual IP(__VIP__) 값 수정
+# 6. pg_hba 값 
 #------------------------------------------------------------------------------
 
 if [ -z "$1" ] || [ -z "$2" ] ; then
@@ -243,8 +244,8 @@ local   replication     all                                     trust
 host    replication     all             127.0.0.1/32            trust
 host    replication     all             ::1/128                 trust
 # same subnet
-host    replication     all             172.27.0.0/16           trust
-host    all             all             172.27.0.0/16           trust
+host    replication     all             10.213.194.1/25         trust
+host    all             all             10.213.194.1/25         trust
 EOF
 
 

@@ -4,7 +4,7 @@
 # [ 실행전 TODO, 꼭 확인할 것 ]
 # 1. DB 전용 Volume을 추가 작업을 사전에 해서 /postgresql/main 에 마운트
 # 2. /etc/hosts에 적용할 IP주소 수정
-# 3. ssh public key값 수정
+# 3. ssh private key값 수정
 # 4. vCore, Memory, Disk Type에 따른 성능 튜닝 values 수정
 # 5. virtual IP(__VIP__) 값 수정
 #------------------------------------------------------------------------------
@@ -19,21 +19,33 @@ __USER__=$1
 __NODE_NO__=$2
 
 
-__VIP__="172.27.0.12"
+__VIP__="10.213.194.39"
 __SSH_PRIVATE_KEY__="-----BEGIN RSA PRIVATE KEY-----
-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
+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
 -----END RSA PRIVATE KEY-----"
 
 
@@ -66,9 +78,9 @@ apt install iputils-arping -y
 #-----------------------------------------------------------------------------
 cat >> /etc/hosts << EOF
 # Postgresql DB cluster
-172.27.0.118      pg-1
-172.27.0.164      pg-2
-172.27.0.153      pg-3
+10.213.194.111    pg-1
+10.213.194.112    pg-2
+10.213.194.113    pg-3
 $__VIP__          pg-vip
 EOF
 
@@ -177,37 +189,18 @@ sed -i.bak -r "s#data_directory = '/var/lib/postgresql/11/main'#data_directory =
 #------------------------------------------------------------------------------
 # 성능 튜닝
 #------------------------------------------------------------------------------
-# [shared_buffers] 총메모리의 25% 수준: 2GB는 512MB
-sed -i.bak -r "s/shared_buffers = 128MB/shared_buffers = 256MB/g" $__PG_CONF__/postgresql.conf
+# https://pgtune.leopard.in.ua/#/ 에 값을 추가하여 작성할 것
 
-# [effective_cache_size] 총메모리의 50% 수준: 2GB는 1GB
-sed -i.bak -r "s/#effective_cache_size = 4GB/effective_cache_size = 768MB/g" $__PG_CONF__/postgresql.conf
-
-# [maintenance_work_mem] 총메모리GB x 50MB = 2GB x 50MB = 100MB
-sed -i.bak -r "s/#maintenance_work_mem = 64MB/maintenance_work_mem = 64MB/g" $__PG_CONF__/postgresql.conf
-
-# [checkpoint_completion_target]
+sed -i.bak -r "s/shared_buffers = 128MB/shared_buffers = 512MB/g" $__PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#effective_cache_size = 4GB/effective_cache_size = 1536MB/g" $__PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#maintenance_work_mem = 64MB/maintenance_work_mem = 128MB/g" $__PG_CONF__/postgresql.conf
 sed -i.bak -r "s/#checkpoint_completion_target = 0.5/checkpoint_completion_target = 0.9/g" $__PG_CONF__/postgresql.conf
-
-# [wal_buffers] shared_buffers의 1/32 수준이나, -1로 설정하면 shared_buffers에 따라 자동 조정
-sed -i.bak -r "s/#wal_buffers = -1/wal_buffers = 7864kB/g" $__PG_CONF__/postgresql.conf
-
-# [default_statistics_target]
+sed -i.bak -r "s/#wal_buffers = -1/wal_buffers = 16MB/g" $__PG_CONF__/postgresql.conf
 sed -i.bak -r "s/#default_statistics_target = 100/default_statistics_target = 100/g" $__PG_CONF__/postgresql.conf
-
-# [random_page_cost] HDD or SSD에 따라 값이 달라짐
 sed -i.bak -r "s/#random_page_cost = 4.0/random_page_cost = 4.0/g" $__PG_CONF__/postgresql.conf
-
-# [effective_io_concurrency] HDD or SSD에 따라 값이 달라짐
 sed -i.bak -r "s/#effective_io_concurrency = 1/effective_io_concurrency = 2/g" $__PG_CONF__/postgresql.conf
-
-# [work_mem]
-sed -i.bak -r "s/#work_mem = 4MB/work_mem = 1310kB/g" $__PG_CONF__/postgresql.conf
-
-# [min_wal_size]
+sed -i.bak -r "s/#work_mem = 4MB/work_mem = 2621kB/g" $__PG_CONF__/postgresql.conf
 sed -i.bak -r "s/min_wal_size = 80MB/min_wal_size = 1GB/g" $__PG_CONF__/postgresql.conf
-
-# [max_wal_size]
 sed -i.bak -r "s/max_wal_size = 1GB/max_wal_size = 4GB/g" $__PG_CONF__/postgresql.conf
 
 

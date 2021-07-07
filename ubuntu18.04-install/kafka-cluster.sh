@@ -2,8 +2,8 @@
 
 #3대인 경우 __MYID__ = 1 | 2 | 3
 if [ -z "$1" ]; then
-	echo ">>>>> usage	: kafka-cluster.sh my-id"
-	echo ">>>>> example	: kafka-cluster.sh 1"
+	echo ">>>>> usage	: kafka-cluster.sh my-id my-ip"
+	echo ">>>>> example	: kafka-cluster.sh 1 10.213.194.101"
 	exit
 fi
 
@@ -20,9 +20,9 @@ timedatectl set-timezone Asia/Seoul
 ###############################################################################
 echo '>>>>> /etc/hosts에 kafka cluster ip 반영'
 cat >> /etc/hosts <<EOF
-172.27.0.64 kafka1
-172.27.0.136 kafka2
-172.27.1.11 kafka3
+10.213.194.101 kafka1
+10.213.194.102 kafka2
+10.213.194.103 kafka3
 EOF
 
 ###############################################################################
@@ -81,7 +81,7 @@ auto.create.topics.enable=false
 
 listeners=PLAINTEXT://:9092
 # advertised.listeners는 각각의 노드의 접근 엔드포인트로 
-advertised.listeners=PLAINTEXT://172.27.0.64:9092
+advertised.listeners=PLAINTEXT://$__MYIP__:9092
 zookeeper.connect=kafka1:2181, kafka2:2181, kafka3:2181
 EOF
 sed -i.bak -r "s/broker.id=0/broker.id=$__MYID__/g" /opt/kafka/config/server.properties

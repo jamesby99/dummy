@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #3대인 경우 __MYID__ = 1 | 2 | 3
-if [ -z "$1" ]; then
+if [ -z "$1" ] || [ -z "$2" ] ; then
 	echo ">>>>> usage	: kafka-cluster.sh my-id my-ip"
 	echo ">>>>> example	: kafka-cluster.sh 1 10.213.194.101"
 	exit

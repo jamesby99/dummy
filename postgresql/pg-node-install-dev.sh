@@ -175,42 +175,53 @@ sed -i.bak -r "s#data_directory = '/var/lib/postgresql/11/main'#data_directory =
 
 
 #------------------------------------------------------------------------------
-# 성능 튜닝
+# 성능 튜닝 : 2vCore 2GB 기준
 #------------------------------------------------------------------------------
-# [shared_buffers] 총메모리의 25% 수준: 2GB는 512MB
-sed -i.bak -r "s/shared_buffers = 128MB/shared_buffers = 256MB/g" $__PG_CONF__/postgresql.conf
+# https://pgtune.leopard.in.ua/#/ 에 값을 추가하여 작성할 것
 
-# [effective_cache_size] 총메모리의 50% 수준: 2GB는 1GB
-sed -i.bak -r "s/#effective_cache_size = 4GB/effective_cache_size = 768MB/g" $__PG_CONF__/postgresql.conf
-
-# [maintenance_work_mem] 총메모리GB x 50MB = 2GB x 50MB = 100MB
-sed -i.bak -r "s/#maintenance_work_mem = 64MB/maintenance_work_mem = 64MB/g" $__PG_CONF__/postgresql.conf
-
-# [checkpoint_completion_target]
+sed -i.bak -r "s/max_connections = 100/max_connections = 350/g" $__PG_CONF__/postgresql.conf
+sed -i.bak -r "s/shared_buffers = 128MB/shared_buffers = 512MB/g" $__PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#effective_cache_size = 4GB/effective_cache_size = 1536MB/g" $__PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#maintenance_work_mem = 64MB/maintenance_work_mem = 128MB/g" $__PG_CONF__/postgresql.conf
 sed -i.bak -r "s/#checkpoint_completion_target = 0.5/checkpoint_completion_target = 0.9/g" $__PG_CONF__/postgresql.conf
-
-# [wal_buffers] shared_buffers의 1/32 수준이나, -1로 설정하면 shared_buffers에 따라 자동 조정
-sed -i.bak -r "s/#wal_buffers = -1/wal_buffers = 7864kB/g" $__PG_CONF__/postgresql.conf
-
-# [default_statistics_target]
+sed -i.bak -r "s/#wal_buffers = -1/wal_buffers = 16MB/g" $__PG_CONF__/postgresql.conf
 sed -i.bak -r "s/#default_statistics_target = 100/default_statistics_target = 100/g" $__PG_CONF__/postgresql.conf
-
-# [random_page_cost] HDD or SSD에 따라 값이 달라짐
-sed -i.bak -r "s/#random_page_cost = 4.0/random_page_cost = 4.0/g" $__PG_CONF__/postgresql.conf
-
-# [effective_io_concurrency] HDD or SSD에 따라 값이 달라짐
+sed -i.bak -r "s/#random_page_cost = 4.0/random_page_cost = 4/g" $__PG_CONF__/postgresql.conf
 sed -i.bak -r "s/#effective_io_concurrency = 1/effective_io_concurrency = 2/g" $__PG_CONF__/postgresql.conf
-
-# [work_mem]
-sed -i.bak -r "s/#work_mem = 4MB/work_mem = 1310kB/g" $__PG_CONF__/postgresql.conf
-
-# [min_wal_size]
+sed -i.bak -r "s/#work_mem = 4MB/work_mem = 1497kB/g" $__PG_CONF__/postgresql.conf
 sed -i.bak -r "s/min_wal_size = 80MB/min_wal_size = 1GB/g" $__PG_CONF__/postgresql.conf
-
-# [max_wal_size]
 sed -i.bak -r "s/max_wal_size = 1GB/max_wal_size = 4GB/g" $__PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#max_worker_processes = 8/max_worker_processes = 2/g" $__PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#max_parallel_workers_per_gather = 2/max_parallel_workers_per_gather = 1/g" $__PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#max_parallel_workers = 8/max_parallel_workers = 2/g" $__PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#max_parallel_maintenance_workers = 2/max_parallel_maintenance_workers = 1/g" $__PG_CONF__/postgresql.conf
 
 
+# 스펙 ----------------------------------------------
+# DB Version: 11
+# OS Type: linux
+# DB Type: web
+# Total Memory (RAM): 2 GB
+# CPUs num: 2
+# Connections num: 350
+# Data Storage: hdd
+# 권장 -----------------------------------------------
+# max_connections = 350
+# shared_buffers = 512MB
+# effective_cache_size = 1536MB
+# maintenance_work_mem = 128MB
+# checkpoint_completion_target = 0.9
+# wal_buffers = 16MB
+# default_statistics_target = 100
+# random_page_cost = 4
+# effective_io_concurrency = 2
+# work_mem = 1497kB
+# min_wal_size = 1GB
+# max_wal_size = 4GB
+# max_worker_processes = 2
+# max_parallel_workers_per_gather = 1
+# max_parallel_workers = 2
+# max_parallel_maintenance_workers = 1
 
 #------------------------------------------------------------------------------
 # 스트리밍 replication 설정

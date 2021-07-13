@@ -192,16 +192,16 @@ sed -i.bak -r "s#data_directory = '/var/lib/postgresql/11/main'#data_directory =
 #------------------------------------------------------------------------------
 # https://pgtune.leopard.in.ua/#/ 에 값을 추가하여 작성할 것
 
-sed -i.bak -r "s/max_connections = 100/max_connections = 120/g" $__PG_CONF__/postgresql.conf
+sed -i.bak -r "s/max_connections = 100/max_connections = 350/g" $__PG_CONF__/postgresql.conf
 sed -i.bak -r "s/shared_buffers = 128MB/shared_buffers = 512MB/g" $__PG_CONF__/postgresql.conf
 sed -i.bak -r "s/#effective_cache_size = 4GB/effective_cache_size = 1536MB/g" $__PG_CONF__/postgresql.conf
 sed -i.bak -r "s/#maintenance_work_mem = 64MB/maintenance_work_mem = 128MB/g" $__PG_CONF__/postgresql.conf
 sed -i.bak -r "s/#checkpoint_completion_target = 0.5/checkpoint_completion_target = 0.9/g" $__PG_CONF__/postgresql.conf
 sed -i.bak -r "s/#wal_buffers = -1/wal_buffers = 16MB/g" $__PG_CONF__/postgresql.conf
 sed -i.bak -r "s/#default_statistics_target = 100/default_statistics_target = 100/g" $__PG_CONF__/postgresql.conf
-sed -i.bak -r "s/#random_page_cost = 4.0/random_page_cost = 1.1/g" $__PG_CONF__/postgresql.conf
-sed -i.bak -r "s/#effective_io_concurrency = 1/effective_io_concurrency = 200/g" $__PG_CONF__/postgresql.conf
-sed -i.bak -r "s/#work_mem = 4MB/work_mem = 4369kB/g" $__PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#random_page_cost = 4.0/random_page_cost = 4/g" $__PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#effective_io_concurrency = 1/effective_io_concurrency = 2/g" $__PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#work_mem = 4MB/work_mem = 1497kB/g" $__PG_CONF__/postgresql.conf
 sed -i.bak -r "s/min_wal_size = 80MB/min_wal_size = 1GB/g" $__PG_CONF__/postgresql.conf
 sed -i.bak -r "s/max_wal_size = 1GB/max_wal_size = 4GB/g" $__PG_CONF__/postgresql.conf
 sed -i.bak -r "s/#max_worker_processes = 8/max_worker_processes = 2/g" $__PG_CONF__/postgresql.conf
@@ -209,25 +209,26 @@ sed -i.bak -r "s/#max_parallel_workers_per_gather = 2/max_parallel_workers_per_g
 sed -i.bak -r "s/#max_parallel_workers = 8/max_parallel_workers = 2/g" $__PG_CONF__/postgresql.conf
 sed -i.bak -r "s/#max_parallel_maintenance_workers = 2/max_parallel_maintenance_workers = 1/g" $__PG_CONF__/postgresql.conf
 
+
 # 스펙 ----------------------------------------------
 # DB Version: 11
 # OS Type: linux
 # DB Type: web
 # Total Memory (RAM): 2 GB
 # CPUs num: 2
-# Connections num: 120
-# Data Storage: ssd
+# Connections num: 350
+# Data Storage: hdd
 # 권장 -----------------------------------------------
-# max_connections = 120
+# max_connections = 350
 # shared_buffers = 512MB
 # effective_cache_size = 1536MB
 # maintenance_work_mem = 128MB
 # checkpoint_completion_target = 0.9
 # wal_buffers = 16MB
 # default_statistics_target = 100
-# random_page_cost = 1.1
-# effective_io_concurrency = 200
-# work_mem = 4369kB
+# random_page_cost = 4
+# effective_io_concurrency = 2
+# work_mem = 1497kB
 # min_wal_size = 1GB
 # max_wal_size = 4GB
 # max_worker_processes = 2

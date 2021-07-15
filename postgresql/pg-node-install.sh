@@ -361,6 +361,19 @@ chmod 700 /root													 	# sudo -u postgres가 더이상 없음으로 원�
 systemctl stop postgresql
 
 
+#------------------------------------------------------------------------------
+# log 분리
+#------------------------------------------------------------------------------
+mkdir /var/log/pgpool
+touch /var/log/pgpool/pgpool.log
+chown -R root:postgres /var/log/pgpool
+chmod -R 777 /var/log/pgpool
+echo 'local0.*                       /var/log/pgpool/pgpool.log' >> /etc/rsyslog.d/50-default.conf
+systemctl restart rsyslog.service
+
+
+#------------------------------------------------------------------------------
+echo '/etc/rsyslog.d/50-default.conf 에서 local0.none 추가 필요=> *.*;auth,authpriv.none,local0.none              -/var/log/syslog'
 echo '생성결과는 다음의 명령어로 확인하세요'
 echo 'su - postgres'
 echo 'psql -c "select * from pg_user;"'

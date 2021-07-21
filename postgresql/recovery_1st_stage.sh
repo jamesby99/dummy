@@ -83,9 +83,9 @@ if [ $? -ne 0 ]; then
 SELECT pg_drop_replication_slot('${REPL_SLOT_NAME}');
 EOQ
 
-    logger -i -p local0.error recovery_1st_stage: end: pg_basebackup failed. online recovery failed
+    logger -i -p local1.error recovery_1st_stage: end: pg_basebackup failed. online recovery failed
     exit 1
 fi
 
-logger -i -p local0.info recovery_1st_stage: end: recovery_1st_stage complete
+logger -i -p local1.info recovery_1st_stage: end: recovery_1st_stage complete
 exit 0

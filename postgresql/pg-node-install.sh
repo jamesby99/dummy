@@ -175,7 +175,7 @@ sudo -u postgres createdb db_order -O $__USER__
 #------------------------------------------------------------------------------
 systemctl stop pgpool2
 systemctl stop postgresql
-
+sleep 5
 
 #------------------------------------------------------------------------------
 # db 저장소 변경 - 사전 /postgresql에 disk가 마운트 되어 있어야 한다.

@@ -373,6 +373,19 @@ systemctl restart rsyslog.service
 
 
 #------------------------------------------------------------------------------
+# apt auto upgrade 끄기
+#------------------------------------------------------------------------------
+systemctl stop apt-daily.timer
+systemctl disable apt-daily.timer
+systemctl disable apt-daily.service
+
+systemctl stop apt-daily-upgrade.timer
+systemctl disable apt-daily-upgrade.timer
+systemctl disable apt-daily-upgrade.service
+
+systemctl daemon-reload
+
+#------------------------------------------------------------------------------
 echo '/etc/rsyslog.d/50-default.conf 에서 local0.none 추가 필요=> *.*;auth,authpriv.none,local0.none              -/var/log/syslog'
 echo '생성결과는 다음의 명령어로 확인하세요'
 echo 'su - postgres'

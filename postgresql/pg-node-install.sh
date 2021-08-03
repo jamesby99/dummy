@@ -392,3 +392,8 @@ echo 'su - postgres'
 echo 'psql -c "select * from pg_user;"'
 echo 'psql -l'
 echo 'psql -c "show data_directory;"' #변경 디렉토리 확인
+
+echo '#------------------------------------------------------------------------------'
+echo 'WAL 파일 주기적 자동 삭제 등록 필요'
+echo 'crontab -e'
+echo '00 3 * * * find /postgresql/archive/* -mtime +14 -exec rm -rf {} \;'

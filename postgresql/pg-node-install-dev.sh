@@ -4,9 +4,10 @@
 # [ 실행전 TODO, 꼭 확인할 것 ]
 # 1. DB 전용 Volume을 추가 작업을 사전에 해서 /postgresql/main 에 마운트
 # 2. /etc/hosts에 적용할 IP주소 수정
-# 3. ssh public key값 수정
+# 3. ssh private key값 수정
 # 4. vCore, Memory, Disk Type에 따른 성능 튜닝 values 수정
 # 5. virtual IP(__VIP__) 값 수정
+# 6. pg_hba 값 
 #------------------------------------------------------------------------------
 
 if [ -z "$1" ] || [ -z "$2" ] ; then
@@ -155,6 +156,8 @@ sudo -u postgres createdb db_order -O $__USER__
 sudo -u postgres createdb db_configuration -O $__USER__
 sudo -u postgres createdb db_backupmgt -O $__USER__
 sudo -u postgres createdb db_servermgt -O $__USER__
+sudo -u postgres createdb db_monitoring -O $__USER__
+sudo -u postgres createdb db_admin -O $__USER__
 
 
 #------------------------------------------------------------------------------
@@ -162,6 +165,7 @@ sudo -u postgres createdb db_servermgt -O $__USER__
 #------------------------------------------------------------------------------
 systemctl stop pgpool2
 systemctl stop postgresql
+sleep 5
 
 
 #------------------------------------------------------------------------------
@@ -347,9 +351,40 @@ chmod 700 /root													 	# sudo -u postgres가 더이상 없음으로 원�
 #------------------------------------------------------------------------------
 systemctl stop postgresql
 
+#------------------------------------------------------------------------------
+# log 분리
+#------------------------------------------------------------------------------
+mkdir /var/log/pgpool
+touch /var/log/pgpool/pgpool.log
+chown -R root:postgres /var/log/pgpool
+chmod -R 777 /var/log/pgpool
+echo 'local0.*                       /var/log/pgpool/pgpool.log' >> /etc/rsyslog.d/50-default.conf
+systemctl restart rsyslog.service
 
+
+#------------------------------------------------------------------------------
+# apt auto upgrade 끄기
+#------------------------------------------------------------------------------
+systemctl stop apt-daily.timer
+systemctl disable apt-daily.timer
+systemctl disable apt-daily.service
+
+systemctl stop apt-daily-upgrade.timer
+systemctl disable apt-daily-upgrade.timer
+systemctl disable apt-daily-upgrade.service
+
+systemctl daemon-reload
+
+
+#------------------------------------------------------------------------------
+echo '/etc/rsyslog.d/50-default.conf 에서 local0.none 추가 필요=> *.*;auth,authpriv.none,local0.none              -/var/log/syslog'
 echo '생성결과는 다음의 명령어로 확인하세요'
 echo 'su - postgres'
 echo 'psql -c "select * from pg_user;"'
 echo 'psql -l'
 echo 'psql -c "show data_directory;"' #변경 디렉토리 확인
+
+echo '#------------------------------------------------------------------------------'
+echo 'WAL 파일 주기적 자동 삭제 등록 필요'
+echo 'crontab -e'
+echo '00 3 * * * find /postgresql/archive/* -mtime +14 -exec rm -rf {} \;'

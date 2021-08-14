@@ -217,7 +217,7 @@ sed -i.bak -r "s/#max_parallel_maintenance_workers = 2/max_parallel_maintenance_
 # Total Memory (RAM): 2 GB
 # CPUs num: 2
 # Connections num: 350
-# Data Storage: hdd
+# Data Storage: SSD
 # 권장 -----------------------------------------------
 # max_connections = 350
 # shared_buffers = 512MB
@@ -226,8 +226,8 @@ sed -i.bak -r "s/#max_parallel_maintenance_workers = 2/max_parallel_maintenance_
 # checkpoint_completion_target = 0.9
 # wal_buffers = 16MB
 # default_statistics_target = 100
-# random_page_cost = 4
-# effective_io_concurrency = 2
+# random_page_cost = 1.1
+# effective_io_concurrency = 200
 # work_mem = 1497kB
 # min_wal_size = 1GB
 # max_wal_size = 4GB
@@ -235,6 +235,10 @@ sed -i.bak -r "s/#max_parallel_maintenance_workers = 2/max_parallel_maintenance_
 # max_parallel_workers_per_gather = 1
 # max_parallel_workers = 2
 # max_parallel_maintenance_workers = 1
+
+# 참고: HDD
+# random_page_cost = 4
+# effective_io_concurrency = 2
 
 #------------------------------------------------------------------------------
 # 스트리밍 replication 설정

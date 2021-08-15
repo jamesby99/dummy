@@ -106,7 +106,7 @@ systemctl daemon-reload
 cat > $__PG_HOME__/start-pg.sh << EOF
 #!/bin/bash
 TMP_DIR="/var/run/postgresql/11-main.pg_stat_tmp"
-if [ -e $TMP_DIR ]; then
+if [ ! -e $TMP_DIR ]; then
   mkdir -p $TMP_DIR
 fi
 

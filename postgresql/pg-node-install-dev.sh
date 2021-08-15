@@ -92,12 +92,20 @@ systemctl disable pgpool2
 systemctl daemon-reload
 
 cat > $__PG_HOME__/start-pg.sh << EOF
+#!/bin/bash
+TMP_DIR="/var/run/postgresql/11-main.pg_stat_tmp"
+if [ ! -e $TMP_DIR ]; then
+  mkdir -p $TMP_DIR
+fi
+
 $__PG_BIN__/pg_ctl start -D $__PG_CONF__ -l $__PG_LOG__
 EOF
 
 cat > $__PG_HOME__/stop-pg.sh << EOF
+#!/bin/bash
 $__PG_BIN__/pg_ctl stop -D $__PG_CONF__ -m fast
 EOF
+
 chmod 700 $__PG_HOME__/*.sh
 chown postgres:postgres $__PG_HOME__/*.sh
 

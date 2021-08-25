@@ -18,7 +18,13 @@ echo "net.core.somaxconn=65535" >> /etc/sysctl.conf
 
 echo '>>>>> [Redis] THP 비활성화'
 echo never > /sys/kernel/mm/transparent_hugepage/enabled
-echo "echo never > /sys/kernel/mm/transparent_hugepage/enabled" >> /etc/rc.local
+cat >> /etc/rc.local << EOF
+#!/bin/bash
+echo never > /sys/kernel/mm/transparent_hugepage/enabled
+EOF
+chmod 755 /etc/rc.local
+systemctl enable rc.local.service
+
 
 echo '>>>>> [Redis] 필요 패키지(build-essential pkg-config gcc tcl) 설치'
 apt-get update -y

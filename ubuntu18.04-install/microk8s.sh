@@ -11,9 +11,9 @@ __USER__=$1
 # 설치 환경에 맞게 IP주소 셋팅 필요합니다.
 echo '>>>>>  cluster hostname 등록'
 cat >> /etc/hosts <<EOF
-172.27.0.33 k8s-1
-172.27.0.4 k8s-2
-172.27.0.126 k8s-3
+172.27.0.33 k1
+172.27.0.4 k2
+172.27.0.126 k3
 EOF
 
 # 공통 로그 설정
@@ -44,7 +44,7 @@ microk8s enable registry
 
 echo '>>>>> Docker 설치'
 apt install docker.io -y
-echo '{"insecure-registries" : ["k8s-1:32000"]}' >> /etc/docker/daemon.json
+echo '{"insecure-registries" : ["k1:32000"]}' >> /etc/docker/daemon.json
 systemctl restart docker
 
 # root가 아닌 계정에 microk8s 실행 권한 부여
@@ -57,7 +57,7 @@ if [ ! -z $__USER__ ]; then
 fi
 
 # register mirror 등록 및 containerd 재시작
-sed -i.bak -r 's/localhost:32000/k8s-1:32000/g' /var/snap/microk8s/current/args/containerd-template.toml
+sed -i.bak -r 's/localhost:32000/k1:32000/g' /var/snap/microk8s/current/args/containerd-template.toml
 echo '>>>>>  microk8s restart가 수동으로 필요합니다.'
 echo 'microk8s stop 하세요'
 echo 'microk8s start 하세요'

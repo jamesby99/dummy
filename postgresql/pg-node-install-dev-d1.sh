@@ -20,21 +20,33 @@ __USER__=$1
 __NODE_NO__=$2
 
 
-__VIP__="172.27.1.49"
+__VIP__="172.25.0.133"
 __SSH_PRIVATE_KEY__="-----BEGIN RSA PRIVATE KEY-----
-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
+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
 -----END RSA PRIVATE KEY-----"
 
 
@@ -65,13 +77,13 @@ apt install iputils-arping -y
 #------------------------------------------------------------------------------
 # /etc/hosts 설정
 #-----------------------------------------------------------------------------
-cat >> /etc/hosts << EOF
-# Postgresql DB cluster
-172.27.0.82      pg-1
-172.27.0.201      pg-2
-172.27.0.214      pg-3
-$__VIP__          pg-vip
-EOF
+# cat >> /etc/hosts << EOF
+# # Postgresql DB cluster
+# 172.27.0.82      pg-1
+# 172.27.0.201      pg-2
+# 172.27.0.214      pg-3
+# $__VIP__          pg-vip
+# EOF
 
 
 #------------------------------------------------------------------------------
@@ -273,8 +285,8 @@ local   replication     all                                     trust
 host    replication     all             127.0.0.1/32            trust
 host    replication     all             ::1/128                 trust
 # same subnet
-host    replication     all             172.27.0.0/16           trust
-host    all             all             172.27.0.0/16           trust
+host    replication     all             172.25.0.0/24           trust
+host    all             all             172.25.0.0/24           trust
 EOF
 
 
@@ -395,4 +407,4 @@ echo 'psql -c "show data_directory;"' #변경 디렉토리 확인
 echo '#------------------------------------------------------------------------------'
 echo 'WAL 파일 주기적 자동 삭제 등록 필요'
 echo 'crontab -e'
-echo '00 3 * * * find /postgresql/archive/* -mtime +3 -exec rm -rf {} \;'
+echo '00 3 * * * find /postgresql/archive/* -mtime +1 -exec rm -rf {} \;'

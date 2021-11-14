@@ -15,7 +15,7 @@ WEEK_AGO=`date -d '1 week ago' +"%Y%m%d"`
 
 source ${PROFILE}
 mkdir ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}
-for backup_database in $(cat /data/mysql_backup/shell_script/ulex15_db_backup_databases.txt); 
+for backup_database in $(cat /home/ubuntu/db-backup/shell-script/backup-db-list.txt); 
 do 
 
   echo `date +"%Y-%m-%d %H:%M:%S"`" @@@ "$backup_database" backup shell script start! @@@" >> ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}/${BAK_LOG_FILE_NM} 

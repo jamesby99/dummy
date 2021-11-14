@@ -1,7 +1,7 @@
 #!/bin/bash 
 
 # 편집후 사용 변수
-PROFILE= /home/ubuntu/.profile
+PROFILE='/home/ubuntu/.profile'
 MYSQL_HOST='localhost' 
 MYSQL_USER='db계정명'
 MYSQL_PASSWORD='db암호명'
@@ -11,8 +11,9 @@ BAK_FILE_NM=_db_backup_`date +"%Y%m%d"`.sql
 BAK_LOG_FILE_NM=0db_backup_`date +"%Y%m%d"`.log
 BAK_FILE_SAVE_PATH=/home/ubuntu/db-backup/backup-files 
 BAK_FILE_DIRECTORY=`date +"%Y%m%d"` 
-WEEK_AGO=`date -d '1 week ago' +"%Y%m%d"` 
+WEEK_AGO=`date -d '1 week ago' +"%Y%m%d"`
 
+source ${PROFILE}
 mkdir ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}
 
 for backup_database in $(cat /home/ubuntu/db-backup/shell-script/backup-db-list.txt); 

@@ -13,8 +13,8 @@ BAK_FILE_SAVE_PATH=/home/ubuntu/db-backup/backup-files
 BAK_FILE_DIRECTORY=`date +"%Y%m%d"` 
 WEEK_AGO=`date -d '1 week ago' +"%Y%m%d"` 
 
-source ${PROFILE}
 mkdir ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}
+
 for backup_database in $(cat /home/ubuntu/db-backup/shell-script/backup-db-list.txt); 
 do 
 
@@ -27,4 +27,4 @@ do
   
 done 
 
-rm -rf $BAK_FILE_SAVE_PATH/$WEEK_AGO
+rm -rf ${BAK_FILE_SAVE_PATH}/${WEEK_AGO}

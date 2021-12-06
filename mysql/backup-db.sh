@@ -21,8 +21,7 @@ do
 
   echo `date +"%Y-%m-%d %H:%M:%S"`" @@@ "$backup_database" backup shell script start! @@@" >> ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}/${BAK_LOG_FILE_NM} 
   
-  mysqldump --single-transaction --databases $backup_database -h ${MYSQL_HOST} -u ${MYSQL_USER} -p${MYSQL_PASSWORD} > ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}/$backup_database${BAK_FILE_NM} 2>&1 && 
-  echo `date +"%Y-%m-%d %H:%M:%S"`" @@@ "$backup_database" backup shell script end! @@@" >> ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}/${BAK_LOG_FILE_NM} 
+  mysqldump --single-transaction --databases $backup_database -h ${MYSQL_HOST} -u ${MYSQL_USER} -p${MYSQL_PASSWORD} > ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}/$backup_database${BAK_FILE_NM} 2>&1 && echo `date +"%Y-%m-%d %H:%M:%S"`" @@@ "$backup_database" backup shell script end! @@@" >> ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}/${BAK_LOG_FILE_NM} 
   
   echo "" >> ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}/${BAK_LOG_FILE_NM} 
   

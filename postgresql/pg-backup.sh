@@ -23,7 +23,7 @@ do
   
   echo `date +"%Y-%m-%d %H:%M:%S"`" @@@ "$backup_database" backup shell script start! @@@" >> ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}/${BAK_LOG_FILE_NM} 
   
-  pg_dump -h ${PG_HOST} -p ${PG_PORT} -d ${DATABASE} -U ${PG_USER}-F t > ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}/${DATABASE}${BAK_FILE_NM} 2>&1 && echo `date +"%Y-%m-%d %H:%M:%S"`" @@@ "$backup_database" backup shell script end! @@@" >> ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}/${BAK_LOG_FILE_NM} 
+  pg_dump -h ${PG_HOST} -p ${PG_PORT} -d ${DATABASE} -U ${PG_USER} -F t > ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}/${DATABASE}${BAK_FILE_NM} 2>&1 && echo `date +"%Y-%m-%d %H:%M:%S"`" @@@ "$backup_database" backup shell script end! @@@" >> ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}/${BAK_LOG_FILE_NM} 
   
   echo "" >> ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}/${BAK_LOG_FILE_NM} 
   

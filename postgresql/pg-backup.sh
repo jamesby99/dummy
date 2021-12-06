@@ -28,6 +28,8 @@ do
   
   echo "" >> ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}/${BAK_LOG_FILE_NM} 
   
+  gzip ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}/${DATABASE}${BAK_FILE_NM}
+  
 done 
 
 rm -rf ${BAK_FILE_SAVE_PATH}/${WEEK_AGO}

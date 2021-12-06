@@ -5,7 +5,7 @@ PROFILE='/root/.profile'
 PG_PORT=8282
 
 # 변수
-BAK_FILE_NM=_db_backup_`date +"%Y%m%d"`.tar 
+BAK_FILE_NM=_`date +"%Y%m%d"`.tar 
 BAK_LOG_FILE_NM=0db_backup_`date +"%Y%m%d"`.log
 BAK_FILE_SAVE_PATH=/root/db-backup/backup-files 
 BAK_FILE_DIRECTORY=`date +"%Y%m%d"` 
@@ -16,14 +16,14 @@ mkdir ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}
 
 for target in $(cat /root/db-backup/shell-script/backup-db-list.txt); 
 do 
-  pg_host=$(echo $target | cut -d ':' -f1)
-  backup_database=$(echo $target | cut -d ':' -f2)
-  echo $pg_host
-  echo $backup_database
+  PG_HOST=$(echo $target | cut -d ':' -f1)
+  PG_PORT=$(echo $target | cut -d ':' -f2)
+  DATABASE=$(echo $target | cut -d ':' -f3)
+  PG_USER=$(echo $target | cut -d ':' -f4)
   
   echo `date +"%Y-%m-%d %H:%M:%S"`" @@@ "$backup_database" backup shell script start! @@@" >> ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}/${BAK_LOG_FILE_NM} 
   
-  pg_dump -h ${pg_host} -p ${PG_PORT} -d "$backup_database" -U postgres -F t > ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}/$backup_database${BAK_FILE_NM} 2>&1 && echo `date +"%Y-%m-%d %H:%M:%S"`" @@@ "$backup_database" backup shell script end! @@@" >> ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}/${BAK_LOG_FILE_NM} 
+  pg_dump -h ${PG_HOST} -p ${PG_PORT} -d ${DATABASE} -U ${PG_USER}-F t > ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}/${DATABASE}${BAK_FILE_NM} 2>&1 && echo `date +"%Y-%m-%d %H:%M:%S"`" @@@ "$backup_database" backup shell script end! @@@" >> ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}/${BAK_LOG_FILE_NM} 
   
   echo "" >> ${BAK_FILE_SAVE_PATH}/${BAK_FILE_DIRECTORY}/${BAK_LOG_FILE_NM} 
   

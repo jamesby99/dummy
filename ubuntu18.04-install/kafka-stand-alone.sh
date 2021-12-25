@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
 
+if [ -z "$1" ] ; then
+	echo ">>>>> usage	: kafka-stand-alone.sh my-ip"
+	echo ">>>>> example	: kafka-cluster.sh 10.213.194.101"
+	exit
+fi
+
+__MYIP__=$1
+
 __MYID__=0         # zookeeper myid 주입
-__KAFKA_VER__=2.6.1
+__KAFKA_VER__=2.5.1
 __KAFKA__=kafka_2.13-$__KAFKA_VER__
 
 ###############################################################################
@@ -41,6 +49,11 @@ delete.topic.enable = true
 
 # topic create 단계 없이 자동 생성 기능 off (휴먼에러 방지)
 auto.create.topics.enable=false
+
+listeners=PLAINTEXT://:9092
+# advertised.listeners는 각각의 노드의 접근 엔드포인트로 
+advertised.listeners=PLAINTEXT://$__MYIP__:9092
+
 EOF
 sed -i.bak -r "s#/tmp/kafka-logs#/opt/kafka/storage/kafka-logs#g" /opt/kafka/config/server.properties
 

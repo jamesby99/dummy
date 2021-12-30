@@ -8,11 +8,6 @@
 # 3. 
 #------------------------------------------------------------------------------
 
-if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] ; then
-	echo ">>>>> usage	: mysql8.0-dpkg-noninteractive-full-delete.sh"
-	echo ">>>>> example	: mysql8.0-dpkg-noninteractive-full-delete.sh"
-	exit
-fi
 
 # stop mysql
 systemctl stop mysql

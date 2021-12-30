@@ -36,7 +36,7 @@ _BUNDLE_TAR=mysql-server_${_VERSION}-1ubuntu18.04_amd64.deb-bundle.tar
 
 
 # 압축해제
-if [ -f $_BUNDLE_TAR ] ; then
+if [ ! -e ${_BUNDLE_TAR} ] ; then
 	wget https://artfiles.org/mysql.com/Downloads/MySQL-8.0/${_BUNDLE_TAR}
 fi
 tar -xvf ./${_BUNDLE_TAR}

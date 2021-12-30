@@ -14,6 +14,8 @@ if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] ; then
 	exit
 fi
 
+# stop mysql
+systemctl stop mysql
 
 # noninteractive 설정 - 전체 완전 삭제
 debconf-set-selections <<< "mysql-community-server mysql-community-server/remove-data-dir boolean true"

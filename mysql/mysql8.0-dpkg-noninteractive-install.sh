@@ -32,11 +32,11 @@ apt-get install libaio1 libmecab2 apparmor -y
 mkdir -p /tmp/mysql-${_VERSION} && cd /tmp/mysql-${_VERSION}
 
 # bundle.tar 다운로도 
-_BUNDLE_TAR=mysql-server_${_VERSION}-1debian11_amd64.deb-bundle.tar
+_BUNDLE_TAR=mysql-server_${_VERSION}-1ubuntu18.04_amd64.deb-bundle.tar
 
 
 # 압축해제
-if [ -f ${_BUNDLE_TAR} ] ; then
+if [ -f $_BUNDLE_TAR ] ; then
 	wget https://artfiles.org/mysql.com/Downloads/MySQL-8.0/${_BUNDLE_TAR}
 fi
 tar -xvf ./${_BUNDLE_TAR}

@@ -32,10 +32,14 @@ apt-get install libaio1 libmecab2 apparmor -y
 mkdir -p /tmp/mysql-${_VERSION} && cd /tmp/mysql-${_VERSION}
 
 # bundle.tar 다운로도 
-wget https://artfiles.org/mysql.com/Downloads/MySQL-8.0/mysql-server_${_VERSION}-1debian11_amd64.deb-bundle.tar
+_BUNDLE_TAR=mysql-server_${_VERSION}-1debian11_amd64.deb-bundle.tar
+
 
 # 압축해제
-tar -xvf mysql-server_${_VERSION}-1ubuntu18.04_amd64.deb-bundle.tar
+if [ -f ${_BUNDLE_TAR} ] ; then
+	wget https://artfiles.org/mysql.com/Downloads/MySQL-8.0/${_BUNDLE_TAR}
+fi
+tar -xvf ./${_BUNDLE_TAR}
 
 # noninteractive 설정(root 비밀번호 자동 입력) 및 자동 설치
 debconf-set-selections <<< "mysql-community-server mysql-community-server/root-pass password ${_PASSWORD_}"

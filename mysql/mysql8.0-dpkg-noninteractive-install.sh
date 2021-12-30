@@ -39,11 +39,13 @@ _BUNDLE_TAR=mysql-server_${_VERSION}-1ubuntu18.04_amd64.deb-bundle.tar
 if [ ! -e ${_BUNDLE_TAR} ] ; then
 	wget https://artfiles.org/mysql.com/Downloads/MySQL-8.0/${_BUNDLE_TAR}
 fi
-tar -xvf --overwrite ./${_BUNDLE_TAR}
+tar -xvf ./${_BUNDLE_TAR}
 
 # noninteractive 설정(root 비밀번호 자동 입력) 및 자동 설치
 debconf-set-selections <<< "mysql-community-server mysql-community-server/root-pass password ${_PASSWORD_}"
 debconf-set-selections <<< "mysql-community-server mysql-community-server/re-root-pass password ${_PASSWORD_}"
+debconf-set-selections <<< "mysql-community-server mysql-server/default-auth-override select Use Strong Password Encryption (RECOMMENDED)"
+
 DEBIAN_FRONTEND=noninteractive
 
 # 설치

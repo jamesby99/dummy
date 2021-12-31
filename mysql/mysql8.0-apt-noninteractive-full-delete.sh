@@ -12,10 +12,9 @@
 # stop mysql
 systemctl stop mysql
 
-# 설정,데이터포함 mysql-server 삭제
-apt-get remove --purge mysql-server -y
+# 설정,데이터포함 기존 설치된 것 모두 삭제
+apt-get remove --purge mysql-server mysql-community-server mysql-client mysql-community-client mysql-common mysql-apt-config -y
 
-# mysql-server 의존성 파일 모두 삭제
 apt-get autoremove -y
 
 apt-get autoclean

@@ -12,6 +12,10 @@
 # stop mysql
 systemctl stop mysql
 
+# noninteractive 모든 데이터, 설정 전체 삭제
+debconf-set-selections <<< "mysql-community-server mysql-community-server/remove-data-dir boolean true"
+DEBIAN_FRONTEND=noninteractive
+
 # 설정,데이터포함 기존 설치된 것 모두 삭제
 apt-get remove --purge mysql-server mysql-community-server mysql-client mysql-community-client mysql-common mysql-apt-config -y
 

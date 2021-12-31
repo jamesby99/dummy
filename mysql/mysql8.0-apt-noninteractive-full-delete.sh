@@ -17,7 +17,7 @@ debconf-set-selections <<< "mysql-community-server mysql-community-server/remove
 DEBIAN_FRONTEND=noninteractive
 
 # 설정,데이터포함 기존 설치된 것 모두 삭제
-apt-get remove --purge mysql-community-client-plugins mysql-community-client-core mysql-community-client mysql-client mysql-server mysql-community-server-core mysql-community-server mysql-common mysql-apt-config -y
+apt-get remove --purge mysql-community-client-plugins mysql-community-client-core mysql-community-client mysql-client mysql-server mysql-community-server-core mysql-community-server mysql-common -y
 
 apt-get autoremove -y
 

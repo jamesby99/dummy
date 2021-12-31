@@ -28,6 +28,7 @@ apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys 5072E1F5
 
 # mysql respository 추가
 echo 'deb http://repo.mysql.com/apt/ubuntu/ bionic mysql-8.0' > /etc/apt/sources.list.d/mysql.list
+apt-get update -y
 
 # noninteractive 설정(root 비밀번호 자동 입력) 및 자동 설치
 debconf-set-selections <<< "mysql-community-server mysql-community-server/root-pass password ${_PASSWORD_}"

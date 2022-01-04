@@ -19,14 +19,16 @@ _PASSWORD_=$2
 _VERSION=$3
 
 # 안되어 있는 경우 대비
-apt-get update -y
-apt-get upgrade -y
+# apt-get update -y
+# apt-get upgrade -y
 
 # for KT Cloud D1
 apt-get install apparmor -y
 
 # 사전 의존성 설치
 apt-get install libaio1 libmecab2 apparmor -y
+
+echo "$(date +"%Y-%m-%d %H:%M:%S") 사전 의존성 설치 완료" >> /root/install.log
 
 # 작업 공간으로 이동
 mkdir -p /tmp/mysql-${_VERSION} && cd /tmp/mysql-${_VERSION}
@@ -39,7 +41,11 @@ _BUNDLE_TAR=mysql-server_${_VERSION}-1ubuntu18.04_amd64.deb-bundle.tar
 if [ ! -e ${_BUNDLE_TAR} ] ; then
 	wget https://artfiles.org/mysql.com/Downloads/MySQL-8.0/${_BUNDLE_TAR}
 fi
+
+echo "$(date +"%Y-%m-%d %H:%M:%S") deb-bundle.tar 다운로드 완료" >> /root/install.log
+
 tar -xvf ./${_BUNDLE_TAR}
+echo "$(date +"%Y-%m-%d %H:%M:%S") deb-bundle.tar 압축 해제" >> /root/install.log
 
 # noninteractive 설정(root 비밀번호 자동 입력) 및 자동 설치
 debconf-set-selections <<< "mysql-community-server mysql-community-server/root-pass password ${_PASSWORD_}"
@@ -50,6 +56,8 @@ DEBIAN_FRONTEND=noninteractive
 
 # 설치
 dpkg -i mysql-{common,community-client-plugins,community-client-core,community-client,client,community-server-core,community-server,server}_*ubuntu18.04_amd64.deb
+
+echo "$(date +"%Y-%m-%d %H:%M:%S") mysql package 설치 완료" >> /root/install.log
 
 sleep 5
 
@@ -62,3 +70,4 @@ mysql -uroot --password=${_PASSWORD_} -e "GRANT ALL PRIVILEGES ON *.* TO '${_ACC
 # DB 반영
 mysql -uroot --password=${_PASSWORD_} -e "FLUSH PRIVILEGES;"
 
+echo "$(date +"%Y-%m-%d %H:%M:%S") mysql 설정 완료" >> /root/install.log

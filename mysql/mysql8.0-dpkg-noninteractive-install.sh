@@ -18,9 +18,18 @@ _ACCOUNT_=$1
 _PASSWORD_=$2
 _VERSION=$3
 
+killall apt apt-get
+rm /var/lib/apt/lists/lock
+rm /var/cache/apt/archives/lock
+rm /var/lib/dpkg/lock
+
 # 안되어 있는 경우 대비
 # apt-get update -y
 # apt-get upgrade -y
+
+echo "$(date +"%Y-%m-%d %H:%M:%S") apt update 시작" >> /root/install.log
+apt update -y
+cd /root
 
 # for KT Cloud D1
 apt-get install apparmor -y

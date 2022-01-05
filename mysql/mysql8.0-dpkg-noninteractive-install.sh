@@ -18,43 +18,42 @@ _ACCOUNT_=$1
 _PASSWORD_=$2
 _VERSION=$3
 
+# apt, dpkg lock이 있다면 제거
 killall apt apt-get
 rm /var/lib/apt/lists/lock
 rm /var/cache/apt/archives/lock
 rm /var/lib/dpkg/lock
 
-# 안되어 있는 경우 대비
-# apt-get update -y
+echo "$(date +"%Y-%m-%d %H:%M:%S") apt update 시작" >> /root/install.log
+apt-get update -y
+
+# 개발용에서는 해제, 상용에서는 선택
 # apt-get upgrade -y
 
-echo "$(date +"%Y-%m-%d %H:%M:%S") apt update 시작" >> /root/install.log
-apt update -y
-cd /root
-
+echo "$(date +"%Y-%m-%d %H:%M:%S") 사전 의존성 설치 시작" >> /root/install.log
 # for KT Cloud D1
 apt-get install apparmor -y
-
 # 사전 의존성 설치
 apt-get install libaio1 libmecab2 apparmor -y
 
-echo "$(date +"%Y-%m-%d %H:%M:%S") 사전 의존성 설치 완료" >> /root/install.log
 
-# 작업 공간으로 이동
-mkdir -p /tmp/mysql-${_VERSION} && cd /tmp/mysql-${_VERSION}
+
+# 작업 공간
+mkdir -p /tmp/mysql-${_VERSION}
+cd /tmp/mysql-${_VERSION}
 
 # bundle.tar 다운로도 
 _BUNDLE_TAR=mysql-server_${_VERSION}-1ubuntu18.04_amd64.deb-bundle.tar
 
 
-# 압축해제
+echo "$(date +"%Y-%m-%d %H:%M:%S") deb-bundle.tar 다운로드 시작" >> /root/install.log
 if [ ! -e ${_BUNDLE_TAR} ] ; then
 	wget https://artfiles.org/mysql.com/Downloads/MySQL-8.0/${_BUNDLE_TAR}
 fi
 
-echo "$(date +"%Y-%m-%d %H:%M:%S") deb-bundle.tar 다운로드 완료" >> /root/install.log
+echo "$(date +"%Y-%m-%d %H:%M:%S") deb-bundle.tar 압축 해제 시작" >> /root/install.log
+tar -xvf /tmp/mysql-${_VERSION}/${_BUNDLE_TAR}
 
-tar -xvf ./${_BUNDLE_TAR}
-echo "$(date +"%Y-%m-%d %H:%M:%S") deb-bundle.tar 압축 해제" >> /root/install.log
 
 # noninteractive 설정(root 비밀번호 자동 입력) 및 자동 설치
 debconf-set-selections <<< "mysql-community-server mysql-community-server/root-pass password ${_PASSWORD_}"
@@ -64,12 +63,12 @@ debconf-set-selections <<< "mysql-community-server mysql-server/default-auth-ove
 DEBIAN_FRONTEND=noninteractive
 
 # 설치
+echo "$(date +"%Y-%m-%d %H:%M:%S") mysql package 설치 시작" >> /root/install.log
 dpkg -i mysql-{common,community-client-plugins,community-client-core,community-client,client,community-server-core,community-server,server}_*ubuntu18.04_amd64.deb
-
-echo "$(date +"%Y-%m-%d %H:%M:%S") mysql package 설치 완료" >> /root/install.log
 
 sleep 5
 
+echo "$(date +"%Y-%m-%d %H:%M:%S") mysql 설정 시작" >> /root/install.log
 # 외부 접속 가능한 신규 계정
 mysql -uroot --password=${_PASSWORD_} -e "CREATE USER '${_ACCOUNT_}'@'%' IDENTIFIED BY '${_PASSWORD_}';"
 
@@ -79,4 +78,4 @@ mysql -uroot --password=${_PASSWORD_} -e "GRANT ALL PRIVILEGES ON *.* TO '${_ACC
 # DB 반영
 mysql -uroot --password=${_PASSWORD_} -e "FLUSH PRIVILEGES;"
 
-echo "$(date +"%Y-%m-%d %H:%M:%S") mysql 설정 완료" >> /root/install.log
+

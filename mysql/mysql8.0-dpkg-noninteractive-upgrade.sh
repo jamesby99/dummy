@@ -76,11 +76,13 @@ tar -xvf /tmp/mysql-${_VERSION}/${_BUNDLE_TAR}
 
 
 # noninteractive 설정(root 비밀번호 자동 입력) 및 자동 설치
-debconf-set-selections <<< "mysql-community-server mysql-community-server/root-pass password ${_PASSWORD_}"
-debconf-set-selections <<< "mysql-community-server mysql-community-server/re-root-pass password ${_PASSWORD_}"
-debconf-set-selections <<< "mysql-community-server mysql-server/default-auth-override select Use Strong Password Encryption (RECOMMENDED)"
-
+#debconf-set-selections <<< "mysql-community-server mysql-community-server/root-pass password ${_PASSWORD_}"
+#debconf-set-selections <<< "mysql-community-server mysql-community-server/re-root-pass password ${_PASSWORD_}"
+debconf-set-selections <<< "mysql-community-server  mysql-community-server/data-dir note"
+#debconf-set-selections <<< "mysql-community-server mysql-server/default-auth-override select Use Strong Password Encryption (RECOMMENDED)"
 DEBIAN_FRONTEND=noninteractive
+
+# 설치시 my.cnf.orgin 를 복사해 놓고, 업그레이드시 현재 my.cnf를 my.cnf.orgin으로 교체(my.cnf.current)한다.
 
 # 설치
 echo "$(date +"%Y-%m-%d %H:%M:%S") mysql package 설치 시작" >> /root/install.log

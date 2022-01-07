@@ -45,7 +45,7 @@ DEBIAN_FRONTEND=noninteractive
 # 버전마다 패키지 구성이 다르므로 이를 확인해 주어야 한다. 
 # 8.0.24에 mysql-community-client-plugins 존재 확인
 # 8.0.19에 mysql-community-client-plugins 미존재 확인
-dpkg -P mysql-common mysql-community-client-plugins mysql-community-client-core mysql-community-client mysql-client mysql-community-server-core mysql-community-server mysql-server
+dpkg -p mysql-common mysql-community-client-plugins mysql-community-client-core mysql-community-client mysql-client mysql-community-server-core mysql-community-server mysql-server
 
 
 echo "$(date +"%Y-%m-%d %H:%M:%S") 사전 의존성 설치 시작" >> /root/install.log

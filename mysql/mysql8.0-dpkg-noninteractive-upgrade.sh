@@ -88,4 +88,6 @@ DEBIAN_FRONTEND=noninteractive
 echo "$(date +"%Y-%m-%d %H:%M:%S") mysql package 설치 시작" >> /root/install.log
 dpkg -i mysql-{common,community-client-plugins,community-client-core,community-client,client,community-server-core,community-server,server}_*ubuntu18.04_amd64.deb
 
+cd ~
+rm -rf /tmp/mysql-${_VERSION}/${_BUNDLE_TAR}
 

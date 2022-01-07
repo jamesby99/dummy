@@ -42,6 +42,9 @@ debconf-set-selections <<< "mysql-community-server mysql-community-server/remove
 DEBIAN_FRONTEND=noninteractive
 
 # DB엔진 완전삭제 수행
+# 버전마다 패키지 구성이 다르므로 이를 확인해 주어야 한다. 
+# 8.0.24에 mysql-community-client-plugins 존재 확인
+# 8.0.19에 mysql-community-client-plugins 미존재 확인
 dpkg -P mysql-common mysql-community-client-plugins mysql-community-client-core mysql-community-client mysql-client mysql-community-server-core mysql-community-server mysql-server
 
 

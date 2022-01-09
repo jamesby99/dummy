@@ -24,7 +24,7 @@ apt-get upgrade -y
 apt-get install apparmor -y
 
 # mysql repository key 추가
-apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys 5072E1F5
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 5072E1F5
 
 # mysql respository 추가
 echo 'deb http://repo.mysql.com/apt/ubuntu/ bionic mysql-8.0' > /etc/apt/sources.list.d/mysql.list

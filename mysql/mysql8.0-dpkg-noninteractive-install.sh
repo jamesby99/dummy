@@ -48,7 +48,7 @@ _BUNDLE_TAR=mysql-server_${_VERSION}-1ubuntu18.04_amd64.deb-bundle.tar
 
 echo "$(date +"%Y-%m-%d %H:%M:%S") deb-bundle.tar 다운로드 시작" >> /root/install.log
 if [ ! -e ${_BUNDLE_TAR} ] ; then
-	wget https://artfiles.org/mysql.com/Downloads/MySQL-8.0/${_BUNDLE_TAR}
+	wget https://downloads.mysql.com/archives/get/p/23/file/${_BUNDLE_TAR}
 fi
 
 echo "$(date +"%Y-%m-%d %H:%M:%S") deb-bundle.tar 압축 해제 시작" >> /root/install.log

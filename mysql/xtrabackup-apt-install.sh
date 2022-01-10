@@ -1,6 +1,6 @@
 #!/bin/bash
 
-_LOG_FIlE= xtrabackup-install-$(date +"%Y-%m-%d-%H:%M:%S").log
+_LOG_FIlE=xtrabackup-install-$(date +"%Y%m%d-%H%M%S").log
 
 echo "$(date +"%Y-%m %d-%H:%M:%S") xtrabackup 설치 시작 --------------------------------------------------------------------------" >> $_LOG_FILE
 

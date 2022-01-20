@@ -23,8 +23,8 @@ apt-get upgrade -y
 # for KT Cloud D1
 apt-get install apparmor -y
 
-# mysql repository key 추가
-apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 5072E1F5
+# mysql repository key 추가 (8.0.28)
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3A79BD29
 
 # mysql respository 추가
 echo 'deb http://repo.mysql.com/apt/ubuntu/ bionic mysql-8.0' > /etc/apt/sources.list.d/mysql.list

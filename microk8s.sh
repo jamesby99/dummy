@@ -8,6 +8,15 @@ fi
 
 __USER__=$1
 
+sudo killall apt apt-get
+sudo rm /var/lib/apt/lists/lock
+sudo rm /var/cache/apt/archives/lock
+sudo rm /var/lib/dpkg/lock
+
+sudo apt -y update
+sudo apt -y upgrade
+
+sudo timedatectl set-timezone Asia/Seoul
 # 설치 환경에 맞게 IP주소 셋팅 필요합니다.
 echo '>>>>>  cluster hostname 등록'
 cat >> /etc/hosts <<EOF

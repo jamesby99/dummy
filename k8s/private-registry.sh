@@ -38,7 +38,7 @@ echo 'alias h=microk8s.helm3' >> /etc/profile
 echo 'alias helm=microk8s.helm3' >> /etc/profile
 
 # 필요한 애드온들 활성화
-echo '>>>>>  dns, dashboard, helm3, storage, registry 애드온 활성화'
+echo '>>>>>  dns, registry 애드온 활성화'
 microk8s enable dns
 microk8s enable registry
 

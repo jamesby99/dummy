@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 # root에서 실행 할 것.
-if [ -z "$1" ]; then
-	echo ">>>>> usage	: microk8s.sh <추가 권한부여 계정>"
-	echo ">>>>> example	: microk8s.sh unbuntu"
+if [ -z "$1" ] || [ -z "$2" ] ; then
+	echo ">>>>> usage	: private-registry.sh <추가 권한부여 계정> <private ip>"
+	echo ">>>>> example	: private-registry.sh unbuntu 10.10.10.1"
 	exit
 fi
 __USER__=$1

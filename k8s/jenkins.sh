@@ -1,5 +1,17 @@
 #!/bin/bash
 
+
+# 설치 환경에 맞게 IP주소 셋팅 필요합니다.
+echo '>>>>>  cluster hostname 등록'
+cat >> /etc/hosts <<EOF
+172.27.0.19 k1
+172.27.0.216 k2
+172.27.0.208 k3
+172.27.0.245 k4
+172.27.0.49 k5
+172.27.0.67 pr
+EOF
+
 # apt lock 사전 제거
 killall apt apt-get
 rm /var/lib/apt/lists/lock
@@ -25,6 +37,10 @@ source /etc/profile
 apt install docker.io -y
 chmod 777 /var/run/docker.sock
 chown root:docker /var/run/docker.sock
+
+# kubectl 설치
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
 # Jenkins 설치를 위해 Repository key 추가
 wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -

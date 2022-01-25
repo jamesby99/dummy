@@ -1,4 +1,4 @@
-#!/bin/bash.sh
+#!/bin/bash
 
 microk8s stop
 

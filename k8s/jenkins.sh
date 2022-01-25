@@ -13,8 +13,9 @@ apt -y upgrade
 timedatectl set-timezone Asia/Seoul
 
 # java 설치
-apt-get -y install openjdk-11-jdk
 apt-get -y install openjdk-8-jdk
+apt-get -y install openjdk-11-jdk
+
 
 echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" >> /etc/profile
 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64

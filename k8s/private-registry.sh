@@ -49,7 +49,7 @@ apt install docker.io -y
 echo '{"insecure-registries" : ["pr:32000"]}' >> /etc/docker/daemon.json
 systemctl restart docker
 
-# root가 아닌 계정에 microk8s 실행 권한 부여
+# microk8s 실행 그룹 권한 부여
 if [ ! -z $__USER__ ]; then
 	echo ">>>>> $__USER__에 microk8s 실행 권한 부여 "
 	usermod -a -G microk8s $__USER__

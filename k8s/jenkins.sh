@@ -12,7 +12,7 @@ apt -y upgrade
 # TIME-ZONE(Asia/Seoul) 설정
 timedatectl set-timezone Asia/Seoul
 
-# java11
+# java 설치
 apt-get -y install openjdk-11-jdk
 apt-get -y install openjdk-8-jdk
 
@@ -20,6 +20,10 @@ echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" >> /etc/profile
 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 source /etc/profile
 
+# Docker 설치
+apt install docker.io -y
+chmod 777 /var/run/docker.sock
+chown root:docker /var/run/docker.sock
 
 # Jenkins 설치를 위해 Repository key 추가
 wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -

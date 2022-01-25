@@ -68,6 +68,10 @@ server = "http://${__PR_IP__}:32000"
 capabilities = ["pull", "resolve"]
 EOF
 
+chown -R root:microk8s /var/snap/microk8s/current/args/certs.d/${__PR_IP__}:32000
+chmod 770 /var/snap/microk8s/current/args/certs.d/${__PR_IP__}:32000
+chmod 660 /var/snap/microk8s/current/args/certs.d/${__PR_IP__}:32000/hosts.toml
+
 echo '>>>>>  microk8s restart가 수동으로 필요합니다.'
 echo 'microk8s stop 하세요'
 echo 'microk8s start 하세요'

@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 
 # root에서 실행 할 것.
-if [ -z "$1" ] || [ -z "$2" ] ; then
-	echo ">>>>> usage	: private-registry.sh <추가 권한부여 계정> <private ip>"
-	echo ">>>>> example	: private-registry.sh unbuntu 10.10.10.1"
+if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] ; then
+	echo ">>>>> usage	: private-registry.sh <추가 권한부여 계정> <private ip> <레지스트리 용량>"
+	echo ">>>>> example	: private-registry.sh unbuntu 10.10.10.1 250" 
 	exit
 fi
 __USER__=$1
 __PR_IP__=$2
+__SIZE__=$3
 
 # 설치 환경에 맞게 IP주소 셋팅 필요합니다.
 echo '>>>>>  cluster hostname 등록'
@@ -41,7 +42,7 @@ echo 'alias helm=microk8s.helm3' >> /etc/profile
 # 필요한 애드온들 활성화
 echo '>>>>>  dns, registry 애드온 활성화'
 microk8s enable dns
-microk8s enable registry:size=250Gi
+microk8s enable registry:size=${__SIZE__}Gi
 
 echo '>>>>> Docker 설치'
 apt install docker.io -y

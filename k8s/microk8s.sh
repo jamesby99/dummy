@@ -8,15 +8,6 @@ fi
 
 __USER__=$1
 
-sudo killall apt apt-get
-sudo rm /var/lib/apt/lists/lock
-sudo rm /var/cache/apt/archives/lock
-sudo rm /var/lib/dpkg/lock
-
-sudo apt -y update
-sudo apt -y upgrade
-
-sudo timedatectl set-timezone Asia/Seoul
 # 설치 환경에 맞게 IP주소 셋팅 필요합니다.
 echo '>>>>>  cluster hostname 등록'
 cat >> /etc/hosts <<EOF
@@ -25,11 +16,19 @@ cat >> /etc/hosts <<EOF
 172.27.0.126 k3
 EOF
 
+# apt lock 사전 제거
+killall apt apt-get
+rm /var/lib/apt/lists/lock
+rm /var/cache/apt/archives/lock
+rm /var/lib/dpkg/lock
+
+apt -update
+apt -y upgrade
+
 # TIME-ZONE(Asia/Seoul) 설정
 timedatectl set-timezone Asia/Seoul
 
 echo '>>>>> MicroK8s 설치 latest/stable 버전'
-apt install snapd -y
 snap install microk8s --classic
 
 # CLI alias
@@ -38,6 +37,7 @@ echo 'alias k=microk8s.kubectl' >> /etc/profile
 echo 'alias kubectl=microk8s.kubectl' >> /etc/profile
 echo 'alias h=microk8s.helm3' >> /etc/profile
 echo 'alias helm=microk8s.helm3' >> /etc/profile
+
 
 # 필요한 애드온들 활성화
 echo '>>>>>  dns, dashboard, helm3, storage 애드온 활성화'
@@ -51,7 +51,7 @@ apt install docker.io -y
 echo '{"insecure-registries" : ["pr:32000"]}' >> /etc/docker/daemon.json
 systemctl restart docker
 
-# root가 아닌 계정에 microk8s 실행 권한 부여
+# microk8s 실행 그룹 권한 부여
 if [ ! -z $__USER__ ]; then
 	echo ">>>>> $__USER__에 microk8s 실행 권한 부여 "
 	usermod -a -G microk8s $__USER__

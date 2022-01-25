@@ -25,7 +25,7 @@ rm /var/lib/apt/lists/lock
 rm /var/cache/apt/archives/lock
 rm /var/lib/dpkg/lock
 
-apt -update
+apt update
 apt -y upgrade
 
 # TIME-ZONE(Asia/Seoul) 설정

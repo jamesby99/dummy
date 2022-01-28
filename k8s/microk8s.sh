@@ -49,10 +49,25 @@ microk8s enable dashboard
 microk8s enable helm3
 microk8s enable storage
 
-echo '>>>>> Docker 설치'
+# Docker 설치
 apt install docker.io -y
+
+# http 로 registry 허용
 echo '{"insecure-registries" : ["pr:32000"]}' >> /etc/docker/daemon.json
 systemctl restart docker
+
+mkdir -p /var/snap/microk8s/current/args/certs.d/pr:32000
+touch /var/snap/microk8s/current/args/certs.d/pr:32000/hosts.toml
+cat >> /var/snap/microk8s/current/args/certs.d/pr:32000/hosts.toml <<EOF
+server = "http://pr:32000"
+[host."pr:32000"]
+capabilities = ["pull", "resolve"]
+EOF
+
+chown -R root:microk8s /var/snap/microk8s/current/args/certs.d/pr:32000
+chmod 770 /var/snap/microk8s/current/args/certs.d/pr:32000
+chmod 660 /var/snap/microk8s/current/args/certs.d/pr:32000/hosts.toml
+
 
 # microk8s 실행 그룹 권한 부여
 if [ ! -z $__USER__ ]; then

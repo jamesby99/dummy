@@ -59,6 +59,9 @@ server = "http://pr:32000"
 capabilities = ["pull", "resolve"]
 EOF
 
+chown -R root:microk8s /var/snap/microk8s/current/args/certs.d/pr:32000
+chmod 770 /var/snap/microk8s/current/args/certs.d/pr:32000
+chmod 660 /var/snap/microk8s/current/args/certs.d/pr:32000/hosts.toml
 
 # microk8s 실행 그룹 권한 부여
 if [ ! -z $__USER__ ]; then
@@ -69,10 +72,6 @@ if [ ! -z $__USER__ ]; then
 	usermod -aG docker $__USER__
 fi
 
-
-chown -R root:microk8s /var/snap/microk8s/current/args/certs.d/${__PR_IP__}:32000
-chmod 770 /var/snap/microk8s/current/args/certs.d/${__PR_IP__}:32000
-chmod 660 /var/snap/microk8s/current/args/certs.d/${__PR_IP__}:32000/hosts.toml
 
 echo '>>>>>  microk8s restart가 수동으로 필요합니다.'
 echo 'microk8s stop 하세요'

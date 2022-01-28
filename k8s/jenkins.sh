@@ -42,7 +42,9 @@ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stabl
 install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
 # helm 설치
-snap install helm  --classic
+curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 > get_helm.sh
+chmod 700 get_helm.sh
+./get_helm.sh
 
 # Jenkins 설치를 위해 Repository key 추가
 wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -

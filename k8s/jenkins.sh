@@ -41,6 +41,9 @@ chown root:docker /var/run/docker.sock
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
+# helm 설치
+snap install helm  --classic
+
 # Jenkins 설치를 위해 Repository key 추가
 wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
 

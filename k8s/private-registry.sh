@@ -46,8 +46,19 @@ microk8s enable registry:size=${__SIZE__}Gi
 
 echo '>>>>> Docker 설치'
 apt install docker.io -y
+
+# http 로 registry 허용
 echo '{"insecure-registries" : ["pr:32000"]}' >> /etc/docker/daemon.json
 systemctl restart docker
+
+mkdir -p /var/snap/microk8s/current/args/certs.d/pr:32000
+touch /var/snap/microk8s/current/args/certs.d/pr:32000/hosts.toml
+cat >> /var/snap/microk8s/current/args/certs.d/pr:32000/hosts.toml <<EOF
+server = "http://pr:32000"
+[host."pr:32000"]
+capabilities = ["pull", "resolve"]
+EOF
+
 
 # microk8s 실행 그룹 권한 부여
 if [ ! -z $__USER__ ]; then
@@ -58,16 +69,6 @@ if [ ! -z $__USER__ ]; then
 	usermod -aG docker $__USER__
 fi
 
-# register mirror 등록 및 containerd 재시작
-sed -i.bak -r 's/localhost:32000/pr:32000/g' /var/snap/microk8s/current/args/containerd-template.toml
-
-mkdir -p /var/snap/microk8s/current/args/certs.d/pr:32000
-touch /var/snap/microk8s/current/args/certs.d/pr:32000/hosts.toml
-cat >> /var/snap/microk8s/current/args/certs.d/pr:32000/hosts.toml <<EOF
-server = "http://pr:32000"
-[host."pr:32000"]
-capabilities = ["pull", "resolve"]
-EOF
 
 chown -R root:microk8s /var/snap/microk8s/current/args/certs.d/${__PR_IP__}:32000
 chmod 770 /var/snap/microk8s/current/args/certs.d/${__PR_IP__}:32000

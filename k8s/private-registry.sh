@@ -61,11 +61,11 @@ fi
 # register mirror 등록 및 containerd 재시작
 sed -i.bak -r 's/localhost:32000/pr:32000/g' /var/snap/microk8s/current/args/containerd-template.toml
 
-mkdir -p /var/snap/microk8s/current/args/certs.d/${__PR_IP__}:32000
-touch /var/snap/microk8s/current/args/certs.d/${__PR_IP__}:32000/hosts.toml
-cat >> /var/snap/microk8s/current/args/certs.d/${__PR_IP__}:32000/hosts.toml <<EOF
-server = "http://${__PR_IP__}:32000"
-[host."${__PR_IP__}:32000"]
+mkdir -p /var/snap/microk8s/current/args/certs.d/pr:32000
+touch /var/snap/microk8s/current/args/certs.d/pr:32000/hosts.toml
+cat >> /var/snap/microk8s/current/args/certs.d/pr:32000/hosts.toml <<EOF
+server = "http://pr:32000"
+[host."pr:32000"]
 capabilities = ["pull", "resolve"]
 EOF
 

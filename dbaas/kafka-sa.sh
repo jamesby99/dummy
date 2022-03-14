@@ -1,12 +1,13 @@
 #!/bin/bash
 
-if [ -z "$1" ] ; then
+if [ -z "$1" ] || [ -z "$2" ] ; then
 	echo ">>>>> usage	: kafka-sa.sh advertise-ip port"
 	echo ">>>>> example	: kafka-sa.sh 211.34.244.176 19090"
 	exit
 fi
 
 __MYIP__=$1
+__PORT__=$2
 
 __MYID__=0         # zookeeper myid 주입
 __KAFKA_VER__=2.8.1
@@ -50,7 +51,7 @@ delete.topic.enable = true
 auto.create.topics.enable=false
 listeners=PLAINTEXT://:9092
 # advertised.listeners는 각각의 노드의 접근 엔드포인트로 
-advertised.listeners=PLAINTEXT://$__MYIP__:9092
+advertised.listeners=PLAINTEXT://$__MYIP__:$__PORT__
 EOF
 sed -i.bak -r "s#/tmp/kafka-logs#/opt/kafka/storage/kafka-logs#g" /opt/kafka/config/server.properties
 

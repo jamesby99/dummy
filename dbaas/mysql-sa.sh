@@ -28,7 +28,7 @@ echo "$(date +"%Y-%m-%d %H:%M:%S") apt update 시작" >> /root/install.log
 apt-get update -y
 
 # 개발용에서는 해제, 상용에서는 선택
-# apt-get upgrade -y
+apt-get upgrade -y
 
 echo "$(date +"%Y-%m-%d %H:%M:%S") 사전 의존성 설치 시작" >> /root/install.log
 # for KT Cloud D1
@@ -37,6 +37,11 @@ apt-get install apparmor -y
 apt-get install libaio1 libmecab2 apparmor -y
 
 
+# apt, dpkg lock이 있다면 제거
+killall apt apt-get
+rm /var/lib/apt/lists/lock
+rm /var/cache/apt/archives/lock
+rm /var/lib/dpkg/lock
 
 # 작업 공간
 mkdir -p /tmp/mysql-${_VERSION}

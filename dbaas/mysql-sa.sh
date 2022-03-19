@@ -18,6 +18,7 @@ _ACCOUNT_=$1
 _PASSWORD_=$2
 _VERSION=$3
 
+timedatectl set-timezone Asia/Seoul
 
 lsof /var/lib/dpkg/lock
 # unattended-upgrades 비활성화

@@ -18,8 +18,17 @@ _ACCOUNT_=$1
 _PASSWORD_=$2
 _VERSION=$3
 
-# apt, dpkg lock이 있다면 제거
+
 lsof /var/lib/dpkg/lock
+# unattended-upgrades 비활성화
+sed -i.bak -r "s/1/0/g" /etc/apt/apt.conf.d/20auto-upgrades
+__PID__=$(for pid in $(ls /proc | egrep [0-9]+); do sudo ls -l /proc/$pid/fd 2>/dev/null | grep /var/lib/dpkg/lock && echo $pid; done | tail -n 1)
+if [ -n "$__PID__" ]; then
+	echo "죽이기...: " + $__PID__
+  	kill -9 $__PID__
+fi
+
+# apt, dpkg lock이 있다면 제거
 killall apt apt-get
 rm /var/lib/apt/lists/lock
 rm /var/cache/apt/archives/lock
@@ -38,25 +47,6 @@ apt-get install apparmor -y
 apt-get install libaio1 libmecab2 -y
 # 데비안 패키지 설치
 apt-get install debconf-utils -y
-
-
-DEBIAN_FRONTEND=noninteractive
-
-# apt, dpkg lock이 있다면 제거
-debconf-set-selections <<< "unattended-upgrades unattended-upgrades/enable_auto_updates boolean false"
-dpkg-reconfigure unattended-upgrades
-
-lsof /var/lib/dpkg/lock
-killall apt apt-get
-rm /var/lib/apt/lists/lock
-rm /var/cache/apt/archives/lock
-rm /var/lib/dpkg/lock
-__PID__=$(for pid in $(ls /proc | egrep [0-9]+); do sudo ls -l /proc/$pid/fd 2>/dev/null | grep /var/lib/dpkg/lock && echo $pid; done | tail -n 1)
-if [ -n "$__PID__" ]; then
-	echo "죽이기...: " + $__PID__
-  	kill -9 $__PID__
-fi
-
 
 # 작업 공간
 mkdir -p /tmp/mysql-${_VERSION}
@@ -99,6 +89,5 @@ mysql -uroot --password=${_PASSWORD_} -e "GRANT ALL PRIVILEGES ON *.* TO '${_ACC
 # DB 반영
 mysql -uroot --password=${_PASSWORD_} -e "FLUSH PRIVILEGES;"
 
-debconf-set-selections <<< "unattended-upgrades unattended-upgrades/enable_auto_updates boolean true"
-dpkg-reconfigure unattended-upgrades
-
+# unattended-upgrades 활성화
+sed -i.bak -r "s/0/1/g" /etc/apt/apt.conf.d/20auto-upgrades

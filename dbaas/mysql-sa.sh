@@ -34,7 +34,7 @@ echo "$(date +"%Y-%m-%d %H:%M:%S") 사전 의존성 설치 시작" >> /root/inst
 # for KT Cloud D1
 apt-get install apparmor -y
 # 사전 의존성 설치
-apt-get install libaio1 libmecab2 apparmor -y
+apt-get install libaio1 libmecab2 -y
 
 
 # apt, dpkg lock이 있다면 제거
@@ -44,7 +44,8 @@ rm /var/cache/apt/archives/lock
 rm /var/lib/dpkg/lock
 __PID__=$(for pid in $(ls /proc | egrep [0-9]+); do sudo ls -l /proc/$pid/fd 2>/dev/null | grep /var/lib/dpkg/lock && echo $pid; done | tail -n 1)
 if [ -n "$__PID__" ]; then
-  kill -9 $__PID__
+	echo "죽이기...: " + $__PID__
+  	kill -9 $__PID__
 fi
 
 # 작업 공간

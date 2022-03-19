@@ -11,7 +11,7 @@
 if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] ; then
 	echo ">>>>> usage	: mysql-8.0-dpkg-noninteractive-install.sh <account> <root-password> <version>"
 	echo ">>>>> example	: mysql-8.0-dpkg-noninteractive-install.sh dbaas-root ktcloudpw!! 8.0.27"
-	exit
+	return
 fi
 
 _ACCOUNT_=$1

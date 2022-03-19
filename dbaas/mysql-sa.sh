@@ -92,3 +92,5 @@ mysql -uroot --password=${_PASSWORD_} -e "FLUSH PRIVILEGES;"
 
 # unattended-upgrades 활성화
 sed -i.bak -r "s/0/1/g" /etc/apt/apt.conf.d/20auto-upgrades
+
+cd ~

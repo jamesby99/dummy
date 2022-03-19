@@ -42,6 +42,10 @@ killall apt apt-get
 rm /var/lib/apt/lists/lock
 rm /var/cache/apt/archives/lock
 rm /var/lib/dpkg/lock
+__PID__=$(for pid in $(ls /proc | egrep [0-9]+); do sudo ls -l /proc/$pid/fd 2>/dev/null | grep /var/lib/dpkg/lock && echo $pid; done | tail -n 1)
+if [ -n "$__PID__" ]; then
+  kill -9 $__PID__
+fi
 
 # 작업 공간
 mkdir -p /tmp/mysql-${_VERSION}

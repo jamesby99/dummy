@@ -25,7 +25,6 @@ rm /var/lib/apt/lists/lock
 rm /var/cache/apt/archives/lock
 rm /var/lib/dpkg/lock
 
-
 echo "$(date +"%Y-%m-%d %H:%M:%S") apt update 시작" >> /root/install.log
 apt-get update -y
 
@@ -37,9 +36,16 @@ echo "$(date +"%Y-%m-%d %H:%M:%S") 사전 의존성 설치 시작" >> /root/inst
 apt-get install apparmor -y
 # 사전 의존성 설치
 apt-get install libaio1 libmecab2 -y
+# 데비안 패키지 설치
+apt-get install debconf-utils -y
 
+
+DEBIAN_FRONTEND=noninteractive
 
 # apt, dpkg lock이 있다면 제거
+debconf-set-selections <<< "unattended-upgrades unattended-upgrades/enable_auto_updates boolean false"
+dpkg-reconfigure unattended-upgrades
+
 lsof /var/lib/dpkg/lock
 killall apt apt-get
 rm /var/lib/apt/lists/lock
@@ -73,7 +79,6 @@ tar -xvf /tmp/mysql-${_VERSION}/${_BUNDLE_TAR}
 debconf-set-selections <<< "mysql-community-server mysql-community-server/root-pass password ${_PASSWORD_}"
 debconf-set-selections <<< "mysql-community-server mysql-community-server/re-root-pass password ${_PASSWORD_}"
 debconf-set-selections <<< "mysql-community-server mysql-server/default-auth-override select Use Strong Password Encryption (RECOMMENDED)"
-
 DEBIAN_FRONTEND=noninteractive
 
 lsof /var/lib/dpkg/lock
@@ -93,4 +98,7 @@ mysql -uroot --password=${_PASSWORD_} -e "GRANT ALL PRIVILEGES ON *.* TO '${_ACC
 
 # DB 반영
 mysql -uroot --password=${_PASSWORD_} -e "FLUSH PRIVILEGES;"
+
+debconf-set-selections <<< "unattended-upgrades unattended-upgrades/enable_auto_updates boolean true"
+dpkg-reconfigure unattended-upgrades
 

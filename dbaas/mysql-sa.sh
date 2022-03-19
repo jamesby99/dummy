@@ -23,6 +23,7 @@ killall apt apt-get
 rm /var/lib/apt/lists/lock
 rm /var/cache/apt/archives/lock
 rm /var/lib/dpkg/lock
+lsof /var/lib/dpkg/lock
 
 echo "$(date +"%Y-%m-%d %H:%M:%S") apt update 시작" >> /root/install.log
 apt-get update -y
@@ -47,6 +48,7 @@ if [ -n "$__PID__" ]; then
 	echo "죽이기...: " + $__PID__
   	kill -9 $__PID__
 fi
+lsof /var/lib/dpkg/lock
 
 # 작업 공간
 mkdir -p /tmp/mysql-${_VERSION}
@@ -71,6 +73,8 @@ debconf-set-selections <<< "mysql-community-server mysql-community-server/re-roo
 debconf-set-selections <<< "mysql-community-server mysql-server/default-auth-override select Use Strong Password Encryption (RECOMMENDED)"
 
 DEBIAN_FRONTEND=noninteractive
+
+lsof /var/lib/dpkg/lock
 
 # 설치
 echo "$(date +"%Y-%m-%d %H:%M:%S") mysql package 설치 시작" >> /root/install.log

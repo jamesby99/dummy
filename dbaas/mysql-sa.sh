@@ -19,11 +19,12 @@ _PASSWORD_=$2
 _VERSION=$3
 
 # apt, dpkg lock이 있다면 제거
+lsof /var/lib/dpkg/lock
 killall apt apt-get
 rm /var/lib/apt/lists/lock
 rm /var/cache/apt/archives/lock
 rm /var/lib/dpkg/lock
-lsof /var/lib/dpkg/lock
+
 
 echo "$(date +"%Y-%m-%d %H:%M:%S") apt update 시작" >> /root/install.log
 apt-get update -y
@@ -39,6 +40,7 @@ apt-get install libaio1 libmecab2 -y
 
 
 # apt, dpkg lock이 있다면 제거
+lsof /var/lib/dpkg/lock
 killall apt apt-get
 rm /var/lib/apt/lists/lock
 rm /var/cache/apt/archives/lock
@@ -48,7 +50,7 @@ if [ -n "$__PID__" ]; then
 	echo "죽이기...: " + $__PID__
   	kill -9 $__PID__
 fi
-lsof /var/lib/dpkg/lock
+
 
 # 작업 공간
 mkdir -p /tmp/mysql-${_VERSION}

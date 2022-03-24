@@ -280,7 +280,7 @@ sed -i.bak -r "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" $__PG
 #------------------------------------------------------------------------------
 # pgpool 설정 파일 다운로드
 #------------------------------------------------------------------------------
-wget --quiet -O /etc/pgpool2/pgpool.conf https://github.com/jamesby99/dummy/raw/master/postgresql/pgpool.conf
+wget --quiet -O /etc/pgpool2/pgpool.conf https://github.com/jamesby99/dummy/raw/master/postgresql/pgpool.conf.gcloud
 wget --quiet -O /etc/pgpool2/failover.sh https://github.com/jamesby99/dummy/raw/master/postgresql/failover.sh
 wget --quiet -O /etc/pgpool2/follow_master.sh https://github.com/jamesby99/dummy/raw/master/postgresql/follow_master.sh
 wget --quiet -O /etc/pgpool2/recovery_1st_stage https://github.com/jamesby99/dummy/raw/master/postgresql/recovery_1st_stage.sh

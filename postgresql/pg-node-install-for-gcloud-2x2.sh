@@ -58,7 +58,13 @@ wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-
 apt update -y
 apt install postgresql-11 -y
 sleep 5
-apt install pgpool2 -y
+
+apt install libmemcached11
+wget http://ftp.us.debian.org/debian/pool/main/p/pgpool2/pgpool2_4.1.4-3_amd64.deb
+wget http://ftp.us.debian.org/debian/pool/main/p/pgpool2/libpgpool0_4.1.4-3_amd64.deb
+dpkg -i libpgpool0_4.1.4-3_amd64.deb pgpool2_4.1.4-3_amd64.deb
+apt --fix-broken install
+
 apt install postgresql-11-pgpool2 -y
 apt install iputils-arping -y 
 

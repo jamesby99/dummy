@@ -169,7 +169,10 @@ sudo -u postgres psql -c "alter user postgres with password 'imdb21**';"
 sudo -u postgres createdb db_order -O $__USER__
 # sudo -u postgres createdb db_configuration -O $__USER__
 # sudo -u postgres createdb db_backupmgt -O $__USER__
+# sudo -u postgres createdb db_admin -O $__USER__
 # sudo -u postgres createdb db_servermgt -O $__USER__
+# sudo -u postgres createdb db_monitoring -O $__USER__
+
 
 
 #------------------------------------------------------------------------------

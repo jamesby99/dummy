@@ -225,18 +225,18 @@ sed -i.bak -r "s/#max_parallel_maintenance_workers = 2/max_parallel_maintenance_
 # Connections num: 350
 # Data Storage: SSD
 # 권장 -----------------------------------------------
-max_connections = 350
-shared_buffers = 256MB
-effective_cache_size = 768MB
-maintenance_work_mem = 64MB
-checkpoint_completion_target = 0.9
-wal_buffers = 7864kB
-default_statistics_target = 100
-random_page_cost = 1.1
-effective_io_concurrency = 200
-work_mem = 374kB
-min_wal_size = 1GB
-max_wal_size = 4GB
+#max_connections = 350
+#shared_buffers = 256MB
+#effective_cache_size = 768MB
+#maintenance_work_mem = 64MB
+#checkpoint_completion_target = 0.9
+#wal_buffers = 7864kB
+#default_statistics_target = 100
+#random_page_cost = 1.1
+#effective_io_concurrency = 200
+#work_mem = 374kB
+#min_wal_size = 1GB
+#max_wal_size = 4GB
 
 
 #------------------------------------------------------------------------------

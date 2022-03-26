@@ -205,7 +205,7 @@ sed -i.bak -r "s/#checkpoint_completion_target = 0.5/checkpoint_completion_targe
 sed -i.bak -r "s/#wal_buffers = -1/wal_buffers = 16MB/g" $__PG_CONF__/postgresql.conf
 sed -i.bak -r "s/#default_statistics_target = 100/default_statistics_target = 100/g" $__PG_CONF__/postgresql.conf
 sed -i.bak -r "s/#random_page_cost = 4.0/random_page_cost = 4/g" $__PG_CONF__/postgresql.conf
-sed -i.bak -r "s/#effective_io_concurrency = 1/effective_io_concurrency = 2/g" $__PG_CONF__/postgresql.conf
+sed -i.bak -r "s/#effective_io_concurrency = 1/effective_io_concurrency = 200/g" $__PG_CONF__/postgresql.conf
 sed -i.bak -r "s/#work_mem = 4MB/work_mem = 1497kB/g" $__PG_CONF__/postgresql.conf
 sed -i.bak -r "s/min_wal_size = 80MB/min_wal_size = 1GB/g" $__PG_CONF__/postgresql.conf
 sed -i.bak -r "s/max_wal_size = 1GB/max_wal_size = 4GB/g" $__PG_CONF__/postgresql.conf

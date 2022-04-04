@@ -16,8 +16,8 @@ __KAFKA__=kafka_2.13-$__KAFKA_VER__
 ###############################################################################
 
 echo '>>>>> kafka 계정 생성 및 sudoers 권한 부여 '
-#useradd -s /bin/bash -d /opt/kafka -m kafka
-#echo "kafka ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/kafka
+useradd -s /bin/bash -d /opt/kafka -m kafka
+echo "kafka ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/kafka
 
 ###############################################################################
 

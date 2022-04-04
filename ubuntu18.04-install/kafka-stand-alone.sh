@@ -9,14 +9,15 @@ fi
 __MYIP__=$1
 
 __MYID__=0         # zookeeper myid 주입
-__KAFKA_VER__=2.6.3
+#__KAFKA_VER__=2.6.3
+__KAFKA_VER__=2.7.2
 __KAFKA__=kafka_2.13-$__KAFKA_VER__
 
 ###############################################################################
 
 echo '>>>>> kafka 계정 생성 및 sudoers 권한 부여 '
-useradd -s /bin/bash -d /opt/kafka -m kafka
-echo "kafka ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/kafka
+#useradd -s /bin/bash -d /opt/kafka -m kafka
+#echo "kafka ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/kafka
 
 ###############################################################################
 

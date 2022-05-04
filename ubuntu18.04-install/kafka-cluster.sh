@@ -10,7 +10,7 @@ fi
 __MYID__=$1				# zookeeper myid 주입
 __MYIP__=$2
 
-__KAFKA_VER__=2.5.1			#https://downloads.apache.org/kafka 에서 현재 제공 버전이 맞는지 확인 필요
+__KAFKA_VER__=2.7.2			#https://downloads.apache.org/kafka 에서 현재 제공 버전이 맞는지 확인 필요
 __SCOLA_VER__=2.13
 __KAFKA__=kafka_$__SCOLA_VER__-$__KAFKA_VER__
 __KAFKA_JVM_MEMORY__="-Xmx2G -Xms2G" 		#VM의 메모리에 따라 약 50% 정도 할당
@@ -20,17 +20,17 @@ timedatectl set-timezone Asia/Seoul
 
 ###############################################################################
 echo '>>>>> /etc/hosts에 kafka cluster ip 반영'
-cat >> /etc/hosts <<EOF
-10.213.194.101 kafka1
-10.213.194.102 kafka2
-10.213.194.103 kafka3
-EOF
+# cat >> /etc/hosts <<EOF
+# 10.213.194.101 kafka1
+# 10.213.194.102 kafka2
+# 10.213.194.103 kafka3
+# EOF
 
 ###############################################################################
 
 echo '>>>>> kafka 계정 생성 및 sudoers 권한 부여 '
-useradd -s /bin/bash -d /opt/kafka -m kafka
-echo "kafka ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/kafka
+# useradd -s /bin/bash -d /opt/kafka -m kafka
+# echo "kafka ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/kafka
 
 ###############################################################################
 
@@ -41,7 +41,7 @@ mkdir -p /opt/kafka/storage/kafka-logs/
 ###############################################################################
 
 echo ">>>>> kafka/zookeeper 설치 ($__KAFKA__) "
-wget -O ~/$__KAFKA__.tgz https://archive.apache.org/dist/kafka/$__KAFKA_VER__/$__KAFKA__.tgz
+wget -O ~/$__KAFKA__.tgz https://archive.apache.org/dist/kafka/$__KAFKA_VER__/$__KAFKA__.tgz --no-check-certificate
 tar -xf ~/$__KAFKA__.tgz -C /opt/kafka --strip-components=1
 
 ###############################################################################

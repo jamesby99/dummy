@@ -41,7 +41,7 @@ mkdir -p /opt/kafka/storage/kafka-logs/
 ###############################################################################
 
 echo ">>>>> kafka/zookeeper 설치 ($__KAFKA__) "
-wget -O ~/$__KAFKA__.tgz https://archive.apache.org/dist/kafka/$__KAFKA_VER__/$__KAFKA__.tgz --no-check-certificate
+# wget -O ~/$__KAFKA__.tgz https://archive.apache.org/dist/kafka/$__KAFKA_VER__/$__KAFKA__.tgz --no-check-certificate
 tar -xf ~/$__KAFKA__.tgz -C /opt/kafka --strip-components=1
 
 ###############################################################################

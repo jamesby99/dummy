@@ -21,9 +21,9 @@ timedatectl set-timezone Asia/Seoul
 ###############################################################################
 echo '>>>>> /etc/hosts에 kafka cluster ip 반영'
 cat >> /etc/hosts <<EOF
-10.213.194.99 kafka1
-10.213.194.40 kafka2
-10.213.194.53 kafka3
+10.62.252.114 kafka1
+10.62.252.122 kafka2
+10.62.252.77 kafka3
 EOF
 
 ###############################################################################
@@ -39,9 +39,9 @@ mkdir -p /opt/kafka/storage/zookeeper-data/
 mkdir -p /opt/kafka/storage/kafka-logs/
 
 ###############################################################################
-
+# G-Cloud Https 가 안되어 수동 다운로드
 echo ">>>>> kafka/zookeeper 설치 ($__KAFKA__) "
-wget -O ~/$__KAFKA__.tgz https://archive.apache.org/dist/kafka/$__KAFKA_VER__/$__KAFKA__.tgz --no-check-certificate
+# wget -O ~/$__KAFKA__.tgz https://archive.apache.org/dist/kafka/$__KAFKA_VER__/$__KAFKA__.tgz --no-check-certificate
 tar -xf ~/$__KAFKA__.tgz -C /opt/kafka --strip-components=1
 
 ###############################################################################

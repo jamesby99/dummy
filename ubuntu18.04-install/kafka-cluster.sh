@@ -10,10 +10,10 @@ fi
 __MYID__=$1				# zookeeper myid 주입
 __MYIP__=$2
 
-__KAFKA_VER__=3.0.1			#https://downloads.apache.org/kafka 에서 현재 제공 버전이 맞는지 확인 필요
+__KAFKA_VER__=3.0.2			#https://downloads.apache.org/kafka 에서 현재 제공 버전이 맞는지 확인 필요
 __SCOLA_VER__=2.13
 __KAFKA__=kafka_$__SCOLA_VER__-$__KAFKA_VER__
-__KAFKA_JVM_MEMORY__="-Xmx2G -Xms2G" 		#VM의 메모리에 따라 약 50% 정도 할당
+__KAFKA_JVM_MEMORY__="-Xmx1G -Xms1G" 		#VM의 메모리에 따라 약 50% 정도 할당
 
 # TIME-ZONE(Asia/Seoul) 설정
 timedatectl set-timezone Asia/Seoul
@@ -21,9 +21,9 @@ timedatectl set-timezone Asia/Seoul
 ###############################################################################
 echo '>>>>> /etc/hosts에 kafka cluster ip 반영'
 cat >> /etc/hosts <<EOF
-10.62.252.114 kafka1
-10.62.252.122 kafka2
-10.62.252.77 kafka3
+172.25.0.51 kafka1
+172.25.0.24 kafka2
+172.25.0.162 kafka3
 EOF
 
 ###############################################################################
@@ -41,7 +41,7 @@ mkdir -p /opt/kafka/storage/kafka-logs/
 ###############################################################################
 # G-Cloud Https 가 안되어 수동 다운로드
 echo ">>>>> kafka/zookeeper 설치 ($__KAFKA__) "
-# wget -O ~/$__KAFKA__.tgz https://archive.apache.org/dist/kafka/$__KAFKA_VER__/$__KAFKA__.tgz --no-check-certificate
+wget -O ~/$__KAFKA__.tgz https://archive.apache.org/dist/kafka/$__KAFKA_VER__/$__KAFKA__.tgz --no-check-certificate
 tar -xf ~/$__KAFKA__.tgz -C /opt/kafka --strip-components=1
 
 ###############################################################################

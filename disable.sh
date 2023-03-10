@@ -15,7 +15,7 @@ else
   echo No APT Timer!! ^^
 fi
 echo -----------------------
-echo "\n"
+echo -e "\n"
 echo [[ print ip a ]]
 sudo ip a
 echo --- Check Again VIP ---

@@ -4,12 +4,10 @@
 # 설치 환경에 맞게 IP주소 셋팅 필요합니다.
 echo '>>>>>  cluster hostname 등록'
 cat >> /etc/hosts <<EOF
-172.27.0.19 k1
-172.27.0.216 k2
-172.27.0.208 k3
-172.27.0.245 k4
-172.27.0.49 k5
-172.27.0.67 pr
+172.25.0.44 k1 dev-k8s-1
+172.25.0.35 k2 dev-k8s-2
+172.25.0.121 k3 dev-k8s-3
+172.25.0.98 jk
 EOF
 
 # apt lock 사전 제거
@@ -25,11 +23,11 @@ apt -y upgrade
 timedatectl set-timezone Asia/Seoul
 
 # java 설치
-apt-get -y install openjdk-11-jdk
+apt-get -y install openjdk-17-jdk
 
 
-echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" >> /etc/profile
-export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+echo "export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> /etc/profile
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 source /etc/profile
 
 # Docker 설치
@@ -47,10 +45,10 @@ chmod 700 get_helm.sh
 ./get_helm.sh
 
 # Jenkins 설치를 위해 Repository key 추가
-wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
+curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo tee /usr/share/keyrings/jenkins-keyring.asc > /dev/null
 
 #  서버의 sources.list에 Jenkins 패키지 저장소를 추가
-sudo sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
 
 # 패키지 인덱스 정보 업데이트
 sudo apt-get update -y

@@ -60,3 +60,6 @@ sudo apt-get install jenkins  -y
 #jenkins 계정 docker group에 추가
 sudo usermod -aG docker jenkins
 
+# http 로 registry 허용
+echo '{"insecure-registries" : ["pr:32000"]}' >> /etc/docker/daemon.json
+systemctl restart docker

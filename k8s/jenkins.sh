@@ -56,3 +56,7 @@ sudo apt-get update -y
 
 # Jenkins 패키지 설치
 sudo apt-get install jenkins  -y
+
+#jenkins 계정 docker group에 추가
+sudo usermod -aG docker jenkins
+

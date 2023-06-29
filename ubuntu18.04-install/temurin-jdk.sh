@@ -14,7 +14,7 @@ sudo mkdir -p /etc/apt/keyrings
 sudo wget --no-check-certificate -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | tee /etc/apt/keyrings/adoptium.asc
 sudo echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
 sudo apt update
-sudo apt install temurin-$__JAVA_VER__-jdk
+sudo apt install -y temurin-$__JAVA_VER__-jdk
 sudo update-java-alternatives -s temurin-$__JAVA_VER__-jdk-amd64
 java --version
 
